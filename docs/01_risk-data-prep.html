@@ -1,0 +1,891 @@
+<!DOCTYPE html>
+
+<html>
+
+<head>
+
+<meta charset="utf-8" />
+<meta name="generator" content="pandoc" />
+<meta http-equiv="X-UA-Compatible" content="IE=EDGE" />
+
+
+<meta name="author" content="Thijmen Jeroense" />
+
+
+<title>Risk Data Preperation</title>
+
+<script src="site_libs/header-attrs-2.21/header-attrs.js"></script>
+<script src="site_libs/jquery-3.6.0/jquery-3.6.0.min.js"></script>
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<link href="site_libs/bootstrap-3.3.5/css/flatly.min.css" rel="stylesheet" />
+<script src="site_libs/bootstrap-3.3.5/js/bootstrap.min.js"></script>
+<script src="site_libs/bootstrap-3.3.5/shim/html5shiv.min.js"></script>
+<script src="site_libs/bootstrap-3.3.5/shim/respond.min.js"></script>
+<style>h1 {font-size: 34px;}
+       h1.title {font-size: 38px;}
+       h2 {font-size: 30px;}
+       h3 {font-size: 24px;}
+       h4 {font-size: 18px;}
+       h5 {font-size: 16px;}
+       h6 {font-size: 12px;}
+       code {color: inherit; background-color: rgba(0, 0, 0, 0.04);}
+       pre:not([class]) { background-color: white }</style>
+<script src="site_libs/jqueryui-1.11.4/jquery-ui.min.js"></script>
+<link href="site_libs/tocify-1.9.1/jquery.tocify.css" rel="stylesheet" />
+<script src="site_libs/tocify-1.9.1/jquery.tocify.js"></script>
+<script src="site_libs/navigation-1.1/tabsets.js"></script>
+<script src="site_libs/navigation-1.1/codefolding.js"></script>
+<script src="site_libs/navigation-1.1/sourceembed.js"></script>
+<link href="site_libs/highlightjs-9.12.0/default.css" rel="stylesheet" />
+<script src="site_libs/highlightjs-9.12.0/highlight.js"></script>
+<link href="site_libs/font-awesome-6.2.1/css/all.min.css" rel="stylesheet" />
+<link href="site_libs/font-awesome-6.2.1/css/v4-shims.min.css" rel="stylesheet" />
+
+<style type="text/css">
+  code{white-space: pre-wrap;}
+  span.smallcaps{font-variant: small-caps;}
+  span.underline{text-decoration: underline;}
+  div.column{display: inline-block; vertical-align: top; width: 50%;}
+  div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+  ul.task-list{list-style: none;}
+    </style>
+
+<style type="text/css">code{white-space: pre;}</style>
+<script type="text/javascript">
+if (window.hljs) {
+  hljs.configure({languages: []});
+  hljs.initHighlightingOnLoad();
+  if (document.readyState && document.readyState === "complete") {
+    window.setTimeout(function() { hljs.initHighlighting(); }, 0);
+  }
+}
+</script>
+
+
+
+
+<style type="text/css">
+#rmd-source-code {
+  display: none;
+}
+</style>
+
+
+
+
+
+<style type = "text/css">
+.main-container {
+  max-width: 940px;
+  margin-left: auto;
+  margin-right: auto;
+}
+img {
+  max-width:100%;
+}
+.tabbed-pane {
+  padding-top: 12px;
+}
+.html-widget {
+  margin-bottom: 20px;
+}
+button.code-folding-btn:focus {
+  outline: none;
+}
+summary {
+  display: list-item;
+}
+details > summary > p:only-child {
+  display: inline;
+}
+pre code {
+  padding: 0;
+}
+</style>
+
+
+<style type="text/css">
+.dropdown-submenu {
+  position: relative;
+}
+.dropdown-submenu>.dropdown-menu {
+  top: 0;
+  left: 100%;
+  margin-top: -6px;
+  margin-left: -1px;
+  border-radius: 0 6px 6px 6px;
+}
+.dropdown-submenu:hover>.dropdown-menu {
+  display: block;
+}
+.dropdown-submenu>a:after {
+  display: block;
+  content: " ";
+  float: right;
+  width: 0;
+  height: 0;
+  border-color: transparent;
+  border-style: solid;
+  border-width: 5px 0 5px 5px;
+  border-left-color: #cccccc;
+  margin-top: 5px;
+  margin-right: -10px;
+}
+.dropdown-submenu:hover>a:after {
+  border-left-color: #adb5bd;
+}
+.dropdown-submenu.pull-left {
+  float: none;
+}
+.dropdown-submenu.pull-left>.dropdown-menu {
+  left: -100%;
+  margin-left: 10px;
+  border-radius: 6px 0 6px 6px;
+}
+</style>
+
+<script type="text/javascript">
+// manage active state of menu based on current page
+$(document).ready(function () {
+  // active menu anchor
+  href = window.location.pathname
+  href = href.substr(href.lastIndexOf('/') + 1)
+  if (href === "")
+    href = "index.html";
+  var menuAnchor = $('a[href="' + href + '"]');
+
+  // mark the anchor link active (and if it's in a dropdown, also mark that active)
+  var dropdown = menuAnchor.closest('li.dropdown');
+  if (window.bootstrap) { // Bootstrap 4+
+    menuAnchor.addClass('active');
+    dropdown.find('> .dropdown-toggle').addClass('active');
+  } else { // Bootstrap 3
+    menuAnchor.parent().addClass('active');
+    dropdown.addClass('active');
+  }
+
+  // Navbar adjustments
+  var navHeight = $(".navbar").first().height() + 15;
+  var style = document.createElement('style');
+  var pt = "padding-top: " + navHeight + "px; ";
+  var mt = "margin-top: -" + navHeight + "px; ";
+  var css = "";
+  // offset scroll position for anchor links (for fixed navbar)
+  for (var i = 1; i <= 6; i++) {
+    css += ".section h" + i + "{ " + pt + mt + "}\n";
+  }
+  style.innerHTML = "body {" + pt + "padding-bottom: 40px; }\n" + css;
+  document.head.appendChild(style);
+});
+</script>
+
+<!-- tabsets -->
+
+<style type="text/css">
+.tabset-dropdown > .nav-tabs {
+  display: inline-table;
+  max-height: 500px;
+  min-height: 44px;
+  overflow-y: auto;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+}
+
+.tabset-dropdown > .nav-tabs > li.active:before, .tabset-dropdown > .nav-tabs.nav-tabs-open:before {
+  content: "\e259";
+  font-family: 'Glyphicons Halflings';
+  display: inline-block;
+  padding: 10px;
+  border-right: 1px solid #ddd;
+}
+
+.tabset-dropdown > .nav-tabs.nav-tabs-open > li.active:before {
+  content: "\e258";
+  font-family: 'Glyphicons Halflings';
+  border: none;
+}
+
+.tabset-dropdown > .nav-tabs > li.active {
+  display: block;
+}
+
+.tabset-dropdown > .nav-tabs > li > a,
+.tabset-dropdown > .nav-tabs > li > a:focus,
+.tabset-dropdown > .nav-tabs > li > a:hover {
+  border: none;
+  display: inline-block;
+  border-radius: 4px;
+  background-color: transparent;
+}
+
+.tabset-dropdown > .nav-tabs.nav-tabs-open > li {
+  display: block;
+  float: none;
+}
+
+.tabset-dropdown > .nav-tabs > li {
+  display: none;
+}
+</style>
+
+<!-- code folding -->
+<style type="text/css">
+.code-folding-btn { margin-bottom: 4px; }
+</style>
+
+
+
+<style type="text/css">
+
+#TOC {
+  margin: 25px 0px 20px 0px;
+}
+@media (max-width: 768px) {
+#TOC {
+  position: relative;
+  width: 100%;
+}
+}
+
+@media print {
+.toc-content {
+  /* see https://github.com/w3c/csswg-drafts/issues/4434 */
+  float: right;
+}
+}
+
+.toc-content {
+  padding-left: 30px;
+  padding-right: 40px;
+}
+
+div.main-container {
+  max-width: 1200px;
+}
+
+div.tocify {
+  width: 20%;
+  max-width: 260px;
+  max-height: 85%;
+}
+
+@media (min-width: 768px) and (max-width: 991px) {
+  div.tocify {
+    width: 25%;
+  }
+}
+
+@media (max-width: 767px) {
+  div.tocify {
+    width: 100%;
+    max-width: none;
+  }
+}
+
+.tocify ul, .tocify li {
+  line-height: 20px;
+}
+
+.tocify-subheader .tocify-item {
+  font-size: 0.90em;
+}
+
+.tocify .list-group-item {
+  border-radius: 0px;
+}
+
+
+</style>
+
+
+
+</head>
+
+<body>
+
+
+<div class="container-fluid main-container">
+
+
+<!-- setup 3col/9col grid for toc_float and main content  -->
+<div class="row">
+<div class="col-xs-12 col-sm-4 col-md-3">
+<div id="TOC" class="tocify">
+</div>
+</div>
+
+<div class="toc-content col-xs-12 col-sm-8 col-md-9">
+
+
+
+
+<div class="navbar navbar-default  navbar-fixed-top" role="navigation">
+  <div class="container">
+    <div class="navbar-header">
+      <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-bs-toggle="collapse" data-target="#navbar" data-bs-target="#navbar">
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+      </button>
+      <a class="navbar-brand" href="index.html">Replication Website</a>
+    </div>
+    <div id="navbar" class="navbar-collapse collapse">
+      <ul class="nav navbar-nav">
+        <li>
+  <a href="index.html">
+    <span class="fa fa-info"></span>
+     
+    About
+  </a>
+</li>
+<li class="dropdown">
+  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+    <span class="far fa-file-code"></span>
+     
+    Data preperation
+     
+    <span class="caret"></span>
+  </a>
+  <ul class="dropdown-menu" role="menu">
+    <li>
+      <a href="merging-liss.html">1 Merging LISS core module</a>
+    </li>
+    <li>
+      <a href="01_risk-data-prep.html">2 Risk dataset</a>
+    </li>
+    <li>
+      <a href="02_repeated-risk-data-prep.html">3 Repeated risk dataset</a>
+    </li>
+    <li>
+      <a href="03_add-ego-alter-data.html">4 Add ego and alter data</a>
+    </li>
+    <li>
+      <a href="04_network-dyad-variables.html">5 Dyad and Network variables</a>
+    </li>
+    <li>
+      <a href="05_imputation.html">6 Missing imputation</a>
+    </li>
+  </ul>
+</li>
+<li class="dropdown">
+  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+    <span class="fa fa-bar-chart"></span>
+     
+    Analysis
+     
+    <span class="caret"></span>
+  </a>
+  <ul class="dropdown-menu" role="menu">
+    <li>
+      <a href="egonet_deselection_desstats.html">1 Descriptive statistics</a>
+    </li>
+    <li>
+      <a href="egonet-main-analysis.html">2 Replication main results</a>
+    </li>
+  </ul>
+</li>
+<li class="dropdown">
+  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+    <span class="fa fa-shield"></span>
+     
+    Robustness
+     
+    <span class="caret"></span>
+  </a>
+  <ul class="dropdown-menu" role="menu">
+    <li class="dropdown-header">Recreate appendix analyses</li>
+    <li>
+      <a href="egonet_robustness_diff.html"></a>
+    </li>
+  </ul>
+</li>
+      </ul>
+      <ul class="nav navbar-nav navbar-right">
+        <li>
+  <a href="https://github.com/tmgjer/egonet_deselection">
+    <span class="fab fa-github"></span>
+     
+    Github
+  </a>
+</li>
+      </ul>
+    </div><!--/.nav-collapse -->
+  </div><!--/.container -->
+</div><!--/.navbar -->
+
+<div id="header">
+
+<div class="btn-group pull-right float-right">
+<button type="button" class="btn btn-default btn-xs btn-secondary btn-sm dropdown-toggle" data-toggle="dropdown" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><span>Code</span> <span class="caret"></span></button>
+<ul class="dropdown-menu dropdown-menu-right" style="min-width: 50px;">
+<li><a id="rmd-show-all-code" href="#">Show All Code</a></li>
+<li><a id="rmd-hide-all-code" href="#">Hide All Code</a></li>
+<li role="separator" class="divider"></li>
+<li><a id="rmd-download-source" href="#">Download Rmd</a></li>
+</ul>
+</div>
+
+
+
+<h1 class="title toc-ignore">Risk Data Preperation</h1>
+<h3 class="subtitle">Risk dataset</h3>
+<h4 class="author">Thijmen Jeroense</h4>
+<h4 class="date">Last compiled on 22 september, 2023</h4>
+
+</div>
+
+
+<div id="creating-a-risk-data-set-from-the-liss-core-data"
+class="section level1">
+<h1>Creating a Risk Data Set from the LISS core data</h1>
+<div id="set-up" class="section level2">
+<h2>Set up</h2>
+<p>Load libraries that we need for the preparation of the data.</p>
+<pre class="r"><code>#library
+library(tidyverse)
+library(data.table)</code></pre>
+<p>Import the merged LISS core files data.</p>
+<pre class="r"><code>load(file = &quot;datafiles/data-processed/common_data/0623_v5_liss_merged_core_file.rds&quot;)</code></pre>
+</div>
+<div id="custom-functions" class="section level2">
+<h2>Custom functions</h2>
+<p>An overview of the custom function I use in the preparation of the
+data.</p>
+<pre class="r"><code>## Person-Level Person-Period Converter Function
+PLPP &lt;- function(data, id, period, event, direction = c(&quot;period&quot;, &quot;level&quot;)) {
+  ## Data Checking and Verification Steps
+  stopifnot(is.matrix(data) || is.data.frame(data))
+  stopifnot(c(id, period, event) %in% c(colnames(data), 1:ncol(data)))
+  
+  if (any(is.na(data[, c(id, period, event)]))) {
+    stop(&quot;PLPP cannot currently handle missing data in the id, period, or event variables&quot;)
+  }
+  
+  ## Do the conversion
+  switch(match.arg(direction),
+         period = {
+           index &lt;- rep(1:nrow(data), data[, period])
+           idmax &lt;- cumsum(data[, period])
+           reve &lt;- !data[, event]
+           dat &lt;- data[index, ]
+           dat[, period] &lt;- ave(dat[, period], dat[, id], FUN = seq_along)
+           dat[, event] &lt;- 0
+           dat[idmax, event] &lt;- reve},
+         level = {
+           tmp &lt;- cbind(data[, c(period, id)], i = 1:nrow(data))
+           index &lt;- as.vector(by(tmp, tmp[, id],
+                                 FUN = function(x) x[which.max(x[, period]), &quot;i&quot;]))
+           dat &lt;- data[index, ]
+           dat[, event] &lt;- as.integer(!dat[, event])
+         })
+  
+  rownames(dat) &lt;- NULL
+  return(dat)
+}
+
+#education recode function
+func1 &lt;- function(x) {
+  x2 &lt;- ifelse(x == 1, 6, x)
+  x3 &lt;- ifelse(x == 2, 10, x2)
+  x4 &lt;- ifelse(x == 3, 11.5, x3)
+  x5 &lt;- ifelse(x == 4, 10.5, x4)
+  x6 &lt;- ifelse(x == 5, 15, x5)
+  x7 &lt;- ifelse(x == 6, 16, x6)
+  x8 &lt;- ifelse(x == 7, NA, x7)
+  x9 &lt;- ifelse(x == 8, 4, x8)
+  x10 &lt;- ifelse(x == 9, 0, x9)
+  return(x10)
+}
+
+#age recode
+fage_rec &lt;- function (x) {
+  y &lt;- ifelse(x &lt; 16, 1, x)
+  y &lt;- ifelse(x &gt; 15 &amp; x &lt; 21, 2, y)
+  y &lt;- ifelse(x &gt; 20 &amp; x &lt; 26, 3, y)
+  y &lt;- ifelse(x &gt; 25 &amp; x &lt; 31, 4, y)
+  y &lt;- ifelse(x &gt; 30 &amp; x &lt; 36, 5, y)
+  y &lt;- ifelse(x &gt; 35 &amp; x &lt; 41, 6, y)
+  y &lt;- ifelse(x &gt; 40 &amp; x &lt; 46, 7, y)
+  y &lt;- ifelse(x &gt; 45 &amp; x &lt; 51, 8, y)
+  y &lt;- ifelse(x &gt; 50 &amp; x &lt; 56, 9, y)
+  y &lt;- ifelse(x &gt; 55 &amp; x &lt; 61, 10, y)
+  y &lt;- ifelse(x &gt; 60 &amp; x &lt; 66, 11, y)
+  y &lt;- ifelse(x &gt; 65 &amp; x &lt; 71, 12, y)
+  y &lt;- ifelse(x &gt; 70, 13, y)
+  return(y)
+}
+
+
+#similarity functions
+#education
+feduc_sim &lt;- function (x,y) {
+  result &lt;- 1 - (abs(x - y)/16)
+  return(result)
+}
+
+
+#categorical similarity function
+fcat_sim &lt;- function (x,y) {
+  result &lt;- 1 - (abs(x - y)/1)
+  return(result)
+}
+
+#age
+fage_sim &lt;- function (x,y) {
+  result &lt;- 1 - (abs(x - y)/13)
+  return(result)
+}</code></pre>
+</div>
+</div>
+<div id="create-event-dataset" class="section level1">
+<h1>Create event dataset</h1>
+<div id="step-1-select-alter-ids-and-create-dyad-id"
+class="section level2">
+<h2>Step 1: select alter ids and create dyad id</h2>
+<p>First start with creation of event file. Select the alter ids from
+the data and reshape the file so we can identify when a dyad is
+selected.</p>
+<pre class="r"><code>#select the alter data from the liss long file
+event_data &lt;- liss_long %&gt;%
+  select(nomem_encr, alter_id_1:alter_id_5, survey_wave) %&gt;%
+  mutate(survey_wave = as.numeric(survey_wave))
+
+#create a dyad id variable. 
+event_data &lt;- event_data %&gt;%
+  pivot_longer(cols = alter_id_1:alter_id_5,
+               names_to = &quot;name&quot;,
+               values_to = &quot;alter_id&quot;) %&gt;%
+  mutate(
+    alter_id = ifelse(alter_id == -9, NA, alter_id),
+    #set alter id to NA if -9
+    dyad_id = paste0(nomem_encr, alter_id),
+    #create new dyad id with paste.
+    dyad_id = ifelse(is.na(alter_id), NA, dyad_id)
+  ) #if alter id is na dyad id na.</code></pre>
+</div>
+<div id="step-2-create-a-selection-variable" class="section level2">
+<h2>Step 2: create a selection variable</h2>
+<pre class="r"><code>#create a selection variable.
+event_data &lt;- event_data %&gt;%
+  select(nomem_encr, dyad_id, alter_id, survey_wave) %&gt;%
+  arrange(dyad_id, survey_wave) %&gt;% # sort on dyad id and surveywave.
+  mutate(selected = ifelse(!is.na(dyad_id), 1, 0)) %&gt;% #if not na, then dyad id is selected
+  filter(!is.na(dyad_id)) #filter our missing dyad ids.</code></pre>
+</div>
+<div id="step-3-filter-out-duplicate-dyad_ids-per-waverespondent-combo"
+class="section level2">
+<h2>Step 3: filter out duplicate dyad_ids per wave/respondent combo</h2>
+<p>This should not be possible but is a fault of the data
+collection.</p>
+<pre class="r"><code>#to be safe, delete complete ego networks where this happens. 
+event_data &lt;- event_data %&gt;%
+  group_by(nomem_encr, survey_wave, dyad_id) %&gt;%
+  add_count(dyad_id) %&gt;% 
+  ungroup() %&gt;% 
+  group_by(nomem_encr) %&gt;% 
+  mutate(duplicates_network_ego = max(n)) %&gt;% 
+  filter(duplicates_network_ego == 1) %&gt;% 
+  ungroup()
+
+#reshape to wide file
+event_data &lt;- event_data %&gt;%
+  pivot_wider(names_from = survey_wave,
+              values_from = selected)
+
+#transform variables
+#rename the selection variables
+event_data &lt;- event_data %&gt;%
+  rename(selected_1 = &#39;1&#39;,
+         selected_2 = &#39;2&#39;,
+         selected_3 = &#39;3&#39;,
+         selected_4 = &#39;4&#39;,
+         selected_5 = &#39;5&#39;,
+         selected_6 = &#39;6&#39;,
+         selected_7 = &#39;7&#39;,
+         selected_8 = &#39;8&#39;,
+         selected_9 = &#39;9&#39;,
+         selected_10 = &#39;10&#39;,
+         selected_11 = &#39;11&#39;)
+
+#recode so NA == 0
+recoded &lt;- event_data %&gt;%
+  select(starts_with(&quot;selected&quot;)) %&gt;%
+  map_df(.f = ~ ifelse(is.na(.), 0, .)) 
+
+#add the recoded collumns to the tibble
+event_data &lt;- event_data %&gt;%
+  select(1:2) %&gt;%
+  cbind(recoded)</code></pre>
+</div>
+<div id="step-4-identify-when-a-respondent-participates"
+class="section level2">
+<h2>Step 4: identify when a respondent participates</h2>
+<p>First we need to identify when a respondent has participated in the
+survey.</p>
+<pre class="r"><code>#create a long file. 
+event_data &lt;- event_data %&gt;% 
+  pivot_longer(cols = 3:13,
+               names_to = c(&quot;variables&quot;, &quot;survey_wave&quot;),
+               values_to = &quot;selected&quot;,
+              names_sep = &quot;_&quot;) %&gt;%
+  mutate(survey_wave = as.numeric(survey_wave)) %&gt;%
+  arrange(nomem_encr, dyad_id, survey_wave)
+
+#code what the possible end date is for each respondent (as alters are nested in respondents).
+#First step is to identify in which rounds there are no valid responses 
+no_participation &lt;- liss_long %&gt;%
+  select(nomem_encr, survey_wave, leisure_part) %&gt;%
+  mutate(noparticipation = ifelse(is.na(leisure_part), 1, 0),
+         survey_wave = as.numeric(survey_wave)) %&gt;% 
+  select(nomem_encr, survey_wave, noparticipation)</code></pre>
+</div>
+<div id="step-5-identify-the-start-and-the-end-of-a-respondent-spell"
+class="section level2">
+<h2>Step 5: identify the start and the end of a respondent spell</h2>
+<p>Second, we can identify the start of the respondent spell and the end
+of the respondent spell. Then we know whether someone can be selected or
+dropped at a given time.</p>
+<pre class="r"><code>#for every respondent code when the enter and leave the data. 
+ego_start_end_year &lt;- no_participation %&gt;%
+  filter(noparticipation == 0) %&gt;% 
+  group_by(nomem_encr) %&gt;%
+  mutate(survey_wave = as.numeric(survey_wave)) %&gt;% 
+  mutate(start_year = min(survey_wave), #set start year of nomem_encr
+         end_year = max(survey_wave)) %&gt;% #set end year of nomem_encr
+  ungroup() %&gt;%
+  select(nomem_encr, end_year, start_year) %&gt;% #keep selection of variables.
+  distinct() #keep unique observations.
+
+#add start and end year to the event data. 
+event_data &lt;- event_data %&gt;%
+  left_join(ego_start_end_year, by = &quot;nomem_encr&quot;)
+
+#add start and end year to the event data. 
+event_data &lt;- event_data %&gt;%
+  left_join(no_participation, by = c(&quot;nomem_encr&quot;,&quot;survey_wave&quot;))
+
+#set selected to NA if respondent is not in the data
+event_data &lt;- event_data %&gt;%
+  mutate(selected = ifelse(survey_wave &gt; end_year, NA, selected),
+         selected = ifelse(survey_wave &lt; start_year, NA, selected),
+         selected = ifelse(noparticipation == 1, NA, selected))</code></pre>
+</div>
+<div id="step-6-identify-wave-a-dyad-first-entered-the-network"
+class="section level2">
+<h2>Step 6: identify wave a dyad first entered the network</h2>
+<pre class="r"><code>#calculate for each alter what the starting wave is. 
+#So when is he/she first at risk to be deselected
+entered_network &lt;- event_data %&gt;% 
+  group_by(dyad_id) %&gt;% 
+  filter(selected == 1) %&gt;%
+  mutate(entered_network = min(survey_wave)) %&gt;% #year dyad entered network.
+  select(dyad_id, entered_network) %&gt;%
+  ungroup() %&gt;%
+  distinct()
+
+#add entered network variable to the event data. 
+event_data &lt;- event_data %&gt;%
+  left_join(entered_network, by = &quot;dyad_id&quot;)</code></pre>
+</div>
+<div id="step-7-identify-the-first-and-the-last-drop"
+class="section level2">
+<h2>Step 7: identify the first and the last drop</h2>
+<p>With this information we can identify the first and last drop of a
+dyad but also when the last time is that they are selected.</p>
+<pre class="r"><code>#drop when selected is missing and smaller then endyear and bigger than startyear
+event_data &lt;- event_data %&gt;% 
+  filter((survey_wave &lt;= end_year) &amp; (survey_wave &gt;= start_year)) %&gt;% 
+  filter(!is.na(selected))
+
+#calculate for each alter the first year in which he or she is dropped from the network
+first_drop &lt;- event_data %&gt;%
+  group_by(dyad_id) %&gt;% 
+  mutate(transition = selected - lag(selected), #create transition variable. Just a lag diff.
+         dropped = ifelse(transition == -1, 1, 0)) %&gt;% #use transition to identify drop. (1 to 0)
+  filter(dropped == 1) %&gt;% #select observations that are dropped. 
+  mutate(first_drop = min(survey_wave)) %&gt;% #first year dropped is first drop. 
+  ungroup() %&gt;%
+  select(dyad_id, first_drop) %&gt;% #select first drop variables. 
+  distinct()
+
+#add first drop data to event data. 
+event_data &lt;- event_data %&gt;%
+  left_join(first_drop, by = &quot;dyad_id&quot;)
+
+#calculate for each alter the final time they are dropped from the network.
+last_drop &lt;- event_data %&gt;%
+  group_by(dyad_id) %&gt;% 
+  mutate(transition = selected - lag(selected),
+         dropped = ifelse(transition == -1, 1, 0)) %&gt;%
+  filter(dropped == 1) %&gt;%
+  mutate(last_drop = max(survey_wave)) %&gt;% #last time they are are dropped from the network.
+  ungroup() %&gt;%
+  select(dyad_id, last_drop) %&gt;%
+  distinct()
+
+#add last drop data to event data.
+event_data &lt;- event_data %&gt;%
+  left_join(last_drop, by = &quot;dyad_id&quot;)
+
+#calculate for each alter the final time they are selected.
+final_selected &lt;- event_data %&gt;%
+  group_by(dyad_id) %&gt;% 
+  filter(selected == 1) %&gt;%
+  mutate(final_selected = max(survey_wave)) %&gt;%
+  ungroup() %&gt;%
+  select(dyad_id, final_selected) %&gt;%
+  distinct()
+
+event_data &lt;- event_data %&gt;%
+  left_join(final_selected, by = &quot;dyad_id&quot;)</code></pre>
+</div>
+<div id="step-8-dyad-reentrance" class="section level2">
+<h2>Step 8: dyad reentrance</h2>
+<p>Compute for every dyad when they reenter the data. Also create
+censored variable and a time variable which describes the range between
+time of entering data and time of final drop.</p>
+<pre class="r"><code>#calculate for each alter when they reenter the network.
+event_data &lt;- event_data %&gt;%
+  group_by(dyad_id) %&gt;% 
+  mutate(transition = selected - lag(selected),
+         re_entrance = ifelse((transition == 1) &amp; (survey_wave &gt; entered_network), 1, 0)) %&gt;%
+ ungroup()
+
+#create censor variable
+event_data &lt;- event_data %&gt;%
+  mutate(censor = ifelse(final_selected == end_year, 1, 0))
+
+#create new time variable. What is the time of final deselection after entering the network.
+event_data &lt;- event_data %&gt;%
+  group_by(dyad_id) %&gt;%
+  mutate(range = ifelse(censor == 0, 
+                        (max(last_drop) - entered_network) + 1,
+                        (final_selected - entered_network) + 1)) %&gt;%
+  ungroup()</code></pre>
+</div>
+<div id="step-9create-person_period-file." class="section level2">
+<h2>Step 9:create person_period file.</h2>
+<pre class="r"><code>#create person level data, not repeated risk
+person_level &lt;- event_data %&gt;%
+  select(dyad_id, nomem_encr, range, censor) %&gt;%
+  distinct()
+
+#person period
+person_period &lt;- PLPP(data = as.data.frame(person_level), 
+                      id = &quot;dyad_id&quot;, 
+                      period = &quot;range&quot;, 
+                      event = &quot;censor&quot;, 
+                      direction = &quot;period&quot;)</code></pre>
+</div>
+</div>
+<div id="export-data" class="section level1">
+<h1>Export data</h1>
+<p>Export and save the risk data and the person_period data.</p>
+<pre class="r"><code>#save event data as 2022-07-01_risk-data.rds
+save(event_data, file = &quot;datafiles/data-processed/disaggregated_data/2023-06-12_liss-risk-data.rds&quot;)
+
+#save person period data
+save(person_period, file = &quot;datafiles/data-processed/disaggregated_data/2023-06-12_liss-person_period.rds&quot;)</code></pre>
+<pre class="r"><code>#clean global environment
+rm(list=ls()[! ls() %in% c(&quot;event_data&quot;, &quot;liss_long&quot;, &quot;liss_wide&quot;,
+                           &quot;person_level&quot;, &quot;person_period&quot;)])
+
+#save the data. 
+save.image(&quot;datafiles/data-processed/disaggregated_data/2023-06-12_liss_event_data.rds&quot;)</code></pre>
+</div>
+
+<div id="rmd-source-code">LS0tDQp0aXRsZTogIlJpc2sgRGF0YSBQcmVwZXJhdGlvbiINCnN1YnRpdGxlOiAiUmlzayBkYXRhc2V0Ig0KYXV0aG9yOiAiVGhpam1lbiBKZXJvZW5zZSINCmRhdGU6ICJMYXN0IGNvbXBpbGVkIG9uIGByIGZvcm1hdChTeXMudGltZSgpLCAnJWQgJUIsICVZJylgIg0Kb3V0cHV0Og0KICBodG1sX2RvY3VtZW50Og0KICAgIHRvYzogVFJVRQ0KICAgIHRvY19kZXB0aDogMw0KICAgIHRvY19mbG9hdDogVFJVRQ0KICAgIGNvZGVfZm9sZGluZzogc2hvdw0KICAgIGNvZGVfZG93bmxvYWQ6IFRSVUUNCi0tLQ0KDQpgYGB7ciBzZXR1cCwgaW5jbHVkZT1GQUxTRX0NCmtuaXRyOjpvcHRzX2NodW5rJHNldChjYWNoZSA9IFRSVUUsIG1lc3NhZ2UgPSBGQUxTRSwgd2FybmluZyA9IEZBTFNFLCByZXN1bHRzID0gImFzaXMiLA0KICAgICAgICAgICAgICAgICAgICAgIGZpZy5hbGlnbiA9ICJjZW50ZXIiKQ0KYGBgDQoNCiMgQ3JlYXRpbmcgYSBSaXNrIERhdGEgU2V0IGZyb20gdGhlIExJU1MgY29yZSBkYXRhDQoNCiMjIFNldCB1cA0KDQpMb2FkIGxpYnJhcmllcyB0aGF0IHdlIG5lZWQgZm9yIHRoZSBwcmVwYXJhdGlvbiBvZiB0aGUgZGF0YS4NCg0KYGBge3IgbG9hZCBkYXRhIGxpYnJhcnl9DQojbGlicmFyeQ0KbGlicmFyeSh0aWR5dmVyc2UpDQpsaWJyYXJ5KGRhdGEudGFibGUpDQpgYGANCg0KSW1wb3J0IHRoZSBtZXJnZWQgTElTUyBjb3JlIGZpbGVzIGRhdGEuDQoNCmBgYHtyIGRhdGF9DQpsb2FkKGZpbGUgPSAiZGF0YWZpbGVzL2RhdGEtcHJvY2Vzc2VkL2NvbW1vbl9kYXRhLzA2MjNfdjVfbGlzc19tZXJnZWRfY29yZV9maWxlLnJkcyIpDQpgYGANCg0KIyMgQ3VzdG9tIGZ1bmN0aW9ucw0KDQpBbiBvdmVydmlldyBvZiB0aGUgY3VzdG9tIGZ1bmN0aW9uIEkgdXNlIGluIHRoZSBwcmVwYXJhdGlvbiBvZiB0aGUgZGF0YS4NCg0KYGBge3IgZnVuY3Rpb25zfQ0KIyMgUGVyc29uLUxldmVsIFBlcnNvbi1QZXJpb2QgQ29udmVydGVyIEZ1bmN0aW9uDQpQTFBQIDwtIGZ1bmN0aW9uKGRhdGEsIGlkLCBwZXJpb2QsIGV2ZW50LCBkaXJlY3Rpb24gPSBjKCJwZXJpb2QiLCAibGV2ZWwiKSkgew0KICAjIyBEYXRhIENoZWNraW5nIGFuZCBWZXJpZmljYXRpb24gU3RlcHMNCiAgc3RvcGlmbm90KGlzLm1hdHJpeChkYXRhKSB8fCBpcy5kYXRhLmZyYW1lKGRhdGEpKQ0KICBzdG9waWZub3QoYyhpZCwgcGVyaW9kLCBldmVudCkgJWluJSBjKGNvbG5hbWVzKGRhdGEpLCAxOm5jb2woZGF0YSkpKQ0KICANCiAgaWYgKGFueShpcy5uYShkYXRhWywgYyhpZCwgcGVyaW9kLCBldmVudCldKSkpIHsNCiAgICBzdG9wKCJQTFBQIGNhbm5vdCBjdXJyZW50bHkgaGFuZGxlIG1pc3NpbmcgZGF0YSBpbiB0aGUgaWQsIHBlcmlvZCwgb3IgZXZlbnQgdmFyaWFibGVzIikNCiAgfQ0KICANCiAgIyMgRG8gdGhlIGNvbnZlcnNpb24NCiAgc3dpdGNoKG1hdGNoLmFyZyhkaXJlY3Rpb24pLA0KICAgICAgICAgcGVyaW9kID0gew0KICAgICAgICAgICBpbmRleCA8LSByZXAoMTpucm93KGRhdGEpLCBkYXRhWywgcGVyaW9kXSkNCiAgICAgICAgICAgaWRtYXggPC0gY3Vtc3VtKGRhdGFbLCBwZXJpb2RdKQ0KICAgICAgICAgICByZXZlIDwtICFkYXRhWywgZXZlbnRdDQogICAgICAgICAgIGRhdCA8LSBkYXRhW2luZGV4LCBdDQogICAgICAgICAgIGRhdFssIHBlcmlvZF0gPC0gYXZlKGRhdFssIHBlcmlvZF0sIGRhdFssIGlkXSwgRlVOID0gc2VxX2Fsb25nKQ0KICAgICAgICAgICBkYXRbLCBldmVudF0gPC0gMA0KICAgICAgICAgICBkYXRbaWRtYXgsIGV2ZW50XSA8LSByZXZlfSwNCiAgICAgICAgIGxldmVsID0gew0KICAgICAgICAgICB0bXAgPC0gY2JpbmQoZGF0YVssIGMocGVyaW9kLCBpZCldLCBpID0gMTpucm93KGRhdGEpKQ0KICAgICAgICAgICBpbmRleCA8LSBhcy52ZWN0b3IoYnkodG1wLCB0bXBbLCBpZF0sDQogICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICBGVU4gPSBmdW5jdGlvbih4KSB4W3doaWNoLm1heCh4WywgcGVyaW9kXSksICJpIl0pKQ0KICAgICAgICAgICBkYXQgPC0gZGF0YVtpbmRleCwgXQ0KICAgICAgICAgICBkYXRbLCBldmVudF0gPC0gYXMuaW50ZWdlcighZGF0WywgZXZlbnRdKQ0KICAgICAgICAgfSkNCiAgDQogIHJvd25hbWVzKGRhdCkgPC0gTlVMTA0KICByZXR1cm4oZGF0KQ0KfQ0KDQojZWR1Y2F0aW9uIHJlY29kZSBmdW5jdGlvbg0KZnVuYzEgPC0gZnVuY3Rpb24oeCkgew0KICB4MiA8LSBpZmVsc2UoeCA9PSAxLCA2LCB4KQ0KICB4MyA8LSBpZmVsc2UoeCA9PSAyLCAxMCwgeDIpDQogIHg0IDwtIGlmZWxzZSh4ID09IDMsIDExLjUsIHgzKQ0KICB4NSA8LSBpZmVsc2UoeCA9PSA0LCAxMC41LCB4NCkNCiAgeDYgPC0gaWZlbHNlKHggPT0gNSwgMTUsIHg1KQ0KICB4NyA8LSBpZmVsc2UoeCA9PSA2LCAxNiwgeDYpDQogIHg4IDwtIGlmZWxzZSh4ID09IDcsIE5BLCB4NykNCiAgeDkgPC0gaWZlbHNlKHggPT0gOCwgNCwgeDgpDQogIHgxMCA8LSBpZmVsc2UoeCA9PSA5LCAwLCB4OSkNCiAgcmV0dXJuKHgxMCkNCn0NCg0KI2FnZSByZWNvZGUNCmZhZ2VfcmVjIDwtIGZ1bmN0aW9uICh4KSB7DQogIHkgPC0gaWZlbHNlKHggPCAxNiwgMSwgeCkNCiAgeSA8LSBpZmVsc2UoeCA+IDE1ICYgeCA8IDIxLCAyLCB5KQ0KICB5IDwtIGlmZWxzZSh4ID4gMjAgJiB4IDwgMjYsIDMsIHkpDQogIHkgPC0gaWZlbHNlKHggPiAyNSAmIHggPCAzMSwgNCwgeSkNCiAgeSA8LSBpZmVsc2UoeCA+IDMwICYgeCA8IDM2LCA1LCB5KQ0KICB5IDwtIGlmZWxzZSh4ID4gMzUgJiB4IDwgNDEsIDYsIHkpDQogIHkgPC0gaWZlbHNlKHggPiA0MCAmIHggPCA0NiwgNywgeSkNCiAgeSA8LSBpZmVsc2UoeCA+IDQ1ICYgeCA8IDUxLCA4LCB5KQ0KICB5IDwtIGlmZWxzZSh4ID4gNTAgJiB4IDwgNTYsIDksIHkpDQogIHkgPC0gaWZlbHNlKHggPiA1NSAmIHggPCA2MSwgMTAsIHkpDQogIHkgPC0gaWZlbHNlKHggPiA2MCAmIHggPCA2NiwgMTEsIHkpDQogIHkgPC0gaWZlbHNlKHggPiA2NSAmIHggPCA3MSwgMTIsIHkpDQogIHkgPC0gaWZlbHNlKHggPiA3MCwgMTMsIHkpDQogIHJldHVybih5KQ0KfQ0KDQoNCiNzaW1pbGFyaXR5IGZ1bmN0aW9ucw0KI2VkdWNhdGlvbg0KZmVkdWNfc2ltIDwtIGZ1bmN0aW9uICh4LHkpIHsNCiAgcmVzdWx0IDwtIDEgLSAoYWJzKHggLSB5KS8xNikNCiAgcmV0dXJuKHJlc3VsdCkNCn0NCg0KDQojY2F0ZWdvcmljYWwgc2ltaWxhcml0eSBmdW5jdGlvbg0KZmNhdF9zaW0gPC0gZnVuY3Rpb24gKHgseSkgew0KICByZXN1bHQgPC0gMSAtIChhYnMoeCAtIHkpLzEpDQogIHJldHVybihyZXN1bHQpDQp9DQoNCiNhZ2UNCmZhZ2Vfc2ltIDwtIGZ1bmN0aW9uICh4LHkpIHsNCiAgcmVzdWx0IDwtIDEgLSAoYWJzKHggLSB5KS8xMykNCiAgcmV0dXJuKHJlc3VsdCkNCn0NCg0KDQpgYGANCg0KIyBDcmVhdGUgZXZlbnQgZGF0YXNldA0KDQojIyBTdGVwIDE6IHNlbGVjdCBhbHRlciBpZHMgYW5kIGNyZWF0ZSBkeWFkIGlkDQoNCkZpcnN0IHN0YXJ0IHdpdGggY3JlYXRpb24gb2YgZXZlbnQgZmlsZS4gU2VsZWN0IHRoZSBhbHRlciBpZHMgZnJvbSB0aGUgZGF0YSBhbmQgcmVzaGFwZSB0aGUgZmlsZSBzbyB3ZSBjYW4gaWRlbnRpZnkgd2hlbiBhIGR5YWQgaXMgc2VsZWN0ZWQuDQoNCmBgYHtyIHJpc2sgZGF0YSAxfQ0KI3NlbGVjdCB0aGUgYWx0ZXIgZGF0YSBmcm9tIHRoZSBsaXNzIGxvbmcgZmlsZQ0KZXZlbnRfZGF0YSA8LSBsaXNzX2xvbmcgJT4lDQogIHNlbGVjdChub21lbV9lbmNyLCBhbHRlcl9pZF8xOmFsdGVyX2lkXzUsIHN1cnZleV93YXZlKSAlPiUNCiAgbXV0YXRlKHN1cnZleV93YXZlID0gYXMubnVtZXJpYyhzdXJ2ZXlfd2F2ZSkpDQoNCiNjcmVhdGUgYSBkeWFkIGlkIHZhcmlhYmxlLiANCmV2ZW50X2RhdGEgPC0gZXZlbnRfZGF0YSAlPiUNCiAgcGl2b3RfbG9uZ2VyKGNvbHMgPSBhbHRlcl9pZF8xOmFsdGVyX2lkXzUsDQogICAgICAgICAgICAgICBuYW1lc190byA9ICJuYW1lIiwNCiAgICAgICAgICAgICAgIHZhbHVlc190byA9ICJhbHRlcl9pZCIpICU+JQ0KICBtdXRhdGUoDQogICAgYWx0ZXJfaWQgPSBpZmVsc2UoYWx0ZXJfaWQgPT0gLTksIE5BLCBhbHRlcl9pZCksDQogICAgI3NldCBhbHRlciBpZCB0byBOQSBpZiAtOQ0KICAgIGR5YWRfaWQgPSBwYXN0ZTAobm9tZW1fZW5jciwgYWx0ZXJfaWQpLA0KICAgICNjcmVhdGUgbmV3IGR5YWQgaWQgd2l0aCBwYXN0ZS4NCiAgICBkeWFkX2lkID0gaWZlbHNlKGlzLm5hKGFsdGVyX2lkKSwgTkEsIGR5YWRfaWQpDQogICkgI2lmIGFsdGVyIGlkIGlzIG5hIGR5YWQgaWQgbmEuDQoNCmBgYA0KDQojIyBTdGVwIDI6IGNyZWF0ZSBhIHNlbGVjdGlvbiB2YXJpYWJsZQ0KDQpgYGB7ciByaXNrIGRhdGEgMn0NCiNjcmVhdGUgYSBzZWxlY3Rpb24gdmFyaWFibGUuDQpldmVudF9kYXRhIDwtIGV2ZW50X2RhdGEgJT4lDQogIHNlbGVjdChub21lbV9lbmNyLCBkeWFkX2lkLCBhbHRlcl9pZCwgc3VydmV5X3dhdmUpICU+JQ0KICBhcnJhbmdlKGR5YWRfaWQsIHN1cnZleV93YXZlKSAlPiUgIyBzb3J0IG9uIGR5YWQgaWQgYW5kIHN1cnZleXdhdmUuDQogIG11dGF0ZShzZWxlY3RlZCA9IGlmZWxzZSghaXMubmEoZHlhZF9pZCksIDEsIDApKSAlPiUgI2lmIG5vdCBuYSwgdGhlbiBkeWFkIGlkIGlzIHNlbGVjdGVkDQogIGZpbHRlcighaXMubmEoZHlhZF9pZCkpICNmaWx0ZXIgb3VyIG1pc3NpbmcgZHlhZCBpZHMuDQoNCmBgYA0KDQojIyBTdGVwIDM6IGZpbHRlciBvdXQgZHVwbGljYXRlIGR5YWRfaWRzIHBlciB3YXZlL3Jlc3BvbmRlbnQgY29tYm8NCg0KVGhpcyBzaG91bGQgbm90IGJlIHBvc3NpYmxlIGJ1dCBpcyBhIGZhdWx0IG9mIHRoZSBkYXRhIGNvbGxlY3Rpb24uDQoNCmBgYHtyIHJpc2sgZGF0YSAzfQ0KI3RvIGJlIHNhZmUsIGRlbGV0ZSBjb21wbGV0ZSBlZ28gbmV0d29ya3Mgd2hlcmUgdGhpcyBoYXBwZW5zLiANCmV2ZW50X2RhdGEgPC0gZXZlbnRfZGF0YSAlPiUNCiAgZ3JvdXBfYnkobm9tZW1fZW5jciwgc3VydmV5X3dhdmUsIGR5YWRfaWQpICU+JQ0KICBhZGRfY291bnQoZHlhZF9pZCkgJT4lIA0KICB1bmdyb3VwKCkgJT4lIA0KICBncm91cF9ieShub21lbV9lbmNyKSAlPiUgDQogIG11dGF0ZShkdXBsaWNhdGVzX25ldHdvcmtfZWdvID0gbWF4KG4pKSAlPiUgDQogIGZpbHRlcihkdXBsaWNhdGVzX25ldHdvcmtfZWdvID09IDEpICU+JSANCiAgdW5ncm91cCgpDQoNCiNyZXNoYXBlIHRvIHdpZGUgZmlsZQ0KZXZlbnRfZGF0YSA8LSBldmVudF9kYXRhICU+JQ0KICBwaXZvdF93aWRlcihuYW1lc19mcm9tID0gc3VydmV5X3dhdmUsDQogICAgICAgICAgICAgIHZhbHVlc19mcm9tID0gc2VsZWN0ZWQpDQoNCiN0cmFuc2Zvcm0gdmFyaWFibGVzDQojcmVuYW1lIHRoZSBzZWxlY3Rpb24gdmFyaWFibGVzDQpldmVudF9kYXRhIDwtIGV2ZW50X2RhdGEgJT4lDQogIHJlbmFtZShzZWxlY3RlZF8xID0gJzEnLA0KICAgICAgICAgc2VsZWN0ZWRfMiA9ICcyJywNCiAgICAgICAgIHNlbGVjdGVkXzMgPSAnMycsDQogICAgICAgICBzZWxlY3RlZF80ID0gJzQnLA0KICAgICAgICAgc2VsZWN0ZWRfNSA9ICc1JywNCiAgICAgICAgIHNlbGVjdGVkXzYgPSAnNicsDQogICAgICAgICBzZWxlY3RlZF83ID0gJzcnLA0KICAgICAgICAgc2VsZWN0ZWRfOCA9ICc4JywNCiAgICAgICAgIHNlbGVjdGVkXzkgPSAnOScsDQogICAgICAgICBzZWxlY3RlZF8xMCA9ICcxMCcsDQogICAgICAgICBzZWxlY3RlZF8xMSA9ICcxMScpDQoNCiNyZWNvZGUgc28gTkEgPT0gMA0KcmVjb2RlZCA8LSBldmVudF9kYXRhICU+JQ0KICBzZWxlY3Qoc3RhcnRzX3dpdGgoInNlbGVjdGVkIikpICU+JQ0KICBtYXBfZGYoLmYgPSB+IGlmZWxzZShpcy5uYSguKSwgMCwgLikpIA0KDQojYWRkIHRoZSByZWNvZGVkIGNvbGx1bW5zIHRvIHRoZSB0aWJibGUNCmV2ZW50X2RhdGEgPC0gZXZlbnRfZGF0YSAlPiUNCiAgc2VsZWN0KDE6MikgJT4lDQogIGNiaW5kKHJlY29kZWQpDQoNCmBgYA0KDQojIyBTdGVwIDQ6IGlkZW50aWZ5IHdoZW4gYSByZXNwb25kZW50IHBhcnRpY2lwYXRlcw0KDQpGaXJzdCB3ZSBuZWVkIHRvIGlkZW50aWZ5IHdoZW4gYSByZXNwb25kZW50IGhhcyBwYXJ0aWNpcGF0ZWQgaW4gdGhlIHN1cnZleS4NCg0KYGBge3IgcmlzayBkYXRhIDR9DQojY3JlYXRlIGEgbG9uZyBmaWxlLiANCmV2ZW50X2RhdGEgPC0gZXZlbnRfZGF0YSAlPiUgDQogIHBpdm90X2xvbmdlcihjb2xzID0gMzoxMywNCiAgICAgICAgICAgICAgIG5hbWVzX3RvID0gYygidmFyaWFibGVzIiwgInN1cnZleV93YXZlIiksDQogICAgICAgICAgICAgICB2YWx1ZXNfdG8gPSAic2VsZWN0ZWQiLA0KICAgICAgICAgICAgICBuYW1lc19zZXAgPSAiXyIpICU+JQ0KICBtdXRhdGUoc3VydmV5X3dhdmUgPSBhcy5udW1lcmljKHN1cnZleV93YXZlKSkgJT4lDQogIGFycmFuZ2Uobm9tZW1fZW5jciwgZHlhZF9pZCwgc3VydmV5X3dhdmUpDQoNCiNjb2RlIHdoYXQgdGhlIHBvc3NpYmxlIGVuZCBkYXRlIGlzIGZvciBlYWNoIHJlc3BvbmRlbnQgKGFzIGFsdGVycyBhcmUgbmVzdGVkIGluIHJlc3BvbmRlbnRzKS4NCiNGaXJzdCBzdGVwIGlzIHRvIGlkZW50aWZ5IGluIHdoaWNoIHJvdW5kcyB0aGVyZSBhcmUgbm8gdmFsaWQgcmVzcG9uc2VzIA0Kbm9fcGFydGljaXBhdGlvbiA8LSBsaXNzX2xvbmcgJT4lDQogIHNlbGVjdChub21lbV9lbmNyLCBzdXJ2ZXlfd2F2ZSwgbGVpc3VyZV9wYXJ0KSAlPiUNCiAgbXV0YXRlKG5vcGFydGljaXBhdGlvbiA9IGlmZWxzZShpcy5uYShsZWlzdXJlX3BhcnQpLCAxLCAwKSwNCiAgICAgICAgIHN1cnZleV93YXZlID0gYXMubnVtZXJpYyhzdXJ2ZXlfd2F2ZSkpICU+JSANCiAgc2VsZWN0KG5vbWVtX2VuY3IsIHN1cnZleV93YXZlLCBub3BhcnRpY2lwYXRpb24pDQoNCmBgYA0KDQojIyBTdGVwIDU6IGlkZW50aWZ5IHRoZSBzdGFydCBhbmQgdGhlIGVuZCBvZiBhIHJlc3BvbmRlbnQgc3BlbGwNCg0KU2Vjb25kLCB3ZSBjYW4gaWRlbnRpZnkgdGhlIHN0YXJ0IG9mIHRoZSByZXNwb25kZW50IHNwZWxsIGFuZCB0aGUgZW5kIG9mIHRoZSByZXNwb25kZW50IHNwZWxsLiBUaGVuIHdlIGtub3cgd2hldGhlciBzb21lb25lIGNhbiBiZSBzZWxlY3RlZCBvciBkcm9wcGVkIGF0IGEgZ2l2ZW4gdGltZS4NCg0KYGBge3IgcmlzayBkYXRhIDV9DQojZm9yIGV2ZXJ5IHJlc3BvbmRlbnQgY29kZSB3aGVuIHRoZSBlbnRlciBhbmQgbGVhdmUgdGhlIGRhdGEuIA0KZWdvX3N0YXJ0X2VuZF95ZWFyIDwtIG5vX3BhcnRpY2lwYXRpb24gJT4lDQogIGZpbHRlcihub3BhcnRpY2lwYXRpb24gPT0gMCkgJT4lIA0KICBncm91cF9ieShub21lbV9lbmNyKSAlPiUNCiAgbXV0YXRlKHN1cnZleV93YXZlID0gYXMubnVtZXJpYyhzdXJ2ZXlfd2F2ZSkpICU+JSANCiAgbXV0YXRlKHN0YXJ0X3llYXIgPSBtaW4oc3VydmV5X3dhdmUpLCAjc2V0IHN0YXJ0IHllYXIgb2Ygbm9tZW1fZW5jcg0KICAgICAgICAgZW5kX3llYXIgPSBtYXgoc3VydmV5X3dhdmUpKSAlPiUgI3NldCBlbmQgeWVhciBvZiBub21lbV9lbmNyDQogIHVuZ3JvdXAoKSAlPiUNCiAgc2VsZWN0KG5vbWVtX2VuY3IsIGVuZF95ZWFyLCBzdGFydF95ZWFyKSAlPiUgI2tlZXAgc2VsZWN0aW9uIG9mIHZhcmlhYmxlcy4NCiAgZGlzdGluY3QoKSAja2VlcCB1bmlxdWUgb2JzZXJ2YXRpb25zLg0KDQojYWRkIHN0YXJ0IGFuZCBlbmQgeWVhciB0byB0aGUgZXZlbnQgZGF0YS4gDQpldmVudF9kYXRhIDwtIGV2ZW50X2RhdGEgJT4lDQogIGxlZnRfam9pbihlZ29fc3RhcnRfZW5kX3llYXIsIGJ5ID0gIm5vbWVtX2VuY3IiKQ0KDQojYWRkIHN0YXJ0IGFuZCBlbmQgeWVhciB0byB0aGUgZXZlbnQgZGF0YS4gDQpldmVudF9kYXRhIDwtIGV2ZW50X2RhdGEgJT4lDQogIGxlZnRfam9pbihub19wYXJ0aWNpcGF0aW9uLCBieSA9IGMoIm5vbWVtX2VuY3IiLCJzdXJ2ZXlfd2F2ZSIpKQ0KDQojc2V0IHNlbGVjdGVkIHRvIE5BIGlmIHJlc3BvbmRlbnQgaXMgbm90IGluIHRoZSBkYXRhDQpldmVudF9kYXRhIDwtIGV2ZW50X2RhdGEgJT4lDQogIG11dGF0ZShzZWxlY3RlZCA9IGlmZWxzZShzdXJ2ZXlfd2F2ZSA+IGVuZF95ZWFyLCBOQSwgc2VsZWN0ZWQpLA0KICAgICAgICAgc2VsZWN0ZWQgPSBpZmVsc2Uoc3VydmV5X3dhdmUgPCBzdGFydF95ZWFyLCBOQSwgc2VsZWN0ZWQpLA0KICAgICAgICAgc2VsZWN0ZWQgPSBpZmVsc2Uobm9wYXJ0aWNpcGF0aW9uID09IDEsIE5BLCBzZWxlY3RlZCkpDQoNCmBgYA0KDQojIyBTdGVwIDY6IGlkZW50aWZ5IHdhdmUgYSBkeWFkIGZpcnN0IGVudGVyZWQgdGhlIG5ldHdvcmsNCg0KYGBge3IgcmlzayBkYXRhIDZ9DQojY2FsY3VsYXRlIGZvciBlYWNoIGFsdGVyIHdoYXQgdGhlIHN0YXJ0aW5nIHdhdmUgaXMuIA0KI1NvIHdoZW4gaXMgaGUvc2hlIGZpcnN0IGF0IHJpc2sgdG8gYmUgZGVzZWxlY3RlZA0KZW50ZXJlZF9uZXR3b3JrIDwtIGV2ZW50X2RhdGEgJT4lIA0KICBncm91cF9ieShkeWFkX2lkKSAlPiUgDQogIGZpbHRlcihzZWxlY3RlZCA9PSAxKSAlPiUNCiAgbXV0YXRlKGVudGVyZWRfbmV0d29yayA9IG1pbihzdXJ2ZXlfd2F2ZSkpICU+JSAjeWVhciBkeWFkIGVudGVyZWQgbmV0d29yay4NCiAgc2VsZWN0KGR5YWRfaWQsIGVudGVyZWRfbmV0d29yaykgJT4lDQogIHVuZ3JvdXAoKSAlPiUNCiAgZGlzdGluY3QoKQ0KDQojYWRkIGVudGVyZWQgbmV0d29yayB2YXJpYWJsZSB0byB0aGUgZXZlbnQgZGF0YS4gDQpldmVudF9kYXRhIDwtIGV2ZW50X2RhdGEgJT4lDQogIGxlZnRfam9pbihlbnRlcmVkX25ldHdvcmssIGJ5ID0gImR5YWRfaWQiKQ0KDQpgYGANCg0KDQojIyBTdGVwIDc6IGlkZW50aWZ5IHRoZSBmaXJzdCBhbmQgdGhlIGxhc3QgZHJvcA0KDQpXaXRoIHRoaXMgaW5mb3JtYXRpb24gd2UgY2FuIGlkZW50aWZ5IHRoZSBmaXJzdCBhbmQgbGFzdCBkcm9wIG9mIGEgZHlhZCBidXQgYWxzbyB3aGVuIHRoZSBsYXN0IHRpbWUgaXMgdGhhdCB0aGV5IGFyZSBzZWxlY3RlZC4NCg0KYGBge3IgcmlzayBkYXRhIDd9DQojZHJvcCB3aGVuIHNlbGVjdGVkIGlzIG1pc3NpbmcgYW5kIHNtYWxsZXIgdGhlbiBlbmR5ZWFyIGFuZCBiaWdnZXIgdGhhbiBzdGFydHllYXINCmV2ZW50X2RhdGEgPC0gZXZlbnRfZGF0YSAlPiUgDQogIGZpbHRlcigoc3VydmV5X3dhdmUgPD0gZW5kX3llYXIpICYgKHN1cnZleV93YXZlID49IHN0YXJ0X3llYXIpKSAlPiUgDQogIGZpbHRlcighaXMubmEoc2VsZWN0ZWQpKQ0KDQojY2FsY3VsYXRlIGZvciBlYWNoIGFsdGVyIHRoZSBmaXJzdCB5ZWFyIGluIHdoaWNoIGhlIG9yIHNoZSBpcyBkcm9wcGVkIGZyb20gdGhlIG5ldHdvcmsNCmZpcnN0X2Ryb3AgPC0gZXZlbnRfZGF0YSAlPiUNCiAgZ3JvdXBfYnkoZHlhZF9pZCkgJT4lIA0KICBtdXRhdGUodHJhbnNpdGlvbiA9IHNlbGVjdGVkIC0gbGFnKHNlbGVjdGVkKSwgI2NyZWF0ZSB0cmFuc2l0aW9uIHZhcmlhYmxlLiBKdXN0IGEgbGFnIGRpZmYuDQogICAgICAgICBkcm9wcGVkID0gaWZlbHNlKHRyYW5zaXRpb24gPT0gLTEsIDEsIDApKSAlPiUgI3VzZSB0cmFuc2l0aW9uIHRvIGlkZW50aWZ5IGRyb3AuICgxIHRvIDApDQogIGZpbHRlcihkcm9wcGVkID09IDEpICU+JSAjc2VsZWN0IG9ic2VydmF0aW9ucyB0aGF0IGFyZSBkcm9wcGVkLiANCiAgbXV0YXRlKGZpcnN0X2Ryb3AgPSBtaW4oc3VydmV5X3dhdmUpKSAlPiUgI2ZpcnN0IHllYXIgZHJvcHBlZCBpcyBmaXJzdCBkcm9wLiANCiAgdW5ncm91cCgpICU+JQ0KICBzZWxlY3QoZHlhZF9pZCwgZmlyc3RfZHJvcCkgJT4lICNzZWxlY3QgZmlyc3QgZHJvcCB2YXJpYWJsZXMuIA0KICBkaXN0aW5jdCgpDQoNCiNhZGQgZmlyc3QgZHJvcCBkYXRhIHRvIGV2ZW50IGRhdGEuIA0KZXZlbnRfZGF0YSA8LSBldmVudF9kYXRhICU+JQ0KICBsZWZ0X2pvaW4oZmlyc3RfZHJvcCwgYnkgPSAiZHlhZF9pZCIpDQoNCiNjYWxjdWxhdGUgZm9yIGVhY2ggYWx0ZXIgdGhlIGZpbmFsIHRpbWUgdGhleSBhcmUgZHJvcHBlZCBmcm9tIHRoZSBuZXR3b3JrLg0KbGFzdF9kcm9wIDwtIGV2ZW50X2RhdGEgJT4lDQogIGdyb3VwX2J5KGR5YWRfaWQpICU+JSANCiAgbXV0YXRlKHRyYW5zaXRpb24gPSBzZWxlY3RlZCAtIGxhZyhzZWxlY3RlZCksDQogICAgICAgICBkcm9wcGVkID0gaWZlbHNlKHRyYW5zaXRpb24gPT0gLTEsIDEsIDApKSAlPiUNCiAgZmlsdGVyKGRyb3BwZWQgPT0gMSkgJT4lDQogIG11dGF0ZShsYXN0X2Ryb3AgPSBtYXgoc3VydmV5X3dhdmUpKSAlPiUgI2xhc3QgdGltZSB0aGV5IGFyZSBhcmUgZHJvcHBlZCBmcm9tIHRoZSBuZXR3b3JrLg0KICB1bmdyb3VwKCkgJT4lDQogIHNlbGVjdChkeWFkX2lkLCBsYXN0X2Ryb3ApICU+JQ0KICBkaXN0aW5jdCgpDQoNCiNhZGQgbGFzdCBkcm9wIGRhdGEgdG8gZXZlbnQgZGF0YS4NCmV2ZW50X2RhdGEgPC0gZXZlbnRfZGF0YSAlPiUNCiAgbGVmdF9qb2luKGxhc3RfZHJvcCwgYnkgPSAiZHlhZF9pZCIpDQoNCiNjYWxjdWxhdGUgZm9yIGVhY2ggYWx0ZXIgdGhlIGZpbmFsIHRpbWUgdGhleSBhcmUgc2VsZWN0ZWQuDQpmaW5hbF9zZWxlY3RlZCA8LSBldmVudF9kYXRhICU+JQ0KICBncm91cF9ieShkeWFkX2lkKSAlPiUgDQogIGZpbHRlcihzZWxlY3RlZCA9PSAxKSAlPiUNCiAgbXV0YXRlKGZpbmFsX3NlbGVjdGVkID0gbWF4KHN1cnZleV93YXZlKSkgJT4lDQogIHVuZ3JvdXAoKSAlPiUNCiAgc2VsZWN0KGR5YWRfaWQsIGZpbmFsX3NlbGVjdGVkKSAlPiUNCiAgZGlzdGluY3QoKQ0KDQpldmVudF9kYXRhIDwtIGV2ZW50X2RhdGEgJT4lDQogIGxlZnRfam9pbihmaW5hbF9zZWxlY3RlZCwgYnkgPSAiZHlhZF9pZCIpDQpgYGANCg0KDQojIyBTdGVwIDg6IGR5YWQgcmVlbnRyYW5jZQ0KDQpDb21wdXRlIGZvciBldmVyeSBkeWFkIHdoZW4gdGhleSByZWVudGVyIHRoZSBkYXRhLiBBbHNvIGNyZWF0ZSBjZW5zb3JlZCB2YXJpYWJsZSBhbmQgYSB0aW1lIHZhcmlhYmxlIHdoaWNoIGRlc2NyaWJlcyB0aGUgcmFuZ2UgYmV0d2VlbiB0aW1lIG9mIGVudGVyaW5nIGRhdGEgYW5kIHRpbWUgb2YgZmluYWwgZHJvcC4NCg0KYGBge3IgcmlzayBkYXRhIDh9DQojY2FsY3VsYXRlIGZvciBlYWNoIGFsdGVyIHdoZW4gdGhleSByZWVudGVyIHRoZSBuZXR3b3JrLg0KZXZlbnRfZGF0YSA8LSBldmVudF9kYXRhICU+JQ0KICBncm91cF9ieShkeWFkX2lkKSAlPiUgDQogIG11dGF0ZSh0cmFuc2l0aW9uID0gc2VsZWN0ZWQgLSBsYWcoc2VsZWN0ZWQpLA0KICAgICAgICAgcmVfZW50cmFuY2UgPSBpZmVsc2UoKHRyYW5zaXRpb24gPT0gMSkgJiAoc3VydmV5X3dhdmUgPiBlbnRlcmVkX25ldHdvcmspLCAxLCAwKSkgJT4lDQogdW5ncm91cCgpDQoNCiNjcmVhdGUgY2Vuc29yIHZhcmlhYmxlDQpldmVudF9kYXRhIDwtIGV2ZW50X2RhdGEgJT4lDQogIG11dGF0ZShjZW5zb3IgPSBpZmVsc2UoZmluYWxfc2VsZWN0ZWQgPT0gZW5kX3llYXIsIDEsIDApKQ0KDQojY3JlYXRlIG5ldyB0aW1lIHZhcmlhYmxlLiBXaGF0IGlzIHRoZSB0aW1lIG9mIGZpbmFsIGRlc2VsZWN0aW9uIGFmdGVyIGVudGVyaW5nIHRoZSBuZXR3b3JrLg0KZXZlbnRfZGF0YSA8LSBldmVudF9kYXRhICU+JQ0KICBncm91cF9ieShkeWFkX2lkKSAlPiUNCiAgbXV0YXRlKHJhbmdlID0gaWZlbHNlKGNlbnNvciA9PSAwLCANCiAgICAgICAgICAgICAgICAgICAgICAgIChtYXgobGFzdF9kcm9wKSAtIGVudGVyZWRfbmV0d29yaykgKyAxLA0KICAgICAgICAgICAgICAgICAgICAgICAgKGZpbmFsX3NlbGVjdGVkIC0gZW50ZXJlZF9uZXR3b3JrKSArIDEpKSAlPiUNCiAgdW5ncm91cCgpDQpgYGANCg0KDQojIyBTdGVwIDk6Y3JlYXRlIHBlcnNvbl9wZXJpb2QgZmlsZS4NCg0KYGBge3IgcmlzayBkYXRhIDl9DQojY3JlYXRlIHBlcnNvbiBsZXZlbCBkYXRhLCBub3QgcmVwZWF0ZWQgcmlzaw0KcGVyc29uX2xldmVsIDwtIGV2ZW50X2RhdGEgJT4lDQogIHNlbGVjdChkeWFkX2lkLCBub21lbV9lbmNyLCByYW5nZSwgY2Vuc29yKSAlPiUNCiAgZGlzdGluY3QoKQ0KDQojcGVyc29uIHBlcmlvZA0KcGVyc29uX3BlcmlvZCA8LSBQTFBQKGRhdGEgPSBhcy5kYXRhLmZyYW1lKHBlcnNvbl9sZXZlbCksIA0KICAgICAgICAgICAgICAgICAgICAgIGlkID0gImR5YWRfaWQiLCANCiAgICAgICAgICAgICAgICAgICAgICBwZXJpb2QgPSAicmFuZ2UiLCANCiAgICAgICAgICAgICAgICAgICAgICBldmVudCA9ICJjZW5zb3IiLCANCiAgICAgICAgICAgICAgICAgICAgICBkaXJlY3Rpb24gPSAicGVyaW9kIikNCg0KYGBgDQoNCiMgRXhwb3J0IGRhdGENCg0KRXhwb3J0IGFuZCBzYXZlIHRoZSByaXNrIGRhdGEgYW5kIHRoZSBwZXJzb25fcGVyaW9kIGRhdGEuDQoNCmBgYHtyIHJpc2sgZGF0YSBleHBvcnR9DQojc2F2ZSBldmVudCBkYXRhIGFzIDIwMjItMDctMDFfcmlzay1kYXRhLnJkcw0Kc2F2ZShldmVudF9kYXRhLCBmaWxlID0gImRhdGFmaWxlcy9kYXRhLXByb2Nlc3NlZC9kaXNhZ2dyZWdhdGVkX2RhdGEvMjAyMy0wNi0xMl9saXNzLXJpc2stZGF0YS5yZHMiKQ0KDQojc2F2ZSBwZXJzb24gcGVyaW9kIGRhdGENCnNhdmUocGVyc29uX3BlcmlvZCwgZmlsZSA9ICJkYXRhZmlsZXMvZGF0YS1wcm9jZXNzZWQvZGlzYWdncmVnYXRlZF9kYXRhLzIwMjMtMDYtMTJfbGlzcy1wZXJzb25fcGVyaW9kLnJkcyIpDQoNCmBgYA0KDQpgYGB7ciBzYXZlIFJEQX0NCiNjbGVhbiBnbG9iYWwgZW52aXJvbm1lbnQNCnJtKGxpc3Q9bHMoKVshIGxzKCkgJWluJSBjKCJldmVudF9kYXRhIiwgImxpc3NfbG9uZyIsICJsaXNzX3dpZGUiLA0KICAgICAgICAgICAgICAgICAgICAgICAgICAgInBlcnNvbl9sZXZlbCIsICJwZXJzb25fcGVyaW9kIildKQ0KDQojc2F2ZSB0aGUgZGF0YS4gDQpzYXZlLmltYWdlKCJkYXRhZmlsZXMvZGF0YS1wcm9jZXNzZWQvZGlzYWdncmVnYXRlZF9kYXRhLzIwMjMtMDYtMTJfbGlzc19ldmVudF9kYXRhLnJkcyIpDQpgYGANCg==</div>
+<style>
+.center {
+  text-align: center;
+  color: black;
+}
+</style>
+
+<hr>
+<br>
+<p class="center">Copyright &copy; 2023 Jeroense Thijmen</p>
+
+
+</div>
+</div>
+
+</div>
+
+<script>
+
+// add bootstrap table styles to pandoc tables
+function bootstrapStylePandocTables() {
+  $('tr.odd').parent('tbody').parent('table').addClass('table table-condensed');
+}
+$(document).ready(function () {
+  bootstrapStylePandocTables();
+});
+
+
+</script>
+
+<!-- tabsets -->
+
+<script>
+$(document).ready(function () {
+  window.buildTabsets("TOC");
+});
+
+$(document).ready(function () {
+  $('.tabset-dropdown > .nav-tabs > li').click(function () {
+    $(this).parent().toggleClass('nav-tabs-open');
+  });
+});
+</script>
+
+<!-- code folding -->
+<script>
+$(document).ready(function () {
+  window.initializeSourceEmbed("01_risk-data-prep.Rmd");
+  window.initializeCodeFolding("show" === "show");
+});
+</script>
+
+<script>
+$(document).ready(function ()  {
+
+    // temporarily add toc-ignore selector to headers for the consistency with Pandoc
+    $('.unlisted.unnumbered').addClass('toc-ignore')
+
+    // move toc-ignore selectors from section div to header
+    $('div.section.toc-ignore')
+        .removeClass('toc-ignore')
+        .children('h1,h2,h3,h4,h5').addClass('toc-ignore');
+
+    // establish options
+    var options = {
+      selectors: "h1,h2,h3",
+      theme: "bootstrap3",
+      context: '.toc-content',
+      hashGenerator: function (text) {
+        return text.replace(/[.\\/?&!#<>]/g, '').replace(/\s/g, '_');
+      },
+      ignoreSelector: ".toc-ignore",
+      scrollTo: 0
+    };
+    options.showAndHide = true;
+    options.smoothScroll = true;
+
+    // tocify
+    var toc = $("#TOC").tocify(options).data("toc-tocify");
+});
+</script>
+
+<!-- dynamically load mathjax for compatibility with self-contained -->
+<script>
+  (function () {
+    var script = document.createElement("script");
+    script.type = "text/javascript";
+    script.src  = "https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML";
+    document.getElementsByTagName("head")[0].appendChild(script);
+  })();
+</script>
+
+</body>
+</html>

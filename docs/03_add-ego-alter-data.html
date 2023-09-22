@@ -1,0 +1,1023 @@
+<!DOCTYPE html>
+
+<html>
+
+<head>
+
+<meta charset="utf-8" />
+<meta name="generator" content="pandoc" />
+<meta http-equiv="X-UA-Compatible" content="IE=EDGE" />
+
+
+<meta name="author" content="Thijmen Jeroense" />
+
+
+<title>Dataprep: add ego and alter data</title>
+
+<script src="site_libs/header-attrs-2.21/header-attrs.js"></script>
+<script src="site_libs/jquery-3.6.0/jquery-3.6.0.min.js"></script>
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<link href="site_libs/bootstrap-3.3.5/css/flatly.min.css" rel="stylesheet" />
+<script src="site_libs/bootstrap-3.3.5/js/bootstrap.min.js"></script>
+<script src="site_libs/bootstrap-3.3.5/shim/html5shiv.min.js"></script>
+<script src="site_libs/bootstrap-3.3.5/shim/respond.min.js"></script>
+<style>h1 {font-size: 34px;}
+       h1.title {font-size: 38px;}
+       h2 {font-size: 30px;}
+       h3 {font-size: 24px;}
+       h4 {font-size: 18px;}
+       h5 {font-size: 16px;}
+       h6 {font-size: 12px;}
+       code {color: inherit; background-color: rgba(0, 0, 0, 0.04);}
+       pre:not([class]) { background-color: white }</style>
+<script src="site_libs/jqueryui-1.11.4/jquery-ui.min.js"></script>
+<link href="site_libs/tocify-1.9.1/jquery.tocify.css" rel="stylesheet" />
+<script src="site_libs/tocify-1.9.1/jquery.tocify.js"></script>
+<script src="site_libs/navigation-1.1/tabsets.js"></script>
+<script src="site_libs/navigation-1.1/codefolding.js"></script>
+<script src="site_libs/navigation-1.1/sourceembed.js"></script>
+<link href="site_libs/highlightjs-9.12.0/default.css" rel="stylesheet" />
+<script src="site_libs/highlightjs-9.12.0/highlight.js"></script>
+<link href="site_libs/font-awesome-6.2.1/css/all.min.css" rel="stylesheet" />
+<link href="site_libs/font-awesome-6.2.1/css/v4-shims.min.css" rel="stylesheet" />
+
+<style type="text/css">
+  code{white-space: pre-wrap;}
+  span.smallcaps{font-variant: small-caps;}
+  span.underline{text-decoration: underline;}
+  div.column{display: inline-block; vertical-align: top; width: 50%;}
+  div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+  ul.task-list{list-style: none;}
+    </style>
+
+<style type="text/css">code{white-space: pre;}</style>
+<script type="text/javascript">
+if (window.hljs) {
+  hljs.configure({languages: []});
+  hljs.initHighlightingOnLoad();
+  if (document.readyState && document.readyState === "complete") {
+    window.setTimeout(function() { hljs.initHighlighting(); }, 0);
+  }
+}
+</script>
+
+
+
+
+<style type="text/css">
+#rmd-source-code {
+  display: none;
+}
+</style>
+
+
+
+
+
+<style type = "text/css">
+.main-container {
+  max-width: 940px;
+  margin-left: auto;
+  margin-right: auto;
+}
+img {
+  max-width:100%;
+}
+.tabbed-pane {
+  padding-top: 12px;
+}
+.html-widget {
+  margin-bottom: 20px;
+}
+button.code-folding-btn:focus {
+  outline: none;
+}
+summary {
+  display: list-item;
+}
+details > summary > p:only-child {
+  display: inline;
+}
+pre code {
+  padding: 0;
+}
+</style>
+
+
+<style type="text/css">
+.dropdown-submenu {
+  position: relative;
+}
+.dropdown-submenu>.dropdown-menu {
+  top: 0;
+  left: 100%;
+  margin-top: -6px;
+  margin-left: -1px;
+  border-radius: 0 6px 6px 6px;
+}
+.dropdown-submenu:hover>.dropdown-menu {
+  display: block;
+}
+.dropdown-submenu>a:after {
+  display: block;
+  content: " ";
+  float: right;
+  width: 0;
+  height: 0;
+  border-color: transparent;
+  border-style: solid;
+  border-width: 5px 0 5px 5px;
+  border-left-color: #cccccc;
+  margin-top: 5px;
+  margin-right: -10px;
+}
+.dropdown-submenu:hover>a:after {
+  border-left-color: #adb5bd;
+}
+.dropdown-submenu.pull-left {
+  float: none;
+}
+.dropdown-submenu.pull-left>.dropdown-menu {
+  left: -100%;
+  margin-left: 10px;
+  border-radius: 6px 0 6px 6px;
+}
+</style>
+
+<script type="text/javascript">
+// manage active state of menu based on current page
+$(document).ready(function () {
+  // active menu anchor
+  href = window.location.pathname
+  href = href.substr(href.lastIndexOf('/') + 1)
+  if (href === "")
+    href = "index.html";
+  var menuAnchor = $('a[href="' + href + '"]');
+
+  // mark the anchor link active (and if it's in a dropdown, also mark that active)
+  var dropdown = menuAnchor.closest('li.dropdown');
+  if (window.bootstrap) { // Bootstrap 4+
+    menuAnchor.addClass('active');
+    dropdown.find('> .dropdown-toggle').addClass('active');
+  } else { // Bootstrap 3
+    menuAnchor.parent().addClass('active');
+    dropdown.addClass('active');
+  }
+
+  // Navbar adjustments
+  var navHeight = $(".navbar").first().height() + 15;
+  var style = document.createElement('style');
+  var pt = "padding-top: " + navHeight + "px; ";
+  var mt = "margin-top: -" + navHeight + "px; ";
+  var css = "";
+  // offset scroll position for anchor links (for fixed navbar)
+  for (var i = 1; i <= 6; i++) {
+    css += ".section h" + i + "{ " + pt + mt + "}\n";
+  }
+  style.innerHTML = "body {" + pt + "padding-bottom: 40px; }\n" + css;
+  document.head.appendChild(style);
+});
+</script>
+
+<!-- tabsets -->
+
+<style type="text/css">
+.tabset-dropdown > .nav-tabs {
+  display: inline-table;
+  max-height: 500px;
+  min-height: 44px;
+  overflow-y: auto;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+}
+
+.tabset-dropdown > .nav-tabs > li.active:before, .tabset-dropdown > .nav-tabs.nav-tabs-open:before {
+  content: "\e259";
+  font-family: 'Glyphicons Halflings';
+  display: inline-block;
+  padding: 10px;
+  border-right: 1px solid #ddd;
+}
+
+.tabset-dropdown > .nav-tabs.nav-tabs-open > li.active:before {
+  content: "\e258";
+  font-family: 'Glyphicons Halflings';
+  border: none;
+}
+
+.tabset-dropdown > .nav-tabs > li.active {
+  display: block;
+}
+
+.tabset-dropdown > .nav-tabs > li > a,
+.tabset-dropdown > .nav-tabs > li > a:focus,
+.tabset-dropdown > .nav-tabs > li > a:hover {
+  border: none;
+  display: inline-block;
+  border-radius: 4px;
+  background-color: transparent;
+}
+
+.tabset-dropdown > .nav-tabs.nav-tabs-open > li {
+  display: block;
+  float: none;
+}
+
+.tabset-dropdown > .nav-tabs > li {
+  display: none;
+}
+</style>
+
+<!-- code folding -->
+<style type="text/css">
+.code-folding-btn { margin-bottom: 4px; }
+</style>
+
+
+
+<style type="text/css">
+
+#TOC {
+  margin: 25px 0px 20px 0px;
+}
+@media (max-width: 768px) {
+#TOC {
+  position: relative;
+  width: 100%;
+}
+}
+
+@media print {
+.toc-content {
+  /* see https://github.com/w3c/csswg-drafts/issues/4434 */
+  float: right;
+}
+}
+
+.toc-content {
+  padding-left: 30px;
+  padding-right: 40px;
+}
+
+div.main-container {
+  max-width: 1200px;
+}
+
+div.tocify {
+  width: 20%;
+  max-width: 260px;
+  max-height: 85%;
+}
+
+@media (min-width: 768px) and (max-width: 991px) {
+  div.tocify {
+    width: 25%;
+  }
+}
+
+@media (max-width: 767px) {
+  div.tocify {
+    width: 100%;
+    max-width: none;
+  }
+}
+
+.tocify ul, .tocify li {
+  line-height: 20px;
+}
+
+.tocify-subheader .tocify-item {
+  font-size: 0.90em;
+}
+
+.tocify .list-group-item {
+  border-radius: 0px;
+}
+
+
+</style>
+
+
+
+</head>
+
+<body>
+
+
+<div class="container-fluid main-container">
+
+
+<!-- setup 3col/9col grid for toc_float and main content  -->
+<div class="row">
+<div class="col-xs-12 col-sm-4 col-md-3">
+<div id="TOC" class="tocify">
+</div>
+</div>
+
+<div class="toc-content col-xs-12 col-sm-8 col-md-9">
+
+
+
+
+<div class="navbar navbar-default  navbar-fixed-top" role="navigation">
+  <div class="container">
+    <div class="navbar-header">
+      <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-bs-toggle="collapse" data-target="#navbar" data-bs-target="#navbar">
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+      </button>
+      <a class="navbar-brand" href="index.html">Replication Website</a>
+    </div>
+    <div id="navbar" class="navbar-collapse collapse">
+      <ul class="nav navbar-nav">
+        <li>
+  <a href="index.html">
+    <span class="fa fa-info"></span>
+     
+    About
+  </a>
+</li>
+<li class="dropdown">
+  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+    <span class="far fa-file-code"></span>
+     
+    Data preperation
+     
+    <span class="caret"></span>
+  </a>
+  <ul class="dropdown-menu" role="menu">
+    <li>
+      <a href="merging-liss.html">1 Merging LISS core module</a>
+    </li>
+    <li>
+      <a href="01_risk-data-prep.html">2 Risk dataset</a>
+    </li>
+    <li>
+      <a href="02_repeated-risk-data-prep.html">3 Repeated risk dataset</a>
+    </li>
+    <li>
+      <a href="03_add-ego-alter-data.html">4 Add ego and alter data</a>
+    </li>
+    <li>
+      <a href="04_network-dyad-variables.html">5 Dyad and Network variables</a>
+    </li>
+    <li>
+      <a href="05_imputation.html">6 Missing imputation</a>
+    </li>
+  </ul>
+</li>
+<li class="dropdown">
+  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+    <span class="fa fa-bar-chart"></span>
+     
+    Analysis
+     
+    <span class="caret"></span>
+  </a>
+  <ul class="dropdown-menu" role="menu">
+    <li>
+      <a href="egonet_deselection_desstats.html">1 Descriptive statistics</a>
+    </li>
+    <li>
+      <a href="egonet-main-analysis.html">2 Replication main results</a>
+    </li>
+  </ul>
+</li>
+<li class="dropdown">
+  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+    <span class="fa fa-shield"></span>
+     
+    Robustness
+     
+    <span class="caret"></span>
+  </a>
+  <ul class="dropdown-menu" role="menu">
+    <li class="dropdown-header">Recreate appendix analyses</li>
+    <li>
+      <a href="egonet_robustness_diff.html"></a>
+    </li>
+  </ul>
+</li>
+      </ul>
+      <ul class="nav navbar-nav navbar-right">
+        <li>
+  <a href="https://github.com/tmgjer/egonet_deselection">
+    <span class="fab fa-github"></span>
+     
+    Github
+  </a>
+</li>
+      </ul>
+    </div><!--/.nav-collapse -->
+  </div><!--/.container -->
+</div><!--/.navbar -->
+
+<div id="header">
+
+<div class="btn-group pull-right float-right">
+<button type="button" class="btn btn-default btn-xs btn-secondary btn-sm dropdown-toggle" data-toggle="dropdown" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><span>Code</span> <span class="caret"></span></button>
+<ul class="dropdown-menu dropdown-menu-right" style="min-width: 50px;">
+<li><a id="rmd-show-all-code" href="#">Show All Code</a></li>
+<li><a id="rmd-hide-all-code" href="#">Hide All Code</a></li>
+<li role="separator" class="divider"></li>
+<li><a id="rmd-download-source" href="#">Download Rmd</a></li>
+</ul>
+</div>
+
+
+
+<h1 class="title toc-ignore">Dataprep: add ego and alter data</h1>
+<h4 class="author">Thijmen Jeroense</h4>
+<h4 class="date">Last compiled on 22 september, 2023</h4>
+
+</div>
+
+
+<div id="set-up" class="section level1">
+<h1>Set up</h1>
+<div id="packages" class="section level2">
+<h2>Packages</h2>
+<pre class="r"><code>#library
+library(tidyverse)</code></pre>
+</div>
+<div id="custom-functions" class="section level2">
+<h2>Custom functions</h2>
+<pre class="r"><code>#education recode ego function
+feducation_ego &lt;- function(x) {
+  x2 &lt;- ifelse(x == 1, 6, x)
+  x3 &lt;- ifelse(x == 2, 10, x2)
+  x4 &lt;- ifelse(x == 3, 11.5, x3)
+  x5 &lt;- ifelse(x == 4, 10.5, x4)
+  x6 &lt;- ifelse(x == 5, 15, x5)
+  x7 &lt;- ifelse(x == 6, 16, x6)
+  x8 &lt;- ifelse(x == 7, NA, x7)
+  x9 &lt;- ifelse(x == 8, 4, x8)
+  x10 &lt;- ifelse(x == 9, NA, x9)
+  return(x10)
+}
+#education recode alter function
+feducation_alter &lt;- function(x) {
+  x2 &lt;- ifelse(x == 1, 4, x)
+  x3 &lt;- ifelse(x == 2, 6, x2)
+  x4 &lt;- ifelse(x == 3, 10, x3)
+  x5 &lt;- ifelse(x == 4, 11.5, x4)
+  x6 &lt;- ifelse(x == 5, 10.5, x5)
+  x7 &lt;- ifelse(x == 6, 15, x6)
+  x8&lt;- ifelse(x == 7, 16, x7)
+  return(x8)
+}
+
+#event transition 
+event_transition_f &lt;- function(event, option, time) {
+  if (option == &quot;event&quot;) {
+    #for when we want 1, 0.5, 0.25.
+    y &lt;- if_else(lag(event, 2) == 1, 0.25, 0)
+    y &lt;- if_else(lag(event) == 1, 0.5, y)
+    y &lt;- if_else(event == 1, 1, y)
+    y &lt;- if_else(is.na(y) &amp; !is.na(event), 0, y)
+    return(y)
+  }
+  if (option == &quot;transition&quot;) {
+    #when it is a transition 00001111
+    y &lt;- tibble(time, event) %&gt;% 
+      filter(event == 1)
+    
+    if (nrow(y) == 0) {
+      y &lt;- ifelse(!is.na(time) &amp; !is.na(event), 0, NA)
+      return(y)
+    } else{
+      y &lt;- y %&gt;%
+        pull(time)
+      
+      y &lt;- if_else(time &gt;= y, 1, 0)
+      return(y)
+    }
+  }
+}</code></pre>
+</div>
+<div id="data-import" class="section level2">
+<h2>Data import</h2>
+<pre class="r"><code>load(&quot;datafiles/data-processed/disaggregated_data/2023-06-12_liss-repeated-risk-data.rda&quot;)
+
+load(&quot;datafiles/data-processed/common_data/0623_v5_liss_merged_core_file.rds&quot;)</code></pre>
+</div>
+</div>
+<div id="ego-and-alter-data" class="section level1">
+<h1>Ego and Alter data</h1>
+<div id="alter-data" class="section level2">
+<h2>Alter data</h2>
+<p>Step 1: select the variables needed from the liss_long file and
+rename them accordingly. Step 2: use pivot_longer to make a long file.
+Step 3: perform data manipulation on the alter variables.</p>
+<pre class="r"><code>#------------------------------ Add ego and Alter Data ------------------------------#
+#alter data
+#get alter data.
+alter_data &lt;- liss_long %&gt;%
+  select(
+    nomem_encr,
+    survey_wave,
+    starts_with(&quot;alter_id&quot;),
+    starts_with(&quot;educ_alter&quot;),
+    starts_with(&quot;age_alter&quot;),
+    starts_with(&quot;gender_alter&quot;),
+    starts_with(&quot;poltalk_alter&quot;),
+    starts_with(&quot;talk_alter&quot;),
+    starts_with(&quot;origin_alter&quot;),
+    starts_with(&quot;rel_alter&quot;),
+    starts_with(&quot;dear_alter&quot;),
+    starts_with(&quot;prof_alter&quot;),
+    starts_with(&quot;work_a&quot;),
+    starts_with(&quot;length&quot;)
+  ) %&gt;% 
+  mutate(across(.cols = 1:62, #remove haven labelled
+                .fns = ~as.numeric(.x)))
+
+#create long file so alter is in dyad
+alter_data &lt;- alter_data %&gt;%
+  rename(educ_alter.1 = educ_alter1,
+         educ_alter.2 = educ_alter2,
+         educ_alter.3 = educ_alter3,
+         educ_alter.4 = educ_alter4,
+         educ_alter.5 = educ_alter5,
+         alter_id.1 = alter_id_1,
+         alter_id.2 = alter_id_2,
+         alter_id.3 = alter_id_3,
+         alter_id.4 = alter_id_4,
+         alter_id.5 = alter_id_5,
+         age_alter.1 = age_alter1,
+         age_alter.2 = age_alter2,
+         age_alter.3 = age_alter3,
+         age_alter.4 = age_alter4,
+         age_alter.5 = age_alter5,
+         gender_alter.1 = gender_alter1,
+         gender_alter.2 = gender_alter2,
+         gender_alter.3 = gender_alter3,
+         gender_alter.4 = gender_alter4,
+         gender_alter.5 = gender_alter5,
+         rel_alter.1 = rel_alter1,
+         rel_alter.2 = rel_alter2,
+         rel_alter.3 = rel_alter3,
+         rel_alter.4 = rel_alter4,
+         rel_alter.5 = rel_alter5,
+         poltalk_alter.1 = poltalk_alter1,
+         poltalk_alter.2 = poltalk_alter2,
+         poltalk_alter.3 = poltalk_alter3,
+         poltalk_alter.4 = poltalk_alter4,
+         poltalk_alter.5 = poltalk_alter5,
+         talk_alter.1 = talk_alter1,
+         talk_alter.2 = talk_alter2,
+         talk_alter.3 = talk_alter3,
+         talk_alter.4 = talk_alter4,
+         talk_alter.5 = talk_alter5,
+         origin_alter.1 = origin_alter1,
+         origin_alter.2 = origin_alter2,
+         origin_alter.3 = origin_alter3,
+         origin_alter.4 = origin_alter4,
+         origin_alter.5 = origin_alter5,
+         dear_alter.1 = dear_alter1,
+         dear_alter.2 = dear_alter2,
+         dear_alter.3 = dear_alter3,
+         dear_alter.4 = dear_alter4,
+         dear_alter.5 = dear_alter5,
+         prof_alter.1 = prof_alter1,
+         prof_alter.2 = prof_alter2,
+         prof_alter.3 = prof_alter3,
+         prof_alter.4 = prof_alter4,
+         prof_alter.5 = prof_alter5,
+         work_alter.1 = work_a1,
+         work_alter.2 = work_a2,
+         work_alter.3 = work_a3,
+         work_alter.4 = work_a4,
+         work_alter.5 = work_a5,
+         length.1 = length_1,
+         length.2 = length_2,
+         length.3 = length_3,
+         length.4 = length_4,
+         length.5 = length_5) %&gt;%
+  pivot_longer(3:62,
+               names_to = c(&quot;name&quot;,&quot;alter&quot;),
+               names_pattern = &quot;(.+)\\.(.+)&quot;,
+               values_to = &quot;value&quot;) %&gt;%
+  pivot_wider(names_from = name,
+              values_from = value)
+
+#create dyad_id and drop alter handle
+alter_data &lt;- alter_data %&gt;%
+  mutate(dyad_id = paste0(nomem_encr, alter_id),
+         survey_wave = as.numeric(survey_wave)) %&gt;%
+  filter(!is.na(alter_id)) %&gt;%
+  select(!alter)
+
+
+#alter data prep
+alter_data &lt;- alter_data %&gt;%
+  mutate(
+    educ_alter = feducation_alter(educ_alter),
+    gender_alter = ifelse(is.na(gender_alter), 3, gender_alter),
+    gender_alter_fac = factor(
+      gender_alter,
+      levels = 1:3,
+      labels = c(&quot;Male&quot;, &quot;Female&quot;, &quot;Missing&quot;)
+    ),
+    rel_alter_rec = ifelse(rel_alter == 1, 1, rel_alter),
+    rel_alter_rec = ifelse(rel_alter_rec &gt; 2 &amp;
+                             rel_alter_rec &lt; 5, 2, rel_alter_rec),
+    rel_alter_rec = ifelse(rel_alter_rec == 5, 3, rel_alter_rec),
+    rel_alter_rec = ifelse(rel_alter_rec == 6, 4, rel_alter_rec),
+    rel_alter_rec = ifelse(rel_alter_rec == 7, 5, rel_alter_rec),
+    rel_alter_rec = ifelse(rel_alter_rec == 8, 6, rel_alter_rec),
+    rel_alter_rec = ifelse(rel_alter_rec == 9, 7, rel_alter_rec),
+    rel_alter_rec = ifelse(rel_alter_rec == 10, 8, rel_alter_rec),
+    rel_alter_rec = ifelse(rel_alter_rec == 11, 9, rel_alter_rec),
+    rel_alter_rec = ifelse(is.na(rel_alter_rec), 10, rel_alter_rec),
+    rel_alter_rec = factor(
+      rel_alter_rec,
+      levels = 1:10,
+      labels = c(
+        &quot;Partner&quot;,
+        &quot;Close family&quot;,
+        &quot;Other family&quot;,
+        &quot;Colleague&quot;,
+        &quot;Same group or club&quot;,
+        &quot;Neighbour&quot;,
+        &quot;Friend&quot;,
+        &quot;Advisor&quot;,
+        &quot;Other&quot;,
+        &quot;Missing&quot;
+      )
+    ),
+    origin_alter_rec = case_when(
+      origin_alter == 1 ~ 0,
+      origin_alter &gt; 1 &amp;
+        origin_alter &lt; 8 ~ 1,
+      origin_alter == 8 ~ 2
+    ),
+    origin_alter_rec_fac = factor(
+      origin_alter_rec,
+      levels = 0:2,
+      labels = c(
+        &quot;No migration background&quot;,
+        &quot;Non-Western migration background&quot;,
+        &quot;Western migration background&quot;
+      )
+    )
+  )  
+
+#add the alter data to the event_data
+repeated_event_data &lt;- repeated_event_data %&gt;%
+  left_join(alter_data, by = c(&quot;dyad_id&quot;, &quot;survey_wave&quot;, &quot;nomem_encr&quot;))</code></pre>
+</div>
+<div id="ego-data" class="section level2">
+<h2>Ego data</h2>
+<p>Step 1: select the variables needed from the liss_long file and
+rename and transform them accordingly. Step 2: use pivot_longer to make
+a long file. Step 3: perform data manipulation on the ego variables.</p>
+<pre class="r"><code>#add ego level data
+ego_data &lt;- liss_long %&gt;% #select variables from long_file
+  select(
+    nomem_encr,
+    survey_wave,
+    oplmet,
+    leeftijd,
+    geslacht,
+    nettoink,
+    belbezig,
+    burgstat,
+    partner,
+    gebjaar,
+    year_residence,
+    year_municipality,
+    starts_with(&quot;close&quot;),
+    origin,
+    aantalki,
+    belbezig,
+    partner_current,
+    partner_same,
+    partner_different_reason,
+    partner_none_reason,
+    has_children,
+    birthyear_firstchild
+  ) %&gt;%
+  mutate(#transform data
+    survey_wave = as.numeric(survey_wave),
+    year = as.numeric(survey_wave) + 2007,
+    educ_ego = feducation_ego(oplmet),
+    year = as.factor(survey_wave + 2007),
+    age_sq = leeftijd * leeftijd,
+    age = leeftijd,
+    gender = geslacht,
+    gender = ifelse(is.na(gender), 3, gender),
+    gender_fac = factor(
+      gender,
+      levels = 1:3,
+      labels = c(&quot;Male&quot;, &quot;Female&quot;, &quot;Missing&quot;)
+    ),
+    origin_rec = case_when(
+      origin == 0 ~ 0,
+      origin == 102 | origin == 202 ~ 1,
+      origin == 101 | origin == 201 ~ 2
+    ),
+    origin_rec_fac = factor(
+      origin_rec,           
+      levels = 0:2,
+      labels = c(
+        &quot;No migration background&quot;,
+        &quot;Non-Western migration background&quot;,
+        &quot;Western migration background&quot;
+      )
+    ),
+    belbezig_rec = ifelse(belbezig == 2 | belbezig == 3, 2, belbezig),
+    belbezig_rec = ifelse(belbezig == 4 |
+                            belbezig == 5, 3, belbezig_rec),
+    belbezig_rec = ifelse(belbezig == 7 , 4, belbezig_rec),
+    belbezig_rec = ifelse(belbezig == 8, 5, belbezig_rec),
+    belbezig_rec = ifelse(belbezig == 9, 6, belbezig_rec),
+    belbezig_rec = ifelse(belbezig == 6 |
+                            belbezig &gt;= 10, 7, belbezig_rec),
+    employment_status = factor(
+      belbezig_rec,
+      levels = c(1:7),
+      labels = c(
+        &quot;employed&quot;,
+        &quot;self-employed&quot;,
+        &quot;unemployed&quot;,
+        &quot;student&quot;,
+        &quot;housework&quot;,
+        &quot;retired&quot;,
+        &quot;other&quot;
+      )
+    ),
+    paid_work = if_else(belbezig &lt; 4, 1, 0),
+    first_child = ifelse(birthyear_firstchild == year, 1, 0),
+    divorced_seperated = ifelse((partner_same == 2 &amp; partner_different_reason == 1) | 
+                                       (partner_current == 2 &amp; partner_none_reason == 1), 1, 0),
+    lost_partner = ifelse((partner_same == 2 &amp; partner_different_reason == 2) | 
+                                 (partner_current == 2 &amp; partner_none_reason == 2), 1, 0)
+  ) %&gt;%
+  #create change scores.
+  group_by(nomem_encr) %&gt;%
+  dplyr::arrange(nomem_encr, survey_wave) %&gt;%
+  mutate(
+    new_residence = ifelse(year_residence == lag(year_residence), 0, 1),
+    new_municipality = ifelse(year_municipality == lag(year_municipality), 0, 1),
+    divorced_background = ifelse(burgstat == 3 &amp;
+                        lag(burgstat) != 3, 1, 0),
+    child_change_hh = ifelse(lag(aantalki) == aantalki, 0, 1),
+    child_diff_hh = aantalki - lag(aantalki),
+    first_child_hh = ifelse(aantalki &gt; 0 &amp; lag(aantalki) == 0, 1, 0),
+    employment_change = ifelse(belbezig_rec == lag(belbezig_rec), 0, 1),
+    retired = ifelse(lag(belbezig_rec) != 6 &amp; belbezig_rec == 6, 1, 0),
+         unemployment = ifelse(lag(belbezig_rec) != 3 &amp; belbezig_rec == 3, 1, 0),
+         employment = ifelse(lag(belbezig_rec) == 3 &amp; belbezig_rec &lt; 3, 1, 0)
+  ) %&gt;%
+  ungroup()
+
+
+
+# Robustness prep: create different types of changes: transition and event. 
+
+#first child transition and event 
+ego_data &lt;- ego_data %&gt;%
+  group_by(nomem_encr) %&gt;% 
+  arrange(nomem_encr, survey_wave) %&gt;% 
+  mutate(first_child_event = event_transition_f(event = first_child,
+                                                  option = &quot;event&quot;),
+         first_child_transition = event_transition_f(event = first_child,
+                                                     option = &quot;transition&quot;,
+                                                     time = survey_wave)) %&gt;% 
+  ungroup()
+
+#create absolute change scores and some extra variables.
+ego_data &lt;- ego_data %&gt;%
+  mutate(
+    moving = new_municipality + new_residence,
+    moving = factor(
+      moving,
+      levels = 0:2,
+      labels = c(&quot;no_move&quot;, &quot;new_residence&quot;,
+                 &quot;new_residence_municipality&quot;)
+    ),
+    moving_fac = ifelse(moving == &quot;no_move&quot;, 1, moving),
+    moving_fac = ifelse(moving == &quot;new_residence&quot;, 2, moving_fac),
+    moving_fac = ifelse(moving == &quot;new_residence_municipality&quot;, 3, moving_fac),
+    moving_fac = ifelse(is.na(moving), 4, moving_fac),
+    moving_fac = factor(
+      moving_fac,
+      levels = 1:4,
+      labels = c(&quot;no_move&quot;, &quot;new_residence&quot;,
+                 &quot;new_municipality&quot;, &quot;missing&quot;)
+    ),
+    divorced_fac = ifelse(is.na(divorced_seperated), 2, divorced_seperated),
+    divorced_fac = factor(
+      divorced_fac,
+      levels = 0:2,
+      labels = c(&quot;not divorced&quot;, &quot;divorced&quot;, &quot;missing&quot;)
+    )
+  )
+
+
+#divorce as transition and event
+ego_data &lt;- ego_data %&gt;%
+  group_by(nomem_encr) %&gt;% 
+  arrange(nomem_encr, survey_wave) %&gt;% 
+  mutate(divorced_event = event_transition_f(event = divorced_seperated,
+                                                  option = &quot;event&quot;),
+         divorced_transition = event_transition_f(event = divorced_seperated,
+                                                     option = &quot;transition&quot;,
+                                                     time = survey_wave)) %&gt;% 
+  ungroup()
+
+#lost_partner as transition and event
+ego_data &lt;- ego_data %&gt;%
+  group_by(nomem_encr) %&gt;% 
+  arrange(nomem_encr, survey_wave) %&gt;% 
+  mutate(lost_partner_event = event_transition_f(event = lost_partner,
+                                                  option = &quot;event&quot;),
+         lost_partner_transition = event_transition_f(event = lost_partner,
+                                                     option = &quot;transition&quot;,
+                                                     time = survey_wave)) %&gt;% 
+  ungroup()
+
+#moving as event or transition.
+ego_data &lt;- ego_data %&gt;%
+  mutate(move = if_else(!is.na(new_municipality) == 1 | !is.na(new_residence) == 1, 1, 0)) %&gt;% 
+  group_by(nomem_encr) %&gt;%
+  arrange(nomem_encr, survey_wave) %&gt;%
+  mutate(
+    new_municipality_event = event_transition_f(event = new_municipality,
+                                                option = &quot;event&quot;),
+    new_municipality_transition =  event_transition_f(
+      event = new_municipality,
+      option = &quot;transition&quot;,
+      time = survey_wave
+    ),
+    new_residence_event = event_transition_f(event = new_residence,
+                                             option = &quot;event&quot;),
+    new_residence_transition =  event_transition_f(
+      event = new_residence,
+      option = &quot;transition&quot;,
+      time = survey_wave
+    ),
+    move_event = event_transition_f(event = move,
+                                             option = &quot;event&quot;),
+    move_transition =  event_transition_f(
+      event = move,
+      option = &quot;transition&quot;,
+      time = survey_wave
+    )
+  ) %&gt;% 
+  ungroup()
+
+#employment status change as transition or event
+ego_data &lt;- ego_data %&gt;%
+  group_by(nomem_encr) %&gt;% 
+  arrange(nomem_encr, survey_wave) %&gt;% 
+  mutate(employment_event = event_transition_f(event = employment,
+                                                  option = &quot;event&quot;),
+         employment_transition = event_transition_f(event = employment,
+                                                     option = &quot;transition&quot;,
+                                                     time = survey_wave),
+         retired_event = event_transition_f(event = retired,
+                                                  option = &quot;event&quot;),
+         retired_transition = event_transition_f(event = retired,
+                                                     option = &quot;transition&quot;,
+                                                     time = survey_wave),
+         unemployed_event = event_transition_f(event = unemployment,
+                                                  option = &quot;event&quot;),
+         unemployed_transition = event_transition_f(event = unemployment,
+                                                     option = &quot;transition&quot;,
+                                                     time = survey_wave),
+         
+         ) %&gt;% 
+  ungroup()
+
+#fill ego&#39;s origin with information of later waves.
+ego_data &lt;- ego_data %&gt;%
+  group_by(nomem_encr) %&gt;%
+  mutate(
+    origin_rec_nar = ifelse(is.na(origin_rec), min(origin_rec, na.rm = T), origin_rec),
+    origin_rec_nar = ifelse(origin_rec_nar &gt; 3, NA, origin_rec_nar)
+  ) %&gt;%
+  ungroup() %&gt;%
+  mutate(origin_rec_nar_fac = factor(
+    origin_rec_nar,
+    levels = 0:2,
+    labels = c(
+      &quot;No migration background&quot;,
+      &quot;Non-Western migration background&quot;,
+      &quot;Western migration background&quot;
+    )
+  ))
+
+#add ego data. 
+repeated_event_data &lt;- repeated_event_data %&gt;%
+  left_join(ego_data, by = c(&quot;nomem_encr&quot;, &quot;survey_wave&quot;)) </code></pre>
+</div>
+</div>
+<div id="export-data" class="section level1">
+<h1>Export data</h1>
+<p>Export the ego alter prepped data so we can use it for creation of
+network data and for dyad similarity variables.</p>
+<pre class="r"><code>save(repeated_event_data, file = &quot;datafiles/data-processed/disaggregated_data/2023-06-12_liss-repeated-risk-alter-ego-data.rda&quot;)
+save(ego_data,
+     file = &quot;datafiles/data-processed/disaggregated_data/2023-06-12_ego-data.rda&quot;)
+save(alter_data,
+     file = &quot;datafiles/data-processed/disaggregated_data/2023-06-12_alter-data.rda&quot;)</code></pre>
+</div>
+
+<div id="rmd-source-code">LS0tDQp0aXRsZTogJ0RhdGFwcmVwOiBhZGQgZWdvIGFuZCBhbHRlciBkYXRhJw0KYXV0aG9yOiAiVGhpam1lbiBKZXJvZW5zZSINCmRhdGU6ICJMYXN0IGNvbXBpbGVkIG9uIGByIGZvcm1hdChTeXMudGltZSgpLCAnJWQgJUIsICVZJylgIg0Kb3V0cHV0Og0KICBodG1sX2RvY3VtZW50Og0KICAgIHRvYzogVFJVRQ0KICAgIHRvY19kZXB0aDogMw0KICAgIHRvY19mbG9hdDogVFJVRQ0KICAgIGNvZGVfZm9sZGluZzogc2hvdw0KICAgIGNvZGVfZG93bmxvYWQ6IFRSVUUNCi0tLQ0KYGBge3Igc2V0dXAsIGluY2x1ZGU9RkFMU0V9DQprbml0cjo6b3B0c19jaHVuayRzZXQoY2FjaGUgPSBUUlVFLCBtZXNzYWdlID0gRkFMU0UsIHdhcm5pbmcgPSBGQUxTRSwgcmVzdWx0cyA9ICJhc2lzIiwNCiAgICAgICAgICAgICAgICAgICAgICBmaWcuYWxpZ24gPSAiY2VudGVyIikNCmBgYA0KDQojIFNldCB1cA0KDQojIyBQYWNrYWdlcw0KDQpgYGB7ciBsb2FkIGRhdGEgbGlicmFyeX0NCiNsaWJyYXJ5DQpsaWJyYXJ5KHRpZHl2ZXJzZSkNCmBgYA0KDQojIyBDdXN0b20gZnVuY3Rpb25zDQoNCmBgYHtyIGZ1bmN0aW9uc30NCiNlZHVjYXRpb24gcmVjb2RlIGVnbyBmdW5jdGlvbg0KZmVkdWNhdGlvbl9lZ28gPC0gZnVuY3Rpb24oeCkgew0KICB4MiA8LSBpZmVsc2UoeCA9PSAxLCA2LCB4KQ0KICB4MyA8LSBpZmVsc2UoeCA9PSAyLCAxMCwgeDIpDQogIHg0IDwtIGlmZWxzZSh4ID09IDMsIDExLjUsIHgzKQ0KICB4NSA8LSBpZmVsc2UoeCA9PSA0LCAxMC41LCB4NCkNCiAgeDYgPC0gaWZlbHNlKHggPT0gNSwgMTUsIHg1KQ0KICB4NyA8LSBpZmVsc2UoeCA9PSA2LCAxNiwgeDYpDQogIHg4IDwtIGlmZWxzZSh4ID09IDcsIE5BLCB4NykNCiAgeDkgPC0gaWZlbHNlKHggPT0gOCwgNCwgeDgpDQogIHgxMCA8LSBpZmVsc2UoeCA9PSA5LCBOQSwgeDkpDQogIHJldHVybih4MTApDQp9DQojZWR1Y2F0aW9uIHJlY29kZSBhbHRlciBmdW5jdGlvbg0KZmVkdWNhdGlvbl9hbHRlciA8LSBmdW5jdGlvbih4KSB7DQogIHgyIDwtIGlmZWxzZSh4ID09IDEsIDQsIHgpDQogIHgzIDwtIGlmZWxzZSh4ID09IDIsIDYsIHgyKQ0KICB4NCA8LSBpZmVsc2UoeCA9PSAzLCAxMCwgeDMpDQogIHg1IDwtIGlmZWxzZSh4ID09IDQsIDExLjUsIHg0KQ0KICB4NiA8LSBpZmVsc2UoeCA9PSA1LCAxMC41LCB4NSkNCiAgeDcgPC0gaWZlbHNlKHggPT0gNiwgMTUsIHg2KQ0KICB4ODwtIGlmZWxzZSh4ID09IDcsIDE2LCB4NykNCiAgcmV0dXJuKHg4KQ0KfQ0KDQojZXZlbnQgdHJhbnNpdGlvbiANCmV2ZW50X3RyYW5zaXRpb25fZiA8LSBmdW5jdGlvbihldmVudCwgb3B0aW9uLCB0aW1lKSB7DQogIGlmIChvcHRpb24gPT0gImV2ZW50Iikgew0KICAgICNmb3Igd2hlbiB3ZSB3YW50IDEsIDAuNSwgMC4yNS4NCiAgICB5IDwtIGlmX2Vsc2UobGFnKGV2ZW50LCAyKSA9PSAxLCAwLjI1LCAwKQ0KICAgIHkgPC0gaWZfZWxzZShsYWcoZXZlbnQpID09IDEsIDAuNSwgeSkNCiAgICB5IDwtIGlmX2Vsc2UoZXZlbnQgPT0gMSwgMSwgeSkNCiAgICB5IDwtIGlmX2Vsc2UoaXMubmEoeSkgJiAhaXMubmEoZXZlbnQpLCAwLCB5KQ0KICAgIHJldHVybih5KQ0KICB9DQogIGlmIChvcHRpb24gPT0gInRyYW5zaXRpb24iKSB7DQogICAgI3doZW4gaXQgaXMgYSB0cmFuc2l0aW9uIDAwMDAxMTExDQogICAgeSA8LSB0aWJibGUodGltZSwgZXZlbnQpICU+JSANCiAgICAgIGZpbHRlcihldmVudCA9PSAxKQ0KICAgIA0KICAgIGlmIChucm93KHkpID09IDApIHsNCiAgICAgIHkgPC0gaWZlbHNlKCFpcy5uYSh0aW1lKSAmICFpcy5uYShldmVudCksIDAsIE5BKQ0KICAgICAgcmV0dXJuKHkpDQogICAgfSBlbHNlew0KICAgICAgeSA8LSB5ICU+JQ0KICAgICAgICBwdWxsKHRpbWUpDQogICAgICANCiAgICAgIHkgPC0gaWZfZWxzZSh0aW1lID49IHksIDEsIDApDQogICAgICByZXR1cm4oeSkNCiAgICB9DQogIH0NCn0NCg0KYGBgDQoNCg0KIyMgRGF0YSBpbXBvcnQNCg0KYGBge3IgZGF0YSBpbXBvcnR9DQpsb2FkKCJkYXRhZmlsZXMvZGF0YS1wcm9jZXNzZWQvZGlzYWdncmVnYXRlZF9kYXRhLzIwMjMtMDYtMTJfbGlzcy1yZXBlYXRlZC1yaXNrLWRhdGEucmRhIikNCg0KbG9hZCgiZGF0YWZpbGVzL2RhdGEtcHJvY2Vzc2VkL2NvbW1vbl9kYXRhLzA2MjNfdjVfbGlzc19tZXJnZWRfY29yZV9maWxlLnJkcyIpDQoNCmBgYA0KDQojIEVnbyBhbmQgQWx0ZXIgZGF0YQ0KDQojIyBBbHRlciBkYXRhDQoNClN0ZXAgMTogc2VsZWN0IHRoZSB2YXJpYWJsZXMgbmVlZGVkIGZyb20gdGhlIGxpc3NfbG9uZyBmaWxlIGFuZCByZW5hbWUgdGhlbSBhY2NvcmRpbmdseS4NClN0ZXAgMjogdXNlIHBpdm90X2xvbmdlciB0byBtYWtlIGEgbG9uZyBmaWxlLiANClN0ZXAgMzogcGVyZm9ybSBkYXRhIG1hbmlwdWxhdGlvbiBvbiB0aGUgYWx0ZXIgdmFyaWFibGVzLiANCg0KYGBge3IgYWx0ZXIgZGF0YSBwcmVwfQ0KIy0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLSBBZGQgZWdvIGFuZCBBbHRlciBEYXRhIC0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLSMNCiNhbHRlciBkYXRhDQojZ2V0IGFsdGVyIGRhdGEuDQphbHRlcl9kYXRhIDwtIGxpc3NfbG9uZyAlPiUNCiAgc2VsZWN0KA0KICAgIG5vbWVtX2VuY3IsDQogICAgc3VydmV5X3dhdmUsDQogICAgc3RhcnRzX3dpdGgoImFsdGVyX2lkIiksDQogICAgc3RhcnRzX3dpdGgoImVkdWNfYWx0ZXIiKSwNCiAgICBzdGFydHNfd2l0aCgiYWdlX2FsdGVyIiksDQogICAgc3RhcnRzX3dpdGgoImdlbmRlcl9hbHRlciIpLA0KICAgIHN0YXJ0c193aXRoKCJwb2x0YWxrX2FsdGVyIiksDQogICAgc3RhcnRzX3dpdGgoInRhbGtfYWx0ZXIiKSwNCiAgICBzdGFydHNfd2l0aCgib3JpZ2luX2FsdGVyIiksDQogICAgc3RhcnRzX3dpdGgoInJlbF9hbHRlciIpLA0KICAgIHN0YXJ0c193aXRoKCJkZWFyX2FsdGVyIiksDQogICAgc3RhcnRzX3dpdGgoInByb2ZfYWx0ZXIiKSwNCiAgICBzdGFydHNfd2l0aCgid29ya19hIiksDQogICAgc3RhcnRzX3dpdGgoImxlbmd0aCIpDQogICkgJT4lIA0KICBtdXRhdGUoYWNyb3NzKC5jb2xzID0gMTo2MiwgI3JlbW92ZSBoYXZlbiBsYWJlbGxlZA0KICAgICAgICAgICAgICAgIC5mbnMgPSB+YXMubnVtZXJpYygueCkpKQ0KDQojY3JlYXRlIGxvbmcgZmlsZSBzbyBhbHRlciBpcyBpbiBkeWFkDQphbHRlcl9kYXRhIDwtIGFsdGVyX2RhdGEgJT4lDQogIHJlbmFtZShlZHVjX2FsdGVyLjEgPSBlZHVjX2FsdGVyMSwNCiAgICAgICAgIGVkdWNfYWx0ZXIuMiA9IGVkdWNfYWx0ZXIyLA0KICAgICAgICAgZWR1Y19hbHRlci4zID0gZWR1Y19hbHRlcjMsDQogICAgICAgICBlZHVjX2FsdGVyLjQgPSBlZHVjX2FsdGVyNCwNCiAgICAgICAgIGVkdWNfYWx0ZXIuNSA9IGVkdWNfYWx0ZXI1LA0KICAgICAgICAgYWx0ZXJfaWQuMSA9IGFsdGVyX2lkXzEsDQogICAgICAgICBhbHRlcl9pZC4yID0gYWx0ZXJfaWRfMiwNCiAgICAgICAgIGFsdGVyX2lkLjMgPSBhbHRlcl9pZF8zLA0KICAgICAgICAgYWx0ZXJfaWQuNCA9IGFsdGVyX2lkXzQsDQogICAgICAgICBhbHRlcl9pZC41ID0gYWx0ZXJfaWRfNSwNCiAgICAgICAgIGFnZV9hbHRlci4xID0gYWdlX2FsdGVyMSwNCiAgICAgICAgIGFnZV9hbHRlci4yID0gYWdlX2FsdGVyMiwNCiAgICAgICAgIGFnZV9hbHRlci4zID0gYWdlX2FsdGVyMywNCiAgICAgICAgIGFnZV9hbHRlci40ID0gYWdlX2FsdGVyNCwNCiAgICAgICAgIGFnZV9hbHRlci41ID0gYWdlX2FsdGVyNSwNCiAgICAgICAgIGdlbmRlcl9hbHRlci4xID0gZ2VuZGVyX2FsdGVyMSwNCiAgICAgICAgIGdlbmRlcl9hbHRlci4yID0gZ2VuZGVyX2FsdGVyMiwNCiAgICAgICAgIGdlbmRlcl9hbHRlci4zID0gZ2VuZGVyX2FsdGVyMywNCiAgICAgICAgIGdlbmRlcl9hbHRlci40ID0gZ2VuZGVyX2FsdGVyNCwNCiAgICAgICAgIGdlbmRlcl9hbHRlci41ID0gZ2VuZGVyX2FsdGVyNSwNCiAgICAgICAgIHJlbF9hbHRlci4xID0gcmVsX2FsdGVyMSwNCiAgICAgICAgIHJlbF9hbHRlci4yID0gcmVsX2FsdGVyMiwNCiAgICAgICAgIHJlbF9hbHRlci4zID0gcmVsX2FsdGVyMywNCiAgICAgICAgIHJlbF9hbHRlci40ID0gcmVsX2FsdGVyNCwNCiAgICAgICAgIHJlbF9hbHRlci41ID0gcmVsX2FsdGVyNSwNCiAgICAgICAgIHBvbHRhbGtfYWx0ZXIuMSA9IHBvbHRhbGtfYWx0ZXIxLA0KICAgICAgICAgcG9sdGFsa19hbHRlci4yID0gcG9sdGFsa19hbHRlcjIsDQogICAgICAgICBwb2x0YWxrX2FsdGVyLjMgPSBwb2x0YWxrX2FsdGVyMywNCiAgICAgICAgIHBvbHRhbGtfYWx0ZXIuNCA9IHBvbHRhbGtfYWx0ZXI0LA0KICAgICAgICAgcG9sdGFsa19hbHRlci41ID0gcG9sdGFsa19hbHRlcjUsDQogICAgICAgICB0YWxrX2FsdGVyLjEgPSB0YWxrX2FsdGVyMSwNCiAgICAgICAgIHRhbGtfYWx0ZXIuMiA9IHRhbGtfYWx0ZXIyLA0KICAgICAgICAgdGFsa19hbHRlci4zID0gdGFsa19hbHRlcjMsDQogICAgICAgICB0YWxrX2FsdGVyLjQgPSB0YWxrX2FsdGVyNCwNCiAgICAgICAgIHRhbGtfYWx0ZXIuNSA9IHRhbGtfYWx0ZXI1LA0KICAgICAgICAgb3JpZ2luX2FsdGVyLjEgPSBvcmlnaW5fYWx0ZXIxLA0KICAgICAgICAgb3JpZ2luX2FsdGVyLjIgPSBvcmlnaW5fYWx0ZXIyLA0KICAgICAgICAgb3JpZ2luX2FsdGVyLjMgPSBvcmlnaW5fYWx0ZXIzLA0KICAgICAgICAgb3JpZ2luX2FsdGVyLjQgPSBvcmlnaW5fYWx0ZXI0LA0KICAgICAgICAgb3JpZ2luX2FsdGVyLjUgPSBvcmlnaW5fYWx0ZXI1LA0KICAgICAgICAgZGVhcl9hbHRlci4xID0gZGVhcl9hbHRlcjEsDQogICAgICAgICBkZWFyX2FsdGVyLjIgPSBkZWFyX2FsdGVyMiwNCiAgICAgICAgIGRlYXJfYWx0ZXIuMyA9IGRlYXJfYWx0ZXIzLA0KICAgICAgICAgZGVhcl9hbHRlci40ID0gZGVhcl9hbHRlcjQsDQogICAgICAgICBkZWFyX2FsdGVyLjUgPSBkZWFyX2FsdGVyNSwNCiAgICAgICAgIHByb2ZfYWx0ZXIuMSA9IHByb2ZfYWx0ZXIxLA0KICAgICAgICAgcHJvZl9hbHRlci4yID0gcHJvZl9hbHRlcjIsDQogICAgICAgICBwcm9mX2FsdGVyLjMgPSBwcm9mX2FsdGVyMywNCiAgICAgICAgIHByb2ZfYWx0ZXIuNCA9IHByb2ZfYWx0ZXI0LA0KICAgICAgICAgcHJvZl9hbHRlci41ID0gcHJvZl9hbHRlcjUsDQogICAgICAgICB3b3JrX2FsdGVyLjEgPSB3b3JrX2ExLA0KICAgICAgICAgd29ya19hbHRlci4yID0gd29ya19hMiwNCiAgICAgICAgIHdvcmtfYWx0ZXIuMyA9IHdvcmtfYTMsDQogICAgICAgICB3b3JrX2FsdGVyLjQgPSB3b3JrX2E0LA0KICAgICAgICAgd29ya19hbHRlci41ID0gd29ya19hNSwNCiAgICAgICAgIGxlbmd0aC4xID0gbGVuZ3RoXzEsDQogICAgICAgICBsZW5ndGguMiA9IGxlbmd0aF8yLA0KICAgICAgICAgbGVuZ3RoLjMgPSBsZW5ndGhfMywNCiAgICAgICAgIGxlbmd0aC40ID0gbGVuZ3RoXzQsDQogICAgICAgICBsZW5ndGguNSA9IGxlbmd0aF81KSAlPiUNCiAgcGl2b3RfbG9uZ2VyKDM6NjIsDQogICAgICAgICAgICAgICBuYW1lc190byA9IGMoIm5hbWUiLCJhbHRlciIpLA0KICAgICAgICAgICAgICAgbmFtZXNfcGF0dGVybiA9ICIoLispXFwuKC4rKSIsDQogICAgICAgICAgICAgICB2YWx1ZXNfdG8gPSAidmFsdWUiKSAlPiUNCiAgcGl2b3Rfd2lkZXIobmFtZXNfZnJvbSA9IG5hbWUsDQogICAgICAgICAgICAgIHZhbHVlc19mcm9tID0gdmFsdWUpDQoNCiNjcmVhdGUgZHlhZF9pZCBhbmQgZHJvcCBhbHRlciBoYW5kbGUNCmFsdGVyX2RhdGEgPC0gYWx0ZXJfZGF0YSAlPiUNCiAgbXV0YXRlKGR5YWRfaWQgPSBwYXN0ZTAobm9tZW1fZW5jciwgYWx0ZXJfaWQpLA0KICAgICAgICAgc3VydmV5X3dhdmUgPSBhcy5udW1lcmljKHN1cnZleV93YXZlKSkgJT4lDQogIGZpbHRlcighaXMubmEoYWx0ZXJfaWQpKSAlPiUNCiAgc2VsZWN0KCFhbHRlcikNCg0KDQojYWx0ZXIgZGF0YSBwcmVwDQphbHRlcl9kYXRhIDwtIGFsdGVyX2RhdGEgJT4lDQogIG11dGF0ZSgNCiAgICBlZHVjX2FsdGVyID0gZmVkdWNhdGlvbl9hbHRlcihlZHVjX2FsdGVyKSwNCiAgICBnZW5kZXJfYWx0ZXIgPSBpZmVsc2UoaXMubmEoZ2VuZGVyX2FsdGVyKSwgMywgZ2VuZGVyX2FsdGVyKSwNCiAgICBnZW5kZXJfYWx0ZXJfZmFjID0gZmFjdG9yKA0KICAgICAgZ2VuZGVyX2FsdGVyLA0KICAgICAgbGV2ZWxzID0gMTozLA0KICAgICAgbGFiZWxzID0gYygiTWFsZSIsICJGZW1hbGUiLCAiTWlzc2luZyIpDQogICAgKSwNCiAgICByZWxfYWx0ZXJfcmVjID0gaWZlbHNlKHJlbF9hbHRlciA9PSAxLCAxLCByZWxfYWx0ZXIpLA0KICAgIHJlbF9hbHRlcl9yZWMgPSBpZmVsc2UocmVsX2FsdGVyX3JlYyA+IDIgJg0KICAgICAgICAgICAgICAgICAgICAgICAgICAgICByZWxfYWx0ZXJfcmVjIDwgNSwgMiwgcmVsX2FsdGVyX3JlYyksDQogICAgcmVsX2FsdGVyX3JlYyA9IGlmZWxzZShyZWxfYWx0ZXJfcmVjID09IDUsIDMsIHJlbF9hbHRlcl9yZWMpLA0KICAgIHJlbF9hbHRlcl9yZWMgPSBpZmVsc2UocmVsX2FsdGVyX3JlYyA9PSA2LCA0LCByZWxfYWx0ZXJfcmVjKSwNCiAgICByZWxfYWx0ZXJfcmVjID0gaWZlbHNlKHJlbF9hbHRlcl9yZWMgPT0gNywgNSwgcmVsX2FsdGVyX3JlYyksDQogICAgcmVsX2FsdGVyX3JlYyA9IGlmZWxzZShyZWxfYWx0ZXJfcmVjID09IDgsIDYsIHJlbF9hbHRlcl9yZWMpLA0KICAgIHJlbF9hbHRlcl9yZWMgPSBpZmVsc2UocmVsX2FsdGVyX3JlYyA9PSA5LCA3LCByZWxfYWx0ZXJfcmVjKSwNCiAgICByZWxfYWx0ZXJfcmVjID0gaWZlbHNlKHJlbF9hbHRlcl9yZWMgPT0gMTAsIDgsIHJlbF9hbHRlcl9yZWMpLA0KICAgIHJlbF9hbHRlcl9yZWMgPSBpZmVsc2UocmVsX2FsdGVyX3JlYyA9PSAxMSwgOSwgcmVsX2FsdGVyX3JlYyksDQogICAgcmVsX2FsdGVyX3JlYyA9IGlmZWxzZShpcy5uYShyZWxfYWx0ZXJfcmVjKSwgMTAsIHJlbF9hbHRlcl9yZWMpLA0KICAgIHJlbF9hbHRlcl9yZWMgPSBmYWN0b3IoDQogICAgICByZWxfYWx0ZXJfcmVjLA0KICAgICAgbGV2ZWxzID0gMToxMCwNCiAgICAgIGxhYmVscyA9IGMoDQogICAgICAgICJQYXJ0bmVyIiwNCiAgICAgICAgIkNsb3NlIGZhbWlseSIsDQogICAgICAgICJPdGhlciBmYW1pbHkiLA0KICAgICAgICAiQ29sbGVhZ3VlIiwNCiAgICAgICAgIlNhbWUgZ3JvdXAgb3IgY2x1YiIsDQogICAgICAgICJOZWlnaGJvdXIiLA0KICAgICAgICAiRnJpZW5kIiwNCiAgICAgICAgIkFkdmlzb3IiLA0KICAgICAgICAiT3RoZXIiLA0KICAgICAgICAiTWlzc2luZyINCiAgICAgICkNCiAgICApLA0KICAgIG9yaWdpbl9hbHRlcl9yZWMgPSBjYXNlX3doZW4oDQogICAgICBvcmlnaW5fYWx0ZXIgPT0gMSB+IDAsDQogICAgICBvcmlnaW5fYWx0ZXIgPiAxICYNCiAgICAgICAgb3JpZ2luX2FsdGVyIDwgOCB+IDEsDQogICAgICBvcmlnaW5fYWx0ZXIgPT0gOCB+IDINCiAgICApLA0KICAgIG9yaWdpbl9hbHRlcl9yZWNfZmFjID0gZmFjdG9yKA0KICAgICAgb3JpZ2luX2FsdGVyX3JlYywNCiAgICAgIGxldmVscyA9IDA6MiwNCiAgICAgIGxhYmVscyA9IGMoDQogICAgICAgICJObyBtaWdyYXRpb24gYmFja2dyb3VuZCIsDQogICAgICAgICJOb24tV2VzdGVybiBtaWdyYXRpb24gYmFja2dyb3VuZCIsDQogICAgICAgICJXZXN0ZXJuIG1pZ3JhdGlvbiBiYWNrZ3JvdW5kIg0KICAgICAgKQ0KICAgICkNCiAgKSAgDQoNCiNhZGQgdGhlIGFsdGVyIGRhdGEgdG8gdGhlIGV2ZW50X2RhdGENCnJlcGVhdGVkX2V2ZW50X2RhdGEgPC0gcmVwZWF0ZWRfZXZlbnRfZGF0YSAlPiUNCiAgbGVmdF9qb2luKGFsdGVyX2RhdGEsIGJ5ID0gYygiZHlhZF9pZCIsICJzdXJ2ZXlfd2F2ZSIsICJub21lbV9lbmNyIikpDQoNCmBgYA0KDQoNCg0KIyMgRWdvIGRhdGENCg0KU3RlcCAxOiBzZWxlY3QgdGhlIHZhcmlhYmxlcyBuZWVkZWQgZnJvbSB0aGUgbGlzc19sb25nIGZpbGUgYW5kIHJlbmFtZSBhbmQgdHJhbnNmb3JtIHRoZW0gYWNjb3JkaW5nbHkuDQpTdGVwIDI6IHVzZSBwaXZvdF9sb25nZXIgdG8gbWFrZSBhIGxvbmcgZmlsZS4gDQpTdGVwIDM6IHBlcmZvcm0gZGF0YSBtYW5pcHVsYXRpb24gb24gdGhlIGVnbyB2YXJpYWJsZXMuIA0KDQoNCmBgYHtyIGVnbyBkYXRhIHByZXB9DQojYWRkIGVnbyBsZXZlbCBkYXRhDQplZ29fZGF0YSA8LSBsaXNzX2xvbmcgJT4lICNzZWxlY3QgdmFyaWFibGVzIGZyb20gbG9uZ19maWxlDQogIHNlbGVjdCgNCiAgICBub21lbV9lbmNyLA0KICAgIHN1cnZleV93YXZlLA0KICAgIG9wbG1ldCwNCiAgICBsZWVmdGlqZCwNCiAgICBnZXNsYWNodCwNCiAgICBuZXR0b2luaywNCiAgICBiZWxiZXppZywNCiAgICBidXJnc3RhdCwNCiAgICBwYXJ0bmVyLA0KICAgIGdlYmphYXIsDQogICAgeWVhcl9yZXNpZGVuY2UsDQogICAgeWVhcl9tdW5pY2lwYWxpdHksDQogICAgc3RhcnRzX3dpdGgoImNsb3NlIiksDQogICAgb3JpZ2luLA0KICAgIGFhbnRhbGtpLA0KICAgIGJlbGJlemlnLA0KICAgIHBhcnRuZXJfY3VycmVudCwNCiAgICBwYXJ0bmVyX3NhbWUsDQogICAgcGFydG5lcl9kaWZmZXJlbnRfcmVhc29uLA0KICAgIHBhcnRuZXJfbm9uZV9yZWFzb24sDQogICAgaGFzX2NoaWxkcmVuLA0KICAgIGJpcnRoeWVhcl9maXJzdGNoaWxkDQogICkgJT4lDQogIG11dGF0ZSgjdHJhbnNmb3JtIGRhdGENCiAgICBzdXJ2ZXlfd2F2ZSA9IGFzLm51bWVyaWMoc3VydmV5X3dhdmUpLA0KICAgIHllYXIgPSBhcy5udW1lcmljKHN1cnZleV93YXZlKSArIDIwMDcsDQogICAgZWR1Y19lZ28gPSBmZWR1Y2F0aW9uX2VnbyhvcGxtZXQpLA0KICAgIHllYXIgPSBhcy5mYWN0b3Ioc3VydmV5X3dhdmUgKyAyMDA3KSwNCiAgICBhZ2Vfc3EgPSBsZWVmdGlqZCAqIGxlZWZ0aWpkLA0KICAgIGFnZSA9IGxlZWZ0aWpkLA0KICAgIGdlbmRlciA9IGdlc2xhY2h0LA0KICAgIGdlbmRlciA9IGlmZWxzZShpcy5uYShnZW5kZXIpLCAzLCBnZW5kZXIpLA0KICAgIGdlbmRlcl9mYWMgPSBmYWN0b3IoDQogICAgICBnZW5kZXIsDQogICAgICBsZXZlbHMgPSAxOjMsDQogICAgICBsYWJlbHMgPSBjKCJNYWxlIiwgIkZlbWFsZSIsICJNaXNzaW5nIikNCiAgICApLA0KICAgIG9yaWdpbl9yZWMgPSBjYXNlX3doZW4oDQogICAgICBvcmlnaW4gPT0gMCB+IDAsDQogICAgICBvcmlnaW4gPT0gMTAyIHwgb3JpZ2luID09IDIwMiB+IDEsDQogICAgICBvcmlnaW4gPT0gMTAxIHwgb3JpZ2luID09IDIwMSB+IDINCiAgICApLA0KICAgIG9yaWdpbl9yZWNfZmFjID0gZmFjdG9yKA0KICAgICAgb3JpZ2luX3JlYywgICAgICAgICAgIA0KICAgICAgbGV2ZWxzID0gMDoyLA0KICAgICAgbGFiZWxzID0gYygNCiAgICAgICAgIk5vIG1pZ3JhdGlvbiBiYWNrZ3JvdW5kIiwNCiAgICAgICAgIk5vbi1XZXN0ZXJuIG1pZ3JhdGlvbiBiYWNrZ3JvdW5kIiwNCiAgICAgICAgIldlc3Rlcm4gbWlncmF0aW9uIGJhY2tncm91bmQiDQogICAgICApDQogICAgKSwNCiAgICBiZWxiZXppZ19yZWMgPSBpZmVsc2UoYmVsYmV6aWcgPT0gMiB8IGJlbGJlemlnID09IDMsIDIsIGJlbGJlemlnKSwNCiAgICBiZWxiZXppZ19yZWMgPSBpZmVsc2UoYmVsYmV6aWcgPT0gNCB8DQogICAgICAgICAgICAgICAgICAgICAgICAgICAgYmVsYmV6aWcgPT0gNSwgMywgYmVsYmV6aWdfcmVjKSwNCiAgICBiZWxiZXppZ19yZWMgPSBpZmVsc2UoYmVsYmV6aWcgPT0gNyAsIDQsIGJlbGJlemlnX3JlYyksDQogICAgYmVsYmV6aWdfcmVjID0gaWZlbHNlKGJlbGJlemlnID09IDgsIDUsIGJlbGJlemlnX3JlYyksDQogICAgYmVsYmV6aWdfcmVjID0gaWZlbHNlKGJlbGJlemlnID09IDksIDYsIGJlbGJlemlnX3JlYyksDQogICAgYmVsYmV6aWdfcmVjID0gaWZlbHNlKGJlbGJlemlnID09IDYgfA0KICAgICAgICAgICAgICAgICAgICAgICAgICAgIGJlbGJlemlnID49IDEwLCA3LCBiZWxiZXppZ19yZWMpLA0KICAgIGVtcGxveW1lbnRfc3RhdHVzID0gZmFjdG9yKA0KICAgICAgYmVsYmV6aWdfcmVjLA0KICAgICAgbGV2ZWxzID0gYygxOjcpLA0KICAgICAgbGFiZWxzID0gYygNCiAgICAgICAgImVtcGxveWVkIiwNCiAgICAgICAgInNlbGYtZW1wbG95ZWQiLA0KICAgICAgICAidW5lbXBsb3llZCIsDQogICAgICAgICJzdHVkZW50IiwNCiAgICAgICAgImhvdXNld29yayIsDQogICAgICAgICJyZXRpcmVkIiwNCiAgICAgICAgIm90aGVyIg0KICAgICAgKQ0KICAgICksDQogICAgcGFpZF93b3JrID0gaWZfZWxzZShiZWxiZXppZyA8IDQsIDEsIDApLA0KICAgIGZpcnN0X2NoaWxkID0gaWZlbHNlKGJpcnRoeWVhcl9maXJzdGNoaWxkID09IHllYXIsIDEsIDApLA0KICAgIGRpdm9yY2VkX3NlcGVyYXRlZCA9IGlmZWxzZSgocGFydG5lcl9zYW1lID09IDIgJiBwYXJ0bmVyX2RpZmZlcmVudF9yZWFzb24gPT0gMSkgfCANCiAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgIChwYXJ0bmVyX2N1cnJlbnQgPT0gMiAmIHBhcnRuZXJfbm9uZV9yZWFzb24gPT0gMSksIDEsIDApLA0KICAgIGxvc3RfcGFydG5lciA9IGlmZWxzZSgocGFydG5lcl9zYW1lID09IDIgJiBwYXJ0bmVyX2RpZmZlcmVudF9yZWFzb24gPT0gMikgfCANCiAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgIChwYXJ0bmVyX2N1cnJlbnQgPT0gMiAmIHBhcnRuZXJfbm9uZV9yZWFzb24gPT0gMiksIDEsIDApDQogICkgJT4lDQogICNjcmVhdGUgY2hhbmdlIHNjb3Jlcy4NCiAgZ3JvdXBfYnkobm9tZW1fZW5jcikgJT4lDQogIGRwbHlyOjphcnJhbmdlKG5vbWVtX2VuY3IsIHN1cnZleV93YXZlKSAlPiUNCiAgbXV0YXRlKA0KICAgIG5ld19yZXNpZGVuY2UgPSBpZmVsc2UoeWVhcl9yZXNpZGVuY2UgPT0gbGFnKHllYXJfcmVzaWRlbmNlKSwgMCwgMSksDQogICAgbmV3X211bmljaXBhbGl0eSA9IGlmZWxzZSh5ZWFyX211bmljaXBhbGl0eSA9PSBsYWcoeWVhcl9tdW5pY2lwYWxpdHkpLCAwLCAxKSwNCiAgICBkaXZvcmNlZF9iYWNrZ3JvdW5kID0gaWZlbHNlKGJ1cmdzdGF0ID09IDMgJg0KICAgICAgICAgICAgICAgICAgICAgICAgbGFnKGJ1cmdzdGF0KSAhPSAzLCAxLCAwKSwNCiAgICBjaGlsZF9jaGFuZ2VfaGggPSBpZmVsc2UobGFnKGFhbnRhbGtpKSA9PSBhYW50YWxraSwgMCwgMSksDQogICAgY2hpbGRfZGlmZl9oaCA9IGFhbnRhbGtpIC0gbGFnKGFhbnRhbGtpKSwNCiAgICBmaXJzdF9jaGlsZF9oaCA9IGlmZWxzZShhYW50YWxraSA+IDAgJiBsYWcoYWFudGFsa2kpID09IDAsIDEsIDApLA0KICAgIGVtcGxveW1lbnRfY2hhbmdlID0gaWZlbHNlKGJlbGJlemlnX3JlYyA9PSBsYWcoYmVsYmV6aWdfcmVjKSwgMCwgMSksDQogICAgcmV0aXJlZCA9IGlmZWxzZShsYWcoYmVsYmV6aWdfcmVjKSAhPSA2ICYgYmVsYmV6aWdfcmVjID09IDYsIDEsIDApLA0KICAgICAgICAgdW5lbXBsb3ltZW50ID0gaWZlbHNlKGxhZyhiZWxiZXppZ19yZWMpICE9IDMgJiBiZWxiZXppZ19yZWMgPT0gMywgMSwgMCksDQogICAgICAgICBlbXBsb3ltZW50ID0gaWZlbHNlKGxhZyhiZWxiZXppZ19yZWMpID09IDMgJiBiZWxiZXppZ19yZWMgPCAzLCAxLCAwKQ0KICApICU+JQ0KICB1bmdyb3VwKCkNCg0KDQoNCiMgUm9idXN0bmVzcyBwcmVwOiBjcmVhdGUgZGlmZmVyZW50IHR5cGVzIG9mIGNoYW5nZXM6IHRyYW5zaXRpb24gYW5kIGV2ZW50LiANCg0KI2ZpcnN0IGNoaWxkIHRyYW5zaXRpb24gYW5kIGV2ZW50IA0KZWdvX2RhdGEgPC0gZWdvX2RhdGEgJT4lDQogIGdyb3VwX2J5KG5vbWVtX2VuY3IpICU+JSANCiAgYXJyYW5nZShub21lbV9lbmNyLCBzdXJ2ZXlfd2F2ZSkgJT4lIA0KICBtdXRhdGUoZmlyc3RfY2hpbGRfZXZlbnQgPSBldmVudF90cmFuc2l0aW9uX2YoZXZlbnQgPSBmaXJzdF9jaGlsZCwNCiAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgb3B0aW9uID0gImV2ZW50IiksDQogICAgICAgICBmaXJzdF9jaGlsZF90cmFuc2l0aW9uID0gZXZlbnRfdHJhbnNpdGlvbl9mKGV2ZW50ID0gZmlyc3RfY2hpbGQsDQogICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgIG9wdGlvbiA9ICJ0cmFuc2l0aW9uIiwNCiAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgdGltZSA9IHN1cnZleV93YXZlKSkgJT4lIA0KICB1bmdyb3VwKCkNCg0KI2NyZWF0ZSBhYnNvbHV0ZSBjaGFuZ2Ugc2NvcmVzIGFuZCBzb21lIGV4dHJhIHZhcmlhYmxlcy4NCmVnb19kYXRhIDwtIGVnb19kYXRhICU+JQ0KICBtdXRhdGUoDQogICAgbW92aW5nID0gbmV3X211bmljaXBhbGl0eSArIG5ld19yZXNpZGVuY2UsDQogICAgbW92aW5nID0gZmFjdG9yKA0KICAgICAgbW92aW5nLA0KICAgICAgbGV2ZWxzID0gMDoyLA0KICAgICAgbGFiZWxzID0gYygibm9fbW92ZSIsICJuZXdfcmVzaWRlbmNlIiwNCiAgICAgICAgICAgICAgICAgIm5ld19yZXNpZGVuY2VfbXVuaWNpcGFsaXR5IikNCiAgICApLA0KICAgIG1vdmluZ19mYWMgPSBpZmVsc2UobW92aW5nID09ICJub19tb3ZlIiwgMSwgbW92aW5nKSwNCiAgICBtb3ZpbmdfZmFjID0gaWZlbHNlKG1vdmluZyA9PSAibmV3X3Jlc2lkZW5jZSIsIDIsIG1vdmluZ19mYWMpLA0KICAgIG1vdmluZ19mYWMgPSBpZmVsc2UobW92aW5nID09ICJuZXdfcmVzaWRlbmNlX211bmljaXBhbGl0eSIsIDMsIG1vdmluZ19mYWMpLA0KICAgIG1vdmluZ19mYWMgPSBpZmVsc2UoaXMubmEobW92aW5nKSwgNCwgbW92aW5nX2ZhYyksDQogICAgbW92aW5nX2ZhYyA9IGZhY3RvcigNCiAgICAgIG1vdmluZ19mYWMsDQogICAgICBsZXZlbHMgPSAxOjQsDQogICAgICBsYWJlbHMgPSBjKCJub19tb3ZlIiwgIm5ld19yZXNpZGVuY2UiLA0KICAgICAgICAgICAgICAgICAibmV3X211bmljaXBhbGl0eSIsICJtaXNzaW5nIikNCiAgICApLA0KICAgIGRpdm9yY2VkX2ZhYyA9IGlmZWxzZShpcy5uYShkaXZvcmNlZF9zZXBlcmF0ZWQpLCAyLCBkaXZvcmNlZF9zZXBlcmF0ZWQpLA0KICAgIGRpdm9yY2VkX2ZhYyA9IGZhY3RvcigNCiAgICAgIGRpdm9yY2VkX2ZhYywNCiAgICAgIGxldmVscyA9IDA6MiwNCiAgICAgIGxhYmVscyA9IGMoIm5vdCBkaXZvcmNlZCIsICJkaXZvcmNlZCIsICJtaXNzaW5nIikNCiAgICApDQogICkNCg0KDQojZGl2b3JjZSBhcyB0cmFuc2l0aW9uIGFuZCBldmVudA0KZWdvX2RhdGEgPC0gZWdvX2RhdGEgJT4lDQogIGdyb3VwX2J5KG5vbWVtX2VuY3IpICU+JSANCiAgYXJyYW5nZShub21lbV9lbmNyLCBzdXJ2ZXlfd2F2ZSkgJT4lIA0KICBtdXRhdGUoZGl2b3JjZWRfZXZlbnQgPSBldmVudF90cmFuc2l0aW9uX2YoZXZlbnQgPSBkaXZvcmNlZF9zZXBlcmF0ZWQsDQogICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgIG9wdGlvbiA9ICJldmVudCIpLA0KICAgICAgICAgZGl2b3JjZWRfdHJhbnNpdGlvbiA9IGV2ZW50X3RyYW5zaXRpb25fZihldmVudCA9IGRpdm9yY2VkX3NlcGVyYXRlZCwNCiAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgb3B0aW9uID0gInRyYW5zaXRpb24iLA0KICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICB0aW1lID0gc3VydmV5X3dhdmUpKSAlPiUgDQogIHVuZ3JvdXAoKQ0KDQojbG9zdF9wYXJ0bmVyIGFzIHRyYW5zaXRpb24gYW5kIGV2ZW50DQplZ29fZGF0YSA8LSBlZ29fZGF0YSAlPiUNCiAgZ3JvdXBfYnkobm9tZW1fZW5jcikgJT4lIA0KICBhcnJhbmdlKG5vbWVtX2VuY3IsIHN1cnZleV93YXZlKSAlPiUgDQogIG11dGF0ZShsb3N0X3BhcnRuZXJfZXZlbnQgPSBldmVudF90cmFuc2l0aW9uX2YoZXZlbnQgPSBsb3N0X3BhcnRuZXIsDQogICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgIG9wdGlvbiA9ICJldmVudCIpLA0KICAgICAgICAgbG9zdF9wYXJ0bmVyX3RyYW5zaXRpb24gPSBldmVudF90cmFuc2l0aW9uX2YoZXZlbnQgPSBsb3N0X3BhcnRuZXIsDQogICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgIG9wdGlvbiA9ICJ0cmFuc2l0aW9uIiwNCiAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgdGltZSA9IHN1cnZleV93YXZlKSkgJT4lIA0KICB1bmdyb3VwKCkNCg0KI21vdmluZyBhcyBldmVudCBvciB0cmFuc2l0aW9uLg0KZWdvX2RhdGEgPC0gZWdvX2RhdGEgJT4lDQogIG11dGF0ZShtb3ZlID0gaWZfZWxzZSghaXMubmEobmV3X211bmljaXBhbGl0eSkgPT0gMSB8ICFpcy5uYShuZXdfcmVzaWRlbmNlKSA9PSAxLCAxLCAwKSkgJT4lIA0KICBncm91cF9ieShub21lbV9lbmNyKSAlPiUNCiAgYXJyYW5nZShub21lbV9lbmNyLCBzdXJ2ZXlfd2F2ZSkgJT4lDQogIG11dGF0ZSgNCiAgICBuZXdfbXVuaWNpcGFsaXR5X2V2ZW50ID0gZXZlbnRfdHJhbnNpdGlvbl9mKGV2ZW50ID0gbmV3X211bmljaXBhbGl0eSwNCiAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgIG9wdGlvbiA9ICJldmVudCIpLA0KICAgIG5ld19tdW5pY2lwYWxpdHlfdHJhbnNpdGlvbiA9ICBldmVudF90cmFuc2l0aW9uX2YoDQogICAgICBldmVudCA9IG5ld19tdW5pY2lwYWxpdHksDQogICAgICBvcHRpb24gPSAidHJhbnNpdGlvbiIsDQogICAgICB0aW1lID0gc3VydmV5X3dhdmUNCiAgICApLA0KICAgIG5ld19yZXNpZGVuY2VfZXZlbnQgPSBldmVudF90cmFuc2l0aW9uX2YoZXZlbnQgPSBuZXdfcmVzaWRlbmNlLA0KICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgb3B0aW9uID0gImV2ZW50IiksDQogICAgbmV3X3Jlc2lkZW5jZV90cmFuc2l0aW9uID0gIGV2ZW50X3RyYW5zaXRpb25fZigNCiAgICAgIGV2ZW50ID0gbmV3X3Jlc2lkZW5jZSwNCiAgICAgIG9wdGlvbiA9ICJ0cmFuc2l0aW9uIiwNCiAgICAgIHRpbWUgPSBzdXJ2ZXlfd2F2ZQ0KICAgICksDQogICAgbW92ZV9ldmVudCA9IGV2ZW50X3RyYW5zaXRpb25fZihldmVudCA9IG1vdmUsDQogICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICBvcHRpb24gPSAiZXZlbnQiKSwNCiAgICBtb3ZlX3RyYW5zaXRpb24gPSAgZXZlbnRfdHJhbnNpdGlvbl9mKA0KICAgICAgZXZlbnQgPSBtb3ZlLA0KICAgICAgb3B0aW9uID0gInRyYW5zaXRpb24iLA0KICAgICAgdGltZSA9IHN1cnZleV93YXZlDQogICAgKQ0KICApICU+JSANCiAgdW5ncm91cCgpDQoNCiNlbXBsb3ltZW50IHN0YXR1cyBjaGFuZ2UgYXMgdHJhbnNpdGlvbiBvciBldmVudA0KZWdvX2RhdGEgPC0gZWdvX2RhdGEgJT4lDQogIGdyb3VwX2J5KG5vbWVtX2VuY3IpICU+JSANCiAgYXJyYW5nZShub21lbV9lbmNyLCBzdXJ2ZXlfd2F2ZSkgJT4lIA0KICBtdXRhdGUoZW1wbG95bWVudF9ldmVudCA9IGV2ZW50X3RyYW5zaXRpb25fZihldmVudCA9IGVtcGxveW1lbnQsDQogICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgIG9wdGlvbiA9ICJldmVudCIpLA0KICAgICAgICAgZW1wbG95bWVudF90cmFuc2l0aW9uID0gZXZlbnRfdHJhbnNpdGlvbl9mKGV2ZW50ID0gZW1wbG95bWVudCwNCiAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgb3B0aW9uID0gInRyYW5zaXRpb24iLA0KICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICB0aW1lID0gc3VydmV5X3dhdmUpLA0KICAgICAgICAgcmV0aXJlZF9ldmVudCA9IGV2ZW50X3RyYW5zaXRpb25fZihldmVudCA9IHJldGlyZWQsDQogICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgIG9wdGlvbiA9ICJldmVudCIpLA0KICAgICAgICAgcmV0aXJlZF90cmFuc2l0aW9uID0gZXZlbnRfdHJhbnNpdGlvbl9mKGV2ZW50ID0gcmV0aXJlZCwNCiAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgb3B0aW9uID0gInRyYW5zaXRpb24iLA0KICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICB0aW1lID0gc3VydmV5X3dhdmUpLA0KICAgICAgICAgdW5lbXBsb3llZF9ldmVudCA9IGV2ZW50X3RyYW5zaXRpb25fZihldmVudCA9IHVuZW1wbG95bWVudCwNCiAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgb3B0aW9uID0gImV2ZW50IiksDQogICAgICAgICB1bmVtcGxveWVkX3RyYW5zaXRpb24gPSBldmVudF90cmFuc2l0aW9uX2YoZXZlbnQgPSB1bmVtcGxveW1lbnQsDQogICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgIG9wdGlvbiA9ICJ0cmFuc2l0aW9uIiwNCiAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgdGltZSA9IHN1cnZleV93YXZlKSwNCiAgICAgICAgIA0KICAgICAgICAgKSAlPiUgDQogIHVuZ3JvdXAoKQ0KDQojZmlsbCBlZ28ncyBvcmlnaW4gd2l0aCBpbmZvcm1hdGlvbiBvZiBsYXRlciB3YXZlcy4NCmVnb19kYXRhIDwtIGVnb19kYXRhICU+JQ0KICBncm91cF9ieShub21lbV9lbmNyKSAlPiUNCiAgbXV0YXRlKA0KICAgIG9yaWdpbl9yZWNfbmFyID0gaWZlbHNlKGlzLm5hKG9yaWdpbl9yZWMpLCBtaW4ob3JpZ2luX3JlYywgbmEucm0gPSBUKSwgb3JpZ2luX3JlYyksDQogICAgb3JpZ2luX3JlY19uYXIgPSBpZmVsc2Uob3JpZ2luX3JlY19uYXIgPiAzLCBOQSwgb3JpZ2luX3JlY19uYXIpDQogICkgJT4lDQogIHVuZ3JvdXAoKSAlPiUNCiAgbXV0YXRlKG9yaWdpbl9yZWNfbmFyX2ZhYyA9IGZhY3RvcigNCiAgICBvcmlnaW5fcmVjX25hciwNCiAgICBsZXZlbHMgPSAwOjIsDQogICAgbGFiZWxzID0gYygNCiAgICAgICJObyBtaWdyYXRpb24gYmFja2dyb3VuZCIsDQogICAgICAiTm9uLVdlc3Rlcm4gbWlncmF0aW9uIGJhY2tncm91bmQiLA0KICAgICAgIldlc3Rlcm4gbWlncmF0aW9uIGJhY2tncm91bmQiDQogICAgKQ0KICApKQ0KDQojYWRkIGVnbyBkYXRhLiANCnJlcGVhdGVkX2V2ZW50X2RhdGEgPC0gcmVwZWF0ZWRfZXZlbnRfZGF0YSAlPiUNCiAgbGVmdF9qb2luKGVnb19kYXRhLCBieSA9IGMoIm5vbWVtX2VuY3IiLCAic3VydmV5X3dhdmUiKSkgDQoNCmBgYA0KDQojIEV4cG9ydCBkYXRhDQoNCkV4cG9ydCB0aGUgZWdvIGFsdGVyIHByZXBwZWQgZGF0YSBzbyB3ZSBjYW4gdXNlIGl0IGZvciBjcmVhdGlvbiBvZiBuZXR3b3JrIGRhdGEgYW5kIGZvciBkeWFkIHNpbWlsYXJpdHkgdmFyaWFibGVzLiANCg0KYGBge3IgZXhwb3J0IGRhdGF9DQpzYXZlKHJlcGVhdGVkX2V2ZW50X2RhdGEsIGZpbGUgPSAiZGF0YWZpbGVzL2RhdGEtcHJvY2Vzc2VkL2Rpc2FnZ3JlZ2F0ZWRfZGF0YS8yMDIzLTA2LTEyX2xpc3MtcmVwZWF0ZWQtcmlzay1hbHRlci1lZ28tZGF0YS5yZGEiKQ0Kc2F2ZShlZ29fZGF0YSwNCiAgICAgZmlsZSA9ICJkYXRhZmlsZXMvZGF0YS1wcm9jZXNzZWQvZGlzYWdncmVnYXRlZF9kYXRhLzIwMjMtMDYtMTJfZWdvLWRhdGEucmRhIikNCnNhdmUoYWx0ZXJfZGF0YSwNCiAgICAgZmlsZSA9ICJkYXRhZmlsZXMvZGF0YS1wcm9jZXNzZWQvZGlzYWdncmVnYXRlZF9kYXRhLzIwMjMtMDYtMTJfYWx0ZXItZGF0YS5yZGEiKQ0KDQpgYGANCg0KDQo=</div>
+<style>
+.center {
+  text-align: center;
+  color: black;
+}
+</style>
+
+<hr>
+<br>
+<p class="center">Copyright &copy; 2023 Jeroense Thijmen</p>
+
+
+</div>
+</div>
+
+</div>
+
+<script>
+
+// add bootstrap table styles to pandoc tables
+function bootstrapStylePandocTables() {
+  $('tr.odd').parent('tbody').parent('table').addClass('table table-condensed');
+}
+$(document).ready(function () {
+  bootstrapStylePandocTables();
+});
+
+
+</script>
+
+<!-- tabsets -->
+
+<script>
+$(document).ready(function () {
+  window.buildTabsets("TOC");
+});
+
+$(document).ready(function () {
+  $('.tabset-dropdown > .nav-tabs > li').click(function () {
+    $(this).parent().toggleClass('nav-tabs-open');
+  });
+});
+</script>
+
+<!-- code folding -->
+<script>
+$(document).ready(function () {
+  window.initializeSourceEmbed("03_add-ego-alter-data.Rmd");
+  window.initializeCodeFolding("show" === "show");
+});
+</script>
+
+<script>
+$(document).ready(function ()  {
+
+    // temporarily add toc-ignore selector to headers for the consistency with Pandoc
+    $('.unlisted.unnumbered').addClass('toc-ignore')
+
+    // move toc-ignore selectors from section div to header
+    $('div.section.toc-ignore')
+        .removeClass('toc-ignore')
+        .children('h1,h2,h3,h4,h5').addClass('toc-ignore');
+
+    // establish options
+    var options = {
+      selectors: "h1,h2,h3",
+      theme: "bootstrap3",
+      context: '.toc-content',
+      hashGenerator: function (text) {
+        return text.replace(/[.\\/?&!#<>]/g, '').replace(/\s/g, '_');
+      },
+      ignoreSelector: ".toc-ignore",
+      scrollTo: 0
+    };
+    options.showAndHide = true;
+    options.smoothScroll = true;
+
+    // tocify
+    var toc = $("#TOC").tocify(options).data("toc-tocify");
+});
+</script>
+
+<!-- dynamically load mathjax for compatibility with self-contained -->
+<script>
+  (function () {
+    var script = document.createElement("script");
+    script.type = "text/javascript";
+    script.src  = "https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML";
+    document.getElementsByTagName("head")[0].appendChild(script);
+  })();
+</script>
+
+</body>
+</html>

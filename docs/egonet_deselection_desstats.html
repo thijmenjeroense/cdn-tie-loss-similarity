@@ -1,0 +1,2599 @@
+<!DOCTYPE html>
+
+<html>
+
+<head>
+
+<meta charset="utf-8" />
+<meta name="generator" content="pandoc" />
+<meta http-equiv="X-UA-Compatible" content="IE=EDGE" />
+
+
+<meta name="author" content="Thijmen Jeroense" />
+
+
+<title>Descriptive statistics</title>
+
+<script src="site_libs/header-attrs-2.21/header-attrs.js"></script>
+<script src="site_libs/jquery-3.6.0/jquery-3.6.0.min.js"></script>
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<link href="site_libs/bootstrap-3.3.5/css/flatly.min.css" rel="stylesheet" />
+<script src="site_libs/bootstrap-3.3.5/js/bootstrap.min.js"></script>
+<script src="site_libs/bootstrap-3.3.5/shim/html5shiv.min.js"></script>
+<script src="site_libs/bootstrap-3.3.5/shim/respond.min.js"></script>
+<style>h1 {font-size: 34px;}
+       h1.title {font-size: 38px;}
+       h2 {font-size: 30px;}
+       h3 {font-size: 24px;}
+       h4 {font-size: 18px;}
+       h5 {font-size: 16px;}
+       h6 {font-size: 12px;}
+       code {color: inherit; background-color: rgba(0, 0, 0, 0.04);}
+       pre:not([class]) { background-color: white }</style>
+<script src="site_libs/jqueryui-1.11.4/jquery-ui.min.js"></script>
+<link href="site_libs/tocify-1.9.1/jquery.tocify.css" rel="stylesheet" />
+<script src="site_libs/tocify-1.9.1/jquery.tocify.js"></script>
+<script src="site_libs/navigation-1.1/tabsets.js"></script>
+<script src="site_libs/navigation-1.1/codefolding.js"></script>
+<script src="site_libs/navigation-1.1/sourceembed.js"></script>
+<link href="site_libs/highlightjs-9.12.0/default.css" rel="stylesheet" />
+<script src="site_libs/highlightjs-9.12.0/highlight.js"></script>
+<script src="site_libs/kePrint-0.0.1/kePrint.js"></script>
+<link href="site_libs/lightable-0.0.1/lightable.css" rel="stylesheet" />
+<link href="site_libs/font-awesome-6.2.1/css/all.min.css" rel="stylesheet" />
+<link href="site_libs/font-awesome-6.2.1/css/v4-shims.min.css" rel="stylesheet" />
+
+<style type="text/css">
+  code{white-space: pre-wrap;}
+  span.smallcaps{font-variant: small-caps;}
+  span.underline{text-decoration: underline;}
+  div.column{display: inline-block; vertical-align: top; width: 50%;}
+  div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+  ul.task-list{list-style: none;}
+    </style>
+
+<style type="text/css">code{white-space: pre;}</style>
+<script type="text/javascript">
+if (window.hljs) {
+  hljs.configure({languages: []});
+  hljs.initHighlightingOnLoad();
+  if (document.readyState && document.readyState === "complete") {
+    window.setTimeout(function() { hljs.initHighlighting(); }, 0);
+  }
+}
+</script>
+
+
+
+
+<style type="text/css">
+#rmd-source-code {
+  display: none;
+}
+</style>
+
+
+
+
+
+<style type = "text/css">
+.main-container {
+  max-width: 940px;
+  margin-left: auto;
+  margin-right: auto;
+}
+img {
+  max-width:100%;
+}
+.tabbed-pane {
+  padding-top: 12px;
+}
+.html-widget {
+  margin-bottom: 20px;
+}
+button.code-folding-btn:focus {
+  outline: none;
+}
+summary {
+  display: list-item;
+}
+details > summary > p:only-child {
+  display: inline;
+}
+pre code {
+  padding: 0;
+}
+</style>
+
+
+<style type="text/css">
+.dropdown-submenu {
+  position: relative;
+}
+.dropdown-submenu>.dropdown-menu {
+  top: 0;
+  left: 100%;
+  margin-top: -6px;
+  margin-left: -1px;
+  border-radius: 0 6px 6px 6px;
+}
+.dropdown-submenu:hover>.dropdown-menu {
+  display: block;
+}
+.dropdown-submenu>a:after {
+  display: block;
+  content: " ";
+  float: right;
+  width: 0;
+  height: 0;
+  border-color: transparent;
+  border-style: solid;
+  border-width: 5px 0 5px 5px;
+  border-left-color: #cccccc;
+  margin-top: 5px;
+  margin-right: -10px;
+}
+.dropdown-submenu:hover>a:after {
+  border-left-color: #adb5bd;
+}
+.dropdown-submenu.pull-left {
+  float: none;
+}
+.dropdown-submenu.pull-left>.dropdown-menu {
+  left: -100%;
+  margin-left: 10px;
+  border-radius: 6px 0 6px 6px;
+}
+</style>
+
+<script type="text/javascript">
+// manage active state of menu based on current page
+$(document).ready(function () {
+  // active menu anchor
+  href = window.location.pathname
+  href = href.substr(href.lastIndexOf('/') + 1)
+  if (href === "")
+    href = "index.html";
+  var menuAnchor = $('a[href="' + href + '"]');
+
+  // mark the anchor link active (and if it's in a dropdown, also mark that active)
+  var dropdown = menuAnchor.closest('li.dropdown');
+  if (window.bootstrap) { // Bootstrap 4+
+    menuAnchor.addClass('active');
+    dropdown.find('> .dropdown-toggle').addClass('active');
+  } else { // Bootstrap 3
+    menuAnchor.parent().addClass('active');
+    dropdown.addClass('active');
+  }
+
+  // Navbar adjustments
+  var navHeight = $(".navbar").first().height() + 15;
+  var style = document.createElement('style');
+  var pt = "padding-top: " + navHeight + "px; ";
+  var mt = "margin-top: -" + navHeight + "px; ";
+  var css = "";
+  // offset scroll position for anchor links (for fixed navbar)
+  for (var i = 1; i <= 6; i++) {
+    css += ".section h" + i + "{ " + pt + mt + "}\n";
+  }
+  style.innerHTML = "body {" + pt + "padding-bottom: 40px; }\n" + css;
+  document.head.appendChild(style);
+});
+</script>
+
+<!-- tabsets -->
+
+<style type="text/css">
+.tabset-dropdown > .nav-tabs {
+  display: inline-table;
+  max-height: 500px;
+  min-height: 44px;
+  overflow-y: auto;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+}
+
+.tabset-dropdown > .nav-tabs > li.active:before, .tabset-dropdown > .nav-tabs.nav-tabs-open:before {
+  content: "\e259";
+  font-family: 'Glyphicons Halflings';
+  display: inline-block;
+  padding: 10px;
+  border-right: 1px solid #ddd;
+}
+
+.tabset-dropdown > .nav-tabs.nav-tabs-open > li.active:before {
+  content: "\e258";
+  font-family: 'Glyphicons Halflings';
+  border: none;
+}
+
+.tabset-dropdown > .nav-tabs > li.active {
+  display: block;
+}
+
+.tabset-dropdown > .nav-tabs > li > a,
+.tabset-dropdown > .nav-tabs > li > a:focus,
+.tabset-dropdown > .nav-tabs > li > a:hover {
+  border: none;
+  display: inline-block;
+  border-radius: 4px;
+  background-color: transparent;
+}
+
+.tabset-dropdown > .nav-tabs.nav-tabs-open > li {
+  display: block;
+  float: none;
+}
+
+.tabset-dropdown > .nav-tabs > li {
+  display: none;
+}
+</style>
+
+<!-- code folding -->
+<style type="text/css">
+.code-folding-btn { margin-bottom: 4px; }
+</style>
+
+
+
+<style type="text/css">
+
+#TOC {
+  margin: 25px 0px 20px 0px;
+}
+@media (max-width: 768px) {
+#TOC {
+  position: relative;
+  width: 100%;
+}
+}
+
+@media print {
+.toc-content {
+  /* see https://github.com/w3c/csswg-drafts/issues/4434 */
+  float: right;
+}
+}
+
+.toc-content {
+  padding-left: 30px;
+  padding-right: 40px;
+}
+
+div.main-container {
+  max-width: 1200px;
+}
+
+div.tocify {
+  width: 20%;
+  max-width: 260px;
+  max-height: 85%;
+}
+
+@media (min-width: 768px) and (max-width: 991px) {
+  div.tocify {
+    width: 25%;
+  }
+}
+
+@media (max-width: 767px) {
+  div.tocify {
+    width: 100%;
+    max-width: none;
+  }
+}
+
+.tocify ul, .tocify li {
+  line-height: 20px;
+}
+
+.tocify-subheader .tocify-item {
+  font-size: 0.90em;
+}
+
+.tocify .list-group-item {
+  border-radius: 0px;
+}
+
+
+</style>
+
+
+
+</head>
+
+<body>
+
+
+<div class="container-fluid main-container">
+
+
+<!-- setup 3col/9col grid for toc_float and main content  -->
+<div class="row">
+<div class="col-xs-12 col-sm-4 col-md-3">
+<div id="TOC" class="tocify">
+</div>
+</div>
+
+<div class="toc-content col-xs-12 col-sm-8 col-md-9">
+
+
+
+
+<div class="navbar navbar-default  navbar-fixed-top" role="navigation">
+  <div class="container">
+    <div class="navbar-header">
+      <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-bs-toggle="collapse" data-target="#navbar" data-bs-target="#navbar">
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+      </button>
+      <a class="navbar-brand" href="index.html">Replication Website</a>
+    </div>
+    <div id="navbar" class="navbar-collapse collapse">
+      <ul class="nav navbar-nav">
+        <li>
+  <a href="index.html">
+    <span class="fa fa-info"></span>
+     
+    About
+  </a>
+</li>
+<li class="dropdown">
+  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+    <span class="far fa-file-code"></span>
+     
+    Data preperation
+     
+    <span class="caret"></span>
+  </a>
+  <ul class="dropdown-menu" role="menu">
+    <li>
+      <a href="merging-liss.html">1 Merging LISS core module</a>
+    </li>
+    <li>
+      <a href="01_risk-data-prep.html">2 Risk dataset</a>
+    </li>
+    <li>
+      <a href="02_repeated-risk-data-prep.html">3 Repeated risk dataset</a>
+    </li>
+    <li>
+      <a href="03_add-ego-alter-data.html">4 Add ego and alter data</a>
+    </li>
+    <li>
+      <a href="04_network-dyad-variables.html">5 Dyad and Network variables</a>
+    </li>
+    <li>
+      <a href="05_imputation.html">6 Missing imputation</a>
+    </li>
+  </ul>
+</li>
+<li class="dropdown">
+  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+    <span class="fa fa-bar-chart"></span>
+     
+    Analysis
+     
+    <span class="caret"></span>
+  </a>
+  <ul class="dropdown-menu" role="menu">
+    <li>
+      <a href="egonet_deselection_desstats.html">1 Descriptive statistics</a>
+    </li>
+    <li>
+      <a href="egonet-main-analysis.html">2 Replication main results</a>
+    </li>
+  </ul>
+</li>
+<li class="dropdown">
+  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+    <span class="fa fa-shield"></span>
+     
+    Robustness
+     
+    <span class="caret"></span>
+  </a>
+  <ul class="dropdown-menu" role="menu">
+    <li class="dropdown-header">Recreate appendix analyses</li>
+    <li>
+      <a href="egonet_robustness_diff.html"></a>
+    </li>
+  </ul>
+</li>
+      </ul>
+      <ul class="nav navbar-nav navbar-right">
+        <li>
+  <a href="https://github.com/tmgjer/egonet_deselection">
+    <span class="fab fa-github"></span>
+     
+    Github
+  </a>
+</li>
+      </ul>
+    </div><!--/.nav-collapse -->
+  </div><!--/.container -->
+</div><!--/.navbar -->
+
+<div id="header">
+
+<div class="btn-group pull-right float-right">
+<button type="button" class="btn btn-default btn-xs btn-secondary btn-sm dropdown-toggle" data-toggle="dropdown" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><span>Code</span> <span class="caret"></span></button>
+<ul class="dropdown-menu dropdown-menu-right" style="min-width: 50px;">
+<li><a id="rmd-show-all-code" href="#">Show All Code</a></li>
+<li><a id="rmd-hide-all-code" href="#">Hide All Code</a></li>
+<li role="separator" class="divider"></li>
+<li><a id="rmd-download-source" href="#">Download Rmd</a></li>
+</ul>
+</div>
+
+
+
+<h1 class="title toc-ignore">Descriptive statistics</h1>
+<h4 class="author">Thijmen Jeroense</h4>
+<h4 class="date">Last compiled on 22 september, 2023</h4>
+
+</div>
+
+
+<div id="descriptive-statistics" class="section level1">
+<h1>Descriptive statistics</h1>
+<p>Goal of this script is to show how to recreate the different tables
+and graphs in our paper.</p>
+</div>
+<div id="set-up" class="section level1">
+<h1>Set up</h1>
+<div id="packages" class="section level2">
+<h2>Packages</h2>
+<pre class="r"><code>#library
+library(tidyverse)
+library(data.table)
+library(kableExtra)
+library(patchwork)
+library(ggpubr)
+library(lme4)
+library(viridis)
+library(survival)
+library(broom)
+library(ggthemes)</code></pre>
+</div>
+<div id="import" class="section level2">
+<h2>Import</h2>
+<pre class="r"><code>#load prepared data.
+load(&quot;datafiles/data-processed/disaggregated_data/2022-06-13_dyad-survival-data-imputed.rda&quot;)
+
+MyData &lt;- nonkin_survival_data_lead_dependent_imputed
+
+#change scientific notation
+options(scipen = 999)
+
+#rename dropped_lead into dropped, so we can easily repreoduce this code.
+MyData &lt;- MyData %&gt;% 
+  rename(dropped = dropped_lead)</code></pre>
+<pre class="r"><code>#last dataprep
+MyData &lt;- MyData %&gt;%
+  mutate(
+    educ_ego = educ_ego - 4,
+    age = leeftijd - 15,
+    age_sq = age * age,
+    age_alter = age_alter - 1,
+    educ_alter = educ_alter - 4,
+    length_rel_member = length_rel_member - 1,
+    length_rel_total = length_rel_total - 1,
+    size = size - 1,
+    ei_alter_gender_rev = (2 - (MyData$ei_alter_gender + 1)) - 1,
+    ei_alter_ethnicity_rev = (2 - (MyData$ei_alter_ethnicity + 1)) - 1,
+    origin_rec_nar = ifelse(is.na(origin_rec_nar), 3, origin_rec_nar),
+    origin_rec_nar_fac = factor(
+      origin_rec_nar,
+      levels = 0:3,
+      labels = c(&quot;None&quot;, &quot;Non-western&quot;, &quot;Western&quot;, &quot;Missing&quot;)
+    ),
+    origin_alter_rec = ifelse(is.na(origin_alter_rec), 3, origin_alter_rec),
+    origin_alter_rec_fac = factor(
+      origin_alter_rec,
+      levels = 0:3,
+      labels = c(&quot;None&quot;, &quot;Non-western&quot;, &quot;Western&quot;, &quot;Missing&quot;)
+    ),
+    length = ifelse(is.na(length), 4, length),
+    length_fac = factor(
+      length,
+      levels = 1:4,
+      labels = c(&quot;&lt; 3 years&quot;,
+                 &quot;3 - 6 years&quot;,
+                 &quot;&gt; 6 years&quot;, 
+                 &quot;Length missing&quot;)
+      )
+    )
+
+#scale variables for me models
+MyData &lt;- MyData %&gt;% 
+  mutate(avsim_alter_educ_cen = scale(avsim_alter_educ),
+         avsim_alter_age_cen = scale(avsim_alter_age),
+         ei_alter_gender_rev_cen = scale(ei_alter_gender_rev),
+         ei_alter_ethnicity_rev_cen = scale(ei_alter_ethnicity_rev),
+         length_rel_member_cen = scale(length_rel_member),
+         length_rel_total_cen = scale(length_rel_total),
+         size_cen = scale(size),
+         degree_cen = scale(degree))</code></pre>
+</div>
+</div>
+<div id="descriptive-statistics-1" class="section level1">
+<h1>Descriptive statistics</h1>
+<div id="descriptive-statistics-table" class="section level2">
+<h2>Descriptive statistics table</h2>
+<p>Full descriptive statistics table of the variables in the final
+sample as used in the paper.</p>
+<pre class="r"><code>#create descriptive statistics table
+desstats_table &lt;- MyData %&gt;%
+  mutate(
+    no_mig = ifelse(origin_rec_nar == 0, 1, 0),
+    nonwestern_mig = ifelse(origin_rec_nar == 1, 1, 0),
+    western_mig =  ifelse(origin_rec_nar == 2, 1, 0),
+    no_mig_a =  ifelse(origin_alter_rec == 0, 1, 0),
+    nonwestern_mig_a =  ifelse(origin_alter_rec == 1, 1, 0),
+    western_mig_a =  ifelse(origin_alter_rec == 2, 1, 0),
+    rel_a_b3 = ifelse(length == 1, 1, 0),
+    rel_a_36 = ifelse(length == 2, 1, 0),
+    rel_a_o6 = ifelse(length == 3, 1, 0),
+    rel_missing = ifelse(is.na(length), 1, 0),
+    partner_fam = ifelse(as.numeric(rel_alter_rec) == 1, 1, 0),
+    closefam = ifelse(as.numeric(rel_alter_rec) == 2, 1, 0),
+    otherfam = ifelse(as.numeric(rel_alter_rec) == 3, 1, 0),
+    coll = ifelse(as.numeric(rel_alter_rec) == 4, 1, 0),
+    samegroup = ifelse(as.numeric(rel_alter_rec) == 5, 1, 0),
+    neighbour = ifelse(as.numeric(rel_alter_rec) == 6, 1, 0),
+    friend = ifelse(as.numeric(rel_alter_rec) == 7, 1, 0),
+    advisor = ifelse(as.numeric(rel_alter_rec) == 8, 1, 0),
+    otherrel = ifelse(as.numeric(rel_alter_rec) == 9, 1, 0),
+    not_dear = ifelse(as.numeric(dear_alter_rec) == 0, 1, 0),
+    dear = ifelse(as.numeric(dear_alter_rec) == 1, 1, 0),
+    not_asked = ifelse(as.numeric(dear_alter_rec) == 2, 1, 0),
+    not_divorced = ifelse(as.numeric(divorced_fac) == 1, 1, 0),
+    divorced = ifelse(as.numeric(divorced_fac) == 2, 1, 0),
+    divorced_missing = ifelse(as.numeric(divorced_fac) == 3, 1, 0),
+    no_move = ifelse(as.numeric(moving_fac) == 1, 1, 0),
+    new_res = ifelse(as.numeric(moving_fac) == 2, 1, 0),
+    new_mun = ifelse(as.numeric(moving_fac) == 3, 1, 0),
+    move_mis = ifelse(as.numeric(moving_fac) == 4, 1, 0),
+    female = ifelse(as.numeric(gender_fac) == 2, 1, 0),
+    first_child_rec = ifelse(first_child == 1, 1, 0),
+    first_child_missing = ifelse(first_child == 2, 1, 0),
+    female_alter = ifelse(gender_alter_fac == &quot;Female&quot;, 1, 0),
+    male_alter = ifelse(gender_alter_fac == &quot;Male&quot;, 1, 0),
+    missing_gender_alter = ifelse(gender_alter_fac == &quot;Missing&quot;, 1, 0)
+  ) %&gt;%
+  select(
+    dropped,
+    dyad_educ_sim_cen,
+    dyad_gender_sim_cen,
+    dyad_age_sim_cen,
+    dyad_ethnicity_sim_cen,
+    avsim_alter_educ_cen,
+    avsim_alter_age_cen,
+    ei_alter_gender_rev_cen,
+    ei_alter_ethnicity_rev_cen,
+    not_dear,
+    dear,
+    not_asked,
+    degree_cen,
+    educ_ego_cen,
+    age_cen,
+    female,
+    no_mig,
+    nonwestern_mig,
+    western_mig,
+    divorced,
+    new_res,
+    new_mun,
+    first_child_rec,
+    educ_alter_cen,
+    age_alter_cen,
+    female_alter,
+    no_mig_a,
+    nonwestern_mig_a,
+    western_mig_a,
+    coll,
+    samegroup,
+    neighbour,
+    friend,
+    advisor,
+    otherrel,
+    times_dropped_earlier_cen,
+    rel_a_b3,
+    rel_a_36,
+    rel_a_o6,
+    net_density_cen,
+    size_cen,
+    censor
+  ) %&gt;%
+  psych::describe() %&gt;%
+  mutate(
+    name = c(
+      &quot;Dropped&quot;,
+      &quot;Dyadic similarity: education&quot;,
+      &quot;Dyadic similarity: gender&quot;,
+      &quot;Dyadic similarity: age&quot;,
+      &quot;Dyadic similarity: ethnicity&quot;,
+      &quot;Confidant uniqueness education&quot;,
+      &quot;Confidant uniquenessy age&quot;,
+      &quot;Confidant uniqueness gender&quot;,
+      &quot;Confidant uniqueness ethnicity&quot;,
+      &quot;Confidant is not dear&quot;,
+      &quot;Confidant is dear&quot;,
+      &quot;Closeness not asked&quot;,
+      &quot;Embeddedness&quot;,
+      &quot;Education ego&quot;,
+      &quot;Age&quot;,
+      &quot;Female&quot;,
+      &quot;No migration background&quot;,
+      &quot;Non-western migration background&quot;,
+      &quot;Western migration background&quot;,
+      &quot;Divorced (ref. not)&quot;,
+      &quot;New residence (ref. no move)&quot;,
+      &quot;New municipality&quot;,
+      &quot;First child born&quot;,
+      &quot;Education alter&quot;,
+      &quot;Age alter&quot;,
+      &quot;Alter is female&quot;,
+      &quot;No migration background confidant &quot;,
+      &quot;Non-western migration background confidant&quot;,
+      &quot;Western migration background confidant&quot;,
+      &quot;Colleague&quot;,
+      &quot;Same group or club&quot;,
+      &quot;Neighbour&quot;,
+      &quot;Friend&quot;,
+      &quot;Advisor&quot;,
+      &quot;Other relation&quot;,
+      &quot;Times dropped earlier&quot;,
+      &quot;Knows confidant for &lt; 3 years&quot;,
+      &quot;Knows confidant for 3-6 years&quot;,
+      &quot;Knows confidant  &gt; 6 years&quot;,
+      &quot;Net density&quot;,
+      &quot;Net size&quot;,
+      &quot;Censored&quot;
+    )
+  ) %&gt;%
+  select(name, n, mean, sd, median, min, max)
+
+desstats_table %&gt;%
+  kbl(caption = &quot;Table 1. Descriptive statistics of discrete time hazard models 1-6&quot;,
+      digits = 3,
+      row.names = F) %&gt;%
+  kable_classic(
+    full_width = F,
+    bootstrap_options = c(&quot;hover&quot;, &quot;condensed&quot;),
+    fixed_thead = T
+  )</code></pre>
+<table class=" lightable-classic" style="font-family: &quot;Arial Narrow&quot;, &quot;Source Sans Pro&quot;, sans-serif; width: auto !important; margin-left: auto; margin-right: auto;">
+<caption>
+Table 1. Descriptive statistics of discrete time hazard models 1-6
+</caption>
+<thead>
+<tr>
+<th style="text-align:left;position: sticky; top:0; background-color: #FFFFFF;">
+name
+</th>
+<th style="text-align:right;position: sticky; top:0; background-color: #FFFFFF;">
+n
+</th>
+<th style="text-align:right;position: sticky; top:0; background-color: #FFFFFF;">
+mean
+</th>
+<th style="text-align:right;position: sticky; top:0; background-color: #FFFFFF;">
+sd
+</th>
+<th style="text-align:right;position: sticky; top:0; background-color: #FFFFFF;">
+median
+</th>
+<th style="text-align:right;position: sticky; top:0; background-color: #FFFFFF;">
+min
+</th>
+<th style="text-align:right;position: sticky; top:0; background-color: #FFFFFF;">
+max
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:left;">
+Dropped
+</td>
+<td style="text-align:right;">
+49449
+</td>
+<td style="text-align:right;">
+0.643
+</td>
+<td style="text-align:right;">
+0.479
+</td>
+<td style="text-align:right;">
+1.000
+</td>
+<td style="text-align:right;">
+0.000
+</td>
+<td style="text-align:right;">
+1.000
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+Dyadic similarity: education
+</td>
+<td style="text-align:right;">
+49449
+</td>
+<td style="text-align:right;">
+0.000
+</td>
+<td style="text-align:right;">
+1.000
+</td>
+<td style="text-align:right;">
+0.364
+</td>
+<td style="text-align:right;">
+-4.982
+</td>
+<td style="text-align:right;">
+0.850
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+Dyadic similarity: gender
+</td>
+<td style="text-align:right;">
+49449
+</td>
+<td style="text-align:right;">
+0.000
+</td>
+<td style="text-align:right;">
+1.000
+</td>
+<td style="text-align:right;">
+0.459
+</td>
+<td style="text-align:right;">
+-2.184
+</td>
+<td style="text-align:right;">
+0.459
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+Dyadic similarity: age
+</td>
+<td style="text-align:right;">
+49449
+</td>
+<td style="text-align:right;">
+0.000
+</td>
+<td style="text-align:right;">
+1.000
+</td>
+<td style="text-align:right;">
+-0.008
+</td>
+<td style="text-align:right;">
+-8.310
+</td>
+<td style="text-align:right;">
+0.747
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+Dyadic similarity: ethnicity
+</td>
+<td style="text-align:right;">
+49449
+</td>
+<td style="text-align:right;">
+0.000
+</td>
+<td style="text-align:right;">
+1.000
+</td>
+<td style="text-align:right;">
+0.420
+</td>
+<td style="text-align:right;">
+-2.542
+</td>
+<td style="text-align:right;">
+0.420
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+Confidant uniqueness education
+</td>
+<td style="text-align:right;">
+49449
+</td>
+<td style="text-align:right;">
+0.000
+</td>
+<td style="text-align:right;">
+1.000
+</td>
+<td style="text-align:right;">
+0.000
+</td>
+<td style="text-align:right;">
+-6.311
+</td>
+<td style="text-align:right;">
+1.271
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+Confidant uniquenessy age
+</td>
+<td style="text-align:right;">
+49449
+</td>
+<td style="text-align:right;">
+0.000
+</td>
+<td style="text-align:right;">
+1.000
+</td>
+<td style="text-align:right;">
+0.097
+</td>
+<td style="text-align:right;">
+-7.208
+</td>
+<td style="text-align:right;">
+1.344
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+Confidant uniqueness gender
+</td>
+<td style="text-align:right;">
+49449
+</td>
+<td style="text-align:right;">
+0.000
+</td>
+<td style="text-align:right;">
+1.000
+</td>
+<td style="text-align:right;">
+0.144
+</td>
+<td style="text-align:right;">
+-2.084
+</td>
+<td style="text-align:right;">
+1.258
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+Confidant uniqueness ethnicity
+</td>
+<td style="text-align:right;">
+49449
+</td>
+<td style="text-align:right;">
+0.000
+</td>
+<td style="text-align:right;">
+1.000
+</td>
+<td style="text-align:right;">
+0.398
+</td>
+<td style="text-align:right;">
+-3.840
+</td>
+<td style="text-align:right;">
+0.398
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+Confidant is not dear
+</td>
+<td style="text-align:right;">
+49449
+</td>
+<td style="text-align:right;">
+0.249
+</td>
+<td style="text-align:right;">
+0.432
+</td>
+<td style="text-align:right;">
+0.000
+</td>
+<td style="text-align:right;">
+0.000
+</td>
+<td style="text-align:right;">
+1.000
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+Confidant is dear
+</td>
+<td style="text-align:right;">
+49449
+</td>
+<td style="text-align:right;">
+0.106
+</td>
+<td style="text-align:right;">
+0.308
+</td>
+<td style="text-align:right;">
+0.000
+</td>
+<td style="text-align:right;">
+0.000
+</td>
+<td style="text-align:right;">
+1.000
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+Closeness not asked
+</td>
+<td style="text-align:right;">
+49449
+</td>
+<td style="text-align:right;">
+0.645
+</td>
+<td style="text-align:right;">
+0.479
+</td>
+<td style="text-align:right;">
+1.000
+</td>
+<td style="text-align:right;">
+0.000
+</td>
+<td style="text-align:right;">
+1.000
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+Embeddedness
+</td>
+<td style="text-align:right;">
+49449
+</td>
+<td style="text-align:right;">
+0.000
+</td>
+<td style="text-align:right;">
+1.000
+</td>
+<td style="text-align:right;">
+-0.229
+</td>
+<td style="text-align:right;">
+-1.791
+</td>
+<td style="text-align:right;">
+1.332
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+Education ego
+</td>
+<td style="text-align:right;">
+49449
+</td>
+<td style="text-align:right;">
+0.000
+</td>
+<td style="text-align:right;">
+1.000
+</td>
+<td style="text-align:right;">
+-0.202
+</td>
+<td style="text-align:right;">
+-2.782
+</td>
+<td style="text-align:right;">
+1.346
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+Age
+</td>
+<td style="text-align:right;">
+49449
+</td>
+<td style="text-align:right;">
+0.000
+</td>
+<td style="text-align:right;">
+1.000
+</td>
+<td style="text-align:right;">
+0.042
+</td>
+<td style="text-align:right;">
+-1.722
+</td>
+<td style="text-align:right;">
+3.115
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+Female
+</td>
+<td style="text-align:right;">
+49449
+</td>
+<td style="text-align:right;">
+0.567
+</td>
+<td style="text-align:right;">
+0.496
+</td>
+<td style="text-align:right;">
+1.000
+</td>
+<td style="text-align:right;">
+0.000
+</td>
+<td style="text-align:right;">
+1.000
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+No migration background
+</td>
+<td style="text-align:right;">
+49449
+</td>
+<td style="text-align:right;">
+0.817
+</td>
+<td style="text-align:right;">
+0.387
+</td>
+<td style="text-align:right;">
+1.000
+</td>
+<td style="text-align:right;">
+0.000
+</td>
+<td style="text-align:right;">
+1.000
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+Non-western migration background
+</td>
+<td style="text-align:right;">
+49449
+</td>
+<td style="text-align:right;">
+0.045
+</td>
+<td style="text-align:right;">
+0.208
+</td>
+<td style="text-align:right;">
+0.000
+</td>
+<td style="text-align:right;">
+0.000
+</td>
+<td style="text-align:right;">
+1.000
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+Western migration background
+</td>
+<td style="text-align:right;">
+49449
+</td>
+<td style="text-align:right;">
+0.080
+</td>
+<td style="text-align:right;">
+0.272
+</td>
+<td style="text-align:right;">
+0.000
+</td>
+<td style="text-align:right;">
+0.000
+</td>
+<td style="text-align:right;">
+1.000
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+Divorced (ref. not)
+</td>
+<td style="text-align:right;">
+49449
+</td>
+<td style="text-align:right;">
+0.023
+</td>
+<td style="text-align:right;">
+0.149
+</td>
+<td style="text-align:right;">
+0.000
+</td>
+<td style="text-align:right;">
+0.000
+</td>
+<td style="text-align:right;">
+1.000
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+New residence (ref. no move)
+</td>
+<td style="text-align:right;">
+49449
+</td>
+<td style="text-align:right;">
+0.019
+</td>
+<td style="text-align:right;">
+0.135
+</td>
+<td style="text-align:right;">
+0.000
+</td>
+<td style="text-align:right;">
+0.000
+</td>
+<td style="text-align:right;">
+1.000
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+New municipality
+</td>
+<td style="text-align:right;">
+49449
+</td>
+<td style="text-align:right;">
+0.009
+</td>
+<td style="text-align:right;">
+0.096
+</td>
+<td style="text-align:right;">
+0.000
+</td>
+<td style="text-align:right;">
+0.000
+</td>
+<td style="text-align:right;">
+1.000
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+First child born
+</td>
+<td style="text-align:right;">
+49449
+</td>
+<td style="text-align:right;">
+0.003
+</td>
+<td style="text-align:right;">
+0.055
+</td>
+<td style="text-align:right;">
+0.000
+</td>
+<td style="text-align:right;">
+0.000
+</td>
+<td style="text-align:right;">
+1.000
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+Education alter
+</td>
+<td style="text-align:right;">
+49449
+</td>
+<td style="text-align:right;">
+0.000
+</td>
+<td style="text-align:right;">
+1.000
+</td>
+<td style="text-align:right;">
+-0.287
+</td>
+<td style="text-align:right;">
+-3.081
+</td>
+<td style="text-align:right;">
+1.389
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+Age alter
+</td>
+<td style="text-align:right;">
+49449
+</td>
+<td style="text-align:right;">
+0.000
+</td>
+<td style="text-align:right;">
+1.000
+</td>
+<td style="text-align:right;">
+-0.072
+</td>
+<td style="text-align:right;">
+-1.889
+</td>
+<td style="text-align:right;">
+1.744
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+Alter is female
+</td>
+<td style="text-align:right;">
+49449
+</td>
+<td style="text-align:right;">
+0.590
+</td>
+<td style="text-align:right;">
+0.492
+</td>
+<td style="text-align:right;">
+1.000
+</td>
+<td style="text-align:right;">
+0.000
+</td>
+<td style="text-align:right;">
+1.000
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+No migration background confidant
+</td>
+<td style="text-align:right;">
+49449
+</td>
+<td style="text-align:right;">
+0.918
+</td>
+<td style="text-align:right;">
+0.274
+</td>
+<td style="text-align:right;">
+1.000
+</td>
+<td style="text-align:right;">
+0.000
+</td>
+<td style="text-align:right;">
+1.000
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+Non-western migration background confidant
+</td>
+<td style="text-align:right;">
+49449
+</td>
+<td style="text-align:right;">
+0.047
+</td>
+<td style="text-align:right;">
+0.212
+</td>
+<td style="text-align:right;">
+0.000
+</td>
+<td style="text-align:right;">
+0.000
+</td>
+<td style="text-align:right;">
+1.000
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+Western migration background confidant
+</td>
+<td style="text-align:right;">
+49449
+</td>
+<td style="text-align:right;">
+0.029
+</td>
+<td style="text-align:right;">
+0.167
+</td>
+<td style="text-align:right;">
+0.000
+</td>
+<td style="text-align:right;">
+0.000
+</td>
+<td style="text-align:right;">
+1.000
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+Colleague
+</td>
+<td style="text-align:right;">
+49449
+</td>
+<td style="text-align:right;">
+0.094
+</td>
+<td style="text-align:right;">
+0.291
+</td>
+<td style="text-align:right;">
+0.000
+</td>
+<td style="text-align:right;">
+0.000
+</td>
+<td style="text-align:right;">
+1.000
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+Same group or club
+</td>
+<td style="text-align:right;">
+49449
+</td>
+<td style="text-align:right;">
+0.045
+</td>
+<td style="text-align:right;">
+0.206
+</td>
+<td style="text-align:right;">
+0.000
+</td>
+<td style="text-align:right;">
+0.000
+</td>
+<td style="text-align:right;">
+1.000
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+Neighbour
+</td>
+<td style="text-align:right;">
+49449
+</td>
+<td style="text-align:right;">
+0.059
+</td>
+<td style="text-align:right;">
+0.235
+</td>
+<td style="text-align:right;">
+0.000
+</td>
+<td style="text-align:right;">
+0.000
+</td>
+<td style="text-align:right;">
+1.000
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+Friend
+</td>
+<td style="text-align:right;">
+49449
+</td>
+<td style="text-align:right;">
+0.753
+</td>
+<td style="text-align:right;">
+0.431
+</td>
+<td style="text-align:right;">
+1.000
+</td>
+<td style="text-align:right;">
+0.000
+</td>
+<td style="text-align:right;">
+1.000
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+Advisor
+</td>
+<td style="text-align:right;">
+49449
+</td>
+<td style="text-align:right;">
+0.010
+</td>
+<td style="text-align:right;">
+0.101
+</td>
+<td style="text-align:right;">
+0.000
+</td>
+<td style="text-align:right;">
+0.000
+</td>
+<td style="text-align:right;">
+1.000
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+Other relation
+</td>
+<td style="text-align:right;">
+49449
+</td>
+<td style="text-align:right;">
+0.037
+</td>
+<td style="text-align:right;">
+0.190
+</td>
+<td style="text-align:right;">
+0.000
+</td>
+<td style="text-align:right;">
+0.000
+</td>
+<td style="text-align:right;">
+1.000
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+Times dropped earlier
+</td>
+<td style="text-align:right;">
+49449
+</td>
+<td style="text-align:right;">
+0.000
+</td>
+<td style="text-align:right;">
+1.000
+</td>
+<td style="text-align:right;">
+-0.384
+</td>
+<td style="text-align:right;">
+-0.384
+</td>
+<td style="text-align:right;">
+8.772
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+Knows confidant for &lt; 3 years
+</td>
+<td style="text-align:right;">
+49449
+</td>
+<td style="text-align:right;">
+0.116
+</td>
+<td style="text-align:right;">
+0.320
+</td>
+<td style="text-align:right;">
+0.000
+</td>
+<td style="text-align:right;">
+0.000
+</td>
+<td style="text-align:right;">
+1.000
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+Knows confidant for 3-6 years
+</td>
+<td style="text-align:right;">
+49449
+</td>
+<td style="text-align:right;">
+0.175
+</td>
+<td style="text-align:right;">
+0.380
+</td>
+<td style="text-align:right;">
+0.000
+</td>
+<td style="text-align:right;">
+0.000
+</td>
+<td style="text-align:right;">
+1.000
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+Knows confidant &gt; 6 years
+</td>
+<td style="text-align:right;">
+49449
+</td>
+<td style="text-align:right;">
+0.701
+</td>
+<td style="text-align:right;">
+0.458
+</td>
+<td style="text-align:right;">
+1.000
+</td>
+<td style="text-align:right;">
+0.000
+</td>
+<td style="text-align:right;">
+1.000
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+Net density
+</td>
+<td style="text-align:right;">
+49449
+</td>
+<td style="text-align:right;">
+0.000
+</td>
+<td style="text-align:right;">
+1.000
+</td>
+<td style="text-align:right;">
+0.275
+</td>
+<td style="text-align:right;">
+-2.714
+</td>
+<td style="text-align:right;">
+0.873
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+Net size
+</td>
+<td style="text-align:right;">
+49449
+</td>
+<td style="text-align:right;">
+0.000
+</td>
+<td style="text-align:right;">
+1.000
+</td>
+<td style="text-align:right;">
+0.762
+</td>
+<td style="text-align:right;">
+-2.824
+</td>
+<td style="text-align:right;">
+0.762
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+Censored
+</td>
+<td style="text-align:right;">
+49449
+</td>
+<td style="text-align:right;">
+0.158
+</td>
+<td style="text-align:right;">
+0.365
+</td>
+<td style="text-align:right;">
+0.000
+</td>
+<td style="text-align:right;">
+0.000
+</td>
+<td style="text-align:right;">
+1.000
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+<div id="describing-confidant-loss" class="section level2">
+<h2>Describing confidant loss</h2>
+<div id="life-table" class="section level3">
+<h3>Life table</h3>
+<p>Recreate a life-table with the survival package. This is a KM fit,
+from which we can create a graphical representation of the survival and
+hazard function.</p>
+<pre class="r"><code>#extract number of dyads, ego, and dyad spells
+dyad_ids &lt;- unique(MyData$dyad_id)
+ego_ids &lt;- unique(MyData$nomem_encr)
+process_ids &lt;- unique(MyData$process_id)
+
+#create survival data to use with surcfit. 
+survival_data &lt;- MyData %&gt;%
+  group_by(process_id) %&gt;%
+  filter(time == max(time)) %&gt;%
+  ungroup()
+
+#estimate KM 
+km_fit &lt;- survfit(Surv(time, 1-censor) ~ 1, data=survival_data, se.fit = T)
+
+#life table
+km_fit %&gt;%
+  tidy() %&gt;%
+  select(1:5) %&gt;%
+  mutate(hazard = n.event / n.risk,
+         time = time) %&gt;%
+  rename(period = time,
+         survival = estimate) %&gt;%
+  kbl(caption = &quot;Table 1. Life table&quot;,
+      digits = 3,
+      row.names = F) %&gt;%
+  kable_classic(
+    full_width = F,
+    bootstrap_options = c(&quot;hover&quot;, &quot;condensed&quot;),
+    fixed_thead = T
+  )</code></pre>
+<table class=" lightable-classic" style="font-family: &quot;Arial Narrow&quot;, &quot;Source Sans Pro&quot;, sans-serif; width: auto !important; margin-left: auto; margin-right: auto;">
+<caption>
+Table 1. Life table
+</caption>
+<thead>
+<tr>
+<th style="text-align:right;position: sticky; top:0; background-color: #FFFFFF;">
+period
+</th>
+<th style="text-align:right;position: sticky; top:0; background-color: #FFFFFF;">
+n.risk
+</th>
+<th style="text-align:right;position: sticky; top:0; background-color: #FFFFFF;">
+n.event
+</th>
+<th style="text-align:right;position: sticky; top:0; background-color: #FFFFFF;">
+n.censor
+</th>
+<th style="text-align:right;position: sticky; top:0; background-color: #FFFFFF;">
+survival
+</th>
+<th style="text-align:right;position: sticky; top:0; background-color: #FFFFFF;">
+hazard
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:right;">
+1
+</td>
+<td style="text-align:right;">
+35526
+</td>
+<td style="text-align:right;">
+26170
+</td>
+<td style="text-align:right;">
+2105
+</td>
+<td style="text-align:right;">
+0.263
+</td>
+<td style="text-align:right;">
+0.737
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+2
+</td>
+<td style="text-align:right;">
+7251
+</td>
+<td style="text-align:right;">
+3489
+</td>
+<td style="text-align:right;">
+696
+</td>
+<td style="text-align:right;">
+0.137
+</td>
+<td style="text-align:right;">
+0.481
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+3
+</td>
+<td style="text-align:right;">
+3066
+</td>
+<td style="text-align:right;">
+1156
+</td>
+<td style="text-align:right;">
+363
+</td>
+<td style="text-align:right;">
+0.085
+</td>
+<td style="text-align:right;">
+0.377
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+4
+</td>
+<td style="text-align:right;">
+1547
+</td>
+<td style="text-align:right;">
+484
+</td>
+<td style="text-align:right;">
+197
+</td>
+<td style="text-align:right;">
+0.058
+</td>
+<td style="text-align:right;">
+0.313
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+5
+</td>
+<td style="text-align:right;">
+866
+</td>
+<td style="text-align:right;">
+235
+</td>
+<td style="text-align:right;">
+107
+</td>
+<td style="text-align:right;">
+0.043
+</td>
+<td style="text-align:right;">
+0.271
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+6
+</td>
+<td style="text-align:right;">
+524
+</td>
+<td style="text-align:right;">
+121
+</td>
+<td style="text-align:right;">
+89
+</td>
+<td style="text-align:right;">
+0.033
+</td>
+<td style="text-align:right;">
+0.231
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+7
+</td>
+<td style="text-align:right;">
+314
+</td>
+<td style="text-align:right;">
+73
+</td>
+<td style="text-align:right;">
+44
+</td>
+<td style="text-align:right;">
+0.025
+</td>
+<td style="text-align:right;">
+0.232
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+8
+</td>
+<td style="text-align:right;">
+197
+</td>
+<td style="text-align:right;">
+49
+</td>
+<td style="text-align:right;">
+47
+</td>
+<td style="text-align:right;">
+0.019
+</td>
+<td style="text-align:right;">
+0.249
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+9
+</td>
+<td style="text-align:right;">
+101
+</td>
+<td style="text-align:right;">
+20
+</td>
+<td style="text-align:right;">
+24
+</td>
+<td style="text-align:right;">
+0.015
+</td>
+<td style="text-align:right;">
+0.198
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+10
+</td>
+<td style="text-align:right;">
+57
+</td>
+<td style="text-align:right;">
+10
+</td>
+<td style="text-align:right;">
+47
+</td>
+<td style="text-align:right;">
+0.012
+</td>
+<td style="text-align:right;">
+0.175
+</td>
+</tr>
+</tbody>
+</table>
+<pre class="r"><code>#export life table for office
+life_table &lt;- km_fit %&gt;%
+  tidy() %&gt;%
+  select(1:5) %&gt;%
+  mutate(hazard = n.event / n.risk,
+         time = time) %&gt;%
+  rename(period = time,
+         survival = estimate) </code></pre>
+</div>
+<div id="histogram-of-confidant-loss" class="section level3">
+<h3>Histogram of confidant loss</h3>
+<p>Recreate the histogram of confidant loss. These show the number of
+observations per wave and also a presentation of a random set of dyad
+spells.</p>
+<pre class="r"><code>survival_hist &lt;- survival_data %&gt;%
+  mutate(censor  = factor(
+    censor,
+    levels = 0:1,
+    labels = c(&quot;Lossed&quot;, &quot;Censored&quot;)
+  )) %&gt;%
+  ggplot(aes(x = time, fill = as.factor(censor))) +
+  geom_histogram(binwidth = 1,
+                     alpha = 0.8) + 
+  scale_x_continuous(breaks = 1:10) +
+  scale_fill_manual(values = c(&quot;#1b9e77&quot;,
+                               &quot;#d95f02&quot;)) +
+  theme(
+    panel.background = element_rect(fill = &quot;#FFFFFF&quot;,
+                                        colour = &quot;black&quot;),
+    plot.background = element_rect(fill = &quot;#FFFFFF&quot;),
+    panel.grid = element_line(colour = &quot;grey&quot;),
+    panel.grid.major.x = element_blank(),
+    text = element_text(family = &quot;sans&quot;, size = 12),
+    axis.title.x = element_text(hjust = 0.9, face = &quot;bold&quot;),
+    axis.text.x = element_text(),
+    axis.line = element_blank(),
+    axis.title.y = element_text(hjust = 0.9, face = &quot;bold&quot;),
+    axis.ticks = element_blank(),
+    strip.background = element_rect(fill = &quot;#A9A9A9&quot;),
+    panel.grid.minor = element_blank(),
+    legend.position = &quot;right&quot;,
+    legend.title = element_blank(),
+    legend.background = element_rect(fill = &quot;#FFFFFF&quot;),
+    legend.key = element_rect(fill = &quot;#FFFFFF&quot;)
+  ) +
+  labs(x = &quot;Period&quot;, y = &quot;Count&quot;)
+
+#
+set.seed(2023)
+
+#Did not include this figure in the text
+survival_censor_bar &lt;- survival_data %&gt;%
+  sample_n(25) %&gt;%
+  mutate(censor  = factor(
+    censor,
+    levels = 0:1,
+    labels = c(&quot;dissolved&quot;, &quot;censored&quot;)
+  )) %&gt;%
+  ggplot(aes(process_id, time)) +
+  geom_bar(stat = &quot;identity&quot;, width = 0.5) +
+  geom_point(aes(
+    process_id,
+    time,
+    color = as.factor(censor),
+    shape = as.factor(censor)
+  ),
+  size = 4) +
+  coord_flip() +
+  scale_y_continuous(limit = c(0, 10), breaks = 1:10) +
+  scale_color_viridis(discrete = T,
+                      alpha = 0.9,
+                      option = &quot;D&quot;) +
+  theme(
+    panel.background = element_rect(fill = &quot;#FFFFFF&quot;),
+    plot.background = element_rect(fill = &quot;#FFFFFF&quot;),
+    panel.grid = element_line(colour = &quot;grey&quot;),
+    panel.grid.major.y = element_blank(),
+    panel.grid.minor.y = element_blank(),
+    panel.grid.major.x = element_blank(),
+    text = element_text(family = &quot;sans&quot;, size = 12),
+    axis.title.x = element_text(hjust = 0.9, face = &quot;bold&quot;),
+    axis.text.x = element_text(),
+    axis.line = element_blank(),
+    axis.title.y = element_text(hjust = 0.9, face = &quot;bold&quot;),
+    axis.ticks = element_blank(),
+    strip.background = element_rect(fill = &quot;#A9A9A9&quot;),
+    panel.grid.minor = element_blank(),
+    legend.position = &quot;top&quot;,
+    legend.title = element_blank(),
+    legend.background = element_rect(fill = &quot;#FFFFFF&quot;),
+    legend.key = element_rect(fill = &quot;#FFFFFF&quot;)
+  ) +
+  labs(y = &quot;Period&quot;, x = &quot;Dyad Spell ID&quot;)
+
+# save in object
+surv_desstats_1 &lt;- survival_hist
+
+ggsave(surv_desstats_1,
+       file = &quot;plots/results/survival/surv_desstats_1.jpg&quot;,
+       width = 4,
+       height = 3,
+       dpi = 320)
+
+# show graph
+surv_desstats_1</code></pre>
+<p><img src="egonet_deselection_desstats_files/figure-html/survival plots-1.png" width="384" style="display: block; margin: auto;" /></p>
+</div>
+<div id="count-repeating-dyads" class="section level3">
+<h3>Count repeating dyads</h3>
+<p>Number of repeating dyads. First bit of code is used to calculate the
+% of dyads that only last for one spell (of one period). Second bit of
+code creates a bar chart with the number of dyads that have X dyad
+spells, which shows that the maximum number of dyad spells that a dyad
+can have is four.</p>
+<pre class="r"><code>MyData %&gt;%
+  select(dyad_id,
+         nomem_encr,
+         process_id,
+         time,
+         times_dropped_earlier,
+         censor,
+         dropped) %&gt;%
+  filter(censor == 0) %&gt;%
+  group_by(dyad_id, process_id) %&gt;%
+  summarise(n_process_id = n()) %&gt;%
+  ungroup() %&gt;%
+  group_by(dyad_id) %&gt;%
+  mutate(n_dyad_id = n()) %&gt;%
+  ungroup() %&gt;%
+  mutate(lost_period1 = n_process_id == n_dyad_id) %&gt;%
+  group_by(lost_period1) %&gt;%
+  summarise(n()) %&gt;%
+  transpose() %&gt;%
+  filter(row_number() == 2) %&gt;%
+  mutate(prop_dropped_period1 = (V2 / (V2 + V1)) * 100) %&gt;%
+  pull(prop_dropped_period1)</code></pre>
+<p>[1] 68.96281</p>
+<pre class="r"><code>spells_plot &lt;- MyData %&gt;%
+  select(dyad_id,
+         nomem_encr,
+         process_id,
+         time,
+         times_dropped_earlier,
+         censor,
+         dropped) %&gt;%
+  filter(censor == 0) %&gt;%
+  group_by(dyad_id) %&gt;%
+  summarise(max_time_dropped = max(times_dropped_earlier) + 1) %&gt;%
+  ungroup() %&gt;%
+  group_by(max_time_dropped) %&gt;%
+  ggplot(aes(x = max_time_dropped, fill = max_time_dropped)) +
+  geom_histogram(binwidth = 1,
+                 alpha = 0.6) +
+  stat_bin(binwidth = 1,
+           geom = &quot;text&quot;,
+           aes(label = ..count..),
+           vjust = -0.6) +
+  scale_x_continuous(breaks = 1:4) +
+  scale_fill_viridis(discrete = T,
+                     alpha = 0.8,
+                     option = &quot;E&quot;) +
+  theme(
+    panel.background = element_rect(fill = &quot;#FFFFFF&quot;),
+    plot.background = element_rect(fill = &quot;#FFFFFF&quot;),
+    panel.grid = element_line(colour = &quot;grey&quot;),
+    text = element_text(family = &quot;sans&quot;, size = 12),
+    axis.title.x = element_text(hjust = 0.9, face = &quot;bold&quot;),
+    axis.text.x = element_text(),
+    axis.line = element_blank(),
+    axis.title.y = element_text(hjust = 0.9, face = &quot;bold&quot;),
+    axis.ticks = element_blank(),
+    strip.background = element_rect(fill = &quot;#A9A9A9&quot;),
+    panel.grid.minor = element_blank(),
+    legend.position = &quot;none&quot;,
+    legend.title = element_blank(),
+    legend.background = element_rect(fill = &quot;#FFFFFF&quot;),
+    legend.key = element_rect(fill = &quot;#FFFFFF&quot;)
+  ) +
+  labs(x = &quot;#spells&quot;, y = &quot;Count&quot;)
+
+spells_plot</code></pre>
+<p><img src="egonet_deselection_desstats_files/figure-html/count repeating periods-1.png" width="672" style="display: block; margin: auto;" /></p>
+</div>
+<div id="survival-and-hazard-graph" class="section level3">
+<h3>Survival and hazard graph</h3>
+<p>Recreate the survival and hazard graph.</p>
+<pre class="r"><code>surv_fig &lt;- km_fit %&gt;%
+  tidy() %&gt;%
+  mutate(Hazard = n.event / n.risk,
+         Survival = estimate,
+         time = time) %&gt;%
+  pivot_longer(c(Survival, Hazard),
+               values_to = &quot;value&quot;,
+               names_to = &quot;surv_function&quot;) %&gt;%
+  ggplot(
+    aes(
+      x = time,
+      y = value,
+      colour = surv_function,
+      shape = surv_function,
+      fill = surv_function
+    )
+  ) +
+  #geom_point(size = 2.5) +
+  geom_line() +
+  geom_area(alpha = 0.6) +
+  facet_wrap(vars(surv_function)) +
+  labs(x = &quot;Period&quot;, y = &quot;Probability&quot;) +
+  scale_x_continuous(breaks = 1:10) +
+  scale_fill_manual(values = c(&quot;#1b9e77&quot;,
+                               &quot;#d95f02&quot;)) +
+  scale_colour_manual(values = c(&quot;#1b9e77&quot;,
+                                 &quot;#d95f02&quot;)) +
+  theme(
+    panel.background = element_rect(fill = &quot;#FFFFFF&quot;,
+                                        colour = &quot;black&quot;),
+    plot.background = element_rect(fill = &quot;#FFFFFF&quot;),
+    panel.grid = element_line(colour = &quot;grey&quot;),
+    panel.grid.major.x = element_blank(),
+    text = element_text(family = &quot;sans&quot;, size = 12),
+    axis.title.x = element_text(hjust = 0.9, face = &quot;bold&quot;),
+    axis.text.x = element_text(),
+    axis.line = element_blank(),
+    axis.title.y = element_text(hjust = 0.9, face = &quot;bold&quot;),
+    axis.ticks = element_blank(),
+        strip.background = element_rect(fill = &quot;#A9A9A9&quot;,
+                                        colour = &quot;black&quot;),
+    panel.grid.minor = element_blank(),
+    legend.position = &quot;none&quot;,
+    legend.title = element_blank(),
+    legend.background = element_rect(fill = &quot;#FFFFFF&quot;),
+    legend.key = element_rect(fill = &quot;#FFFFFF&quot;)
+  )
+
+#save results
+ggsave(surv_fig, 
+       file = &quot;plots/results/survival/surv_fig.jpg&quot;,
+       dpi = 320, 
+       width = 5, 
+       height = 3.5)
+
+#show plot
+surv_fig</code></pre>
+<p><img src="egonet_deselection_desstats_files/figure-html/desstat 3-1.png" width="480" style="display: block; margin: auto;" /></p>
+</div>
+</div>
+</div>
+<div id="dyadic-similarity-and-confidant-heterogeneity-plots"
+class="section level1">
+<h1>Dyadic similarity and confidant heterogeneity plots</h1>
+<div id="dyadic-similarity-plots" class="section level2">
+<h2>Dyadic similarity plots</h2>
+<p>For similar and dissimilar dyads we estimate the survival function
+Subsequently we plot these in a figure.</p>
+<div id="data-preperation" class="section level3">
+<h3>Data preperation</h3>
+<p>Create a plot datafile.</p>
+<pre class="r"><code>#educ
+km_fit_educ_sim_high &lt;- survfit(Surv(time, 1-censor) ~ 1, subset = (dyad_educ_sim == 1), data=survival_data, se.fit = T)
+km_fit_educ_sim_low &lt;- survfit(Surv(time, 1-censor) ~ 1, subset = (dyad_educ_sim &lt; 1), data=survival_data, se.fit = T)
+
+educ_low &lt;- km_fit_educ_sim_low %&gt;%
+  tidy() %&gt;%
+  select(1:5,7,8)  %&gt;% 
+  mutate(hazard = n.event / n.risk,
+         sim = &quot;Dissimilar&quot;) %&gt;%
+  rename(period = time,
+         survival = estimate)
+
+educ_high &lt;- km_fit_educ_sim_high %&gt;%
+  tidy() %&gt;%
+  select(1:5,7,8)  %&gt;% 
+  mutate(hazard = n.event / n.risk,
+         sim = &quot;Similar&quot;) %&gt;%
+  rename(period = time,
+         survival = estimate)
+
+educ_df &lt;- rbind(educ_high, educ_low) %&gt;% 
+  mutate(var = &quot;Education&quot;)
+
+#gender 
+km_fit_gender_sim_high &lt;- survfit(Surv(time, 1-censor) ~ 1, subset = (dyad_gender_sim == 1), data=survival_data, se.fit = T)
+km_fit_gender_sim_low &lt;- survfit(Surv(time, 1-censor) ~ 1, subset = (dyad_gender_sim == 0), data=survival_data, se.fit = T)
+
+
+gender_low &lt;- km_fit_gender_sim_low %&gt;%
+  tidy() %&gt;%
+  select(1:5,7,8)  %&gt;% 
+  mutate(hazard = n.event / n.risk,
+         sim = &quot;Dissimilar&quot;) %&gt;%
+  rename(period = time,
+         survival = estimate)
+
+gender_high &lt;- km_fit_gender_sim_high %&gt;%
+  tidy() %&gt;%
+  select(1:5,7,8) %&gt;% 
+  mutate(hazard = n.event / n.risk,
+         sim = &quot;Similar&quot;) %&gt;%
+  rename(period = time,
+         survival = estimate)
+
+gender_df &lt;- rbind(gender_low, gender_high) %&gt;% 
+  mutate(var = &quot;Gender&quot;)
+
+#ethncity 
+km_fit_ethncity_sim_high &lt;- survfit(Surv(time, 1-censor) ~ 1, subset = (dyad_ethnicity_sim == 1), data=survival_data, se.fit = T)
+km_fit_ethncity_sim_low &lt;- survfit(Surv(time, 1-censor) ~ 1, subset = (dyad_ethnicity_sim == 0), data=survival_data, se.fit = T)
+
+
+ethnicity_low &lt;- km_fit_ethncity_sim_low %&gt;%
+  tidy() %&gt;%
+  select(1:5,7,8) %&gt;% 
+  mutate(hazard = n.event / n.risk,
+         sim = &quot;Dissimilar&quot;) %&gt;%
+  rename(period = time,
+         survival = estimate)
+
+ethnicity_high &lt;- km_fit_ethncity_sim_high %&gt;%
+  tidy() %&gt;%
+  select(1:5,7,8) %&gt;% 
+  mutate(hazard = n.event / n.risk,
+         sim = &quot;Similar&quot;) %&gt;%
+  rename(period = time,
+         survival = estimate)
+
+ethnicity_df &lt;- rbind(ethnicity_low, ethnicity_high) %&gt;% 
+  mutate(var = &quot;Migration background&quot;)
+
+#age
+km_fit_age_sim_high &lt;- survfit(Surv(time, 1-censor) ~ 1, subset = (dyad_age_sim == 1), data=survival_data, se.fit = T)
+km_fit_age_sim_low &lt;- survfit(Surv(time, 1-censor) ~ 1, subset = (dyad_age_sim &lt; 1), data=survival_data, se.fit = T)
+
+age_low &lt;- km_fit_age_sim_low %&gt;%
+  tidy() %&gt;%
+  select(1:5,7,8) %&gt;% 
+  mutate(hazard = n.event / n.risk,
+         sim = &quot;Dissimilar&quot;) %&gt;%
+  rename(period = time,
+         survival = estimate)
+
+age_high &lt;- km_fit_age_sim_high %&gt;%
+  tidy() %&gt;%
+  select(1:5,7,8) %&gt;% 
+  mutate(hazard = n.event / n.risk,
+         sim = &quot;Similar&quot;) %&gt;%
+  rename(period = time,
+         survival = estimate)
+
+age_df &lt;- rbind(age_low, age_high) %&gt;% 
+  mutate(var = &quot;Age&quot;)
+
+#plot
+plot_df &lt;- rbind(gender_df, age_df, educ_df, ethnicity_df)</code></pre>
+</div>
+<div id="plot" class="section level3">
+<h3>Plot</h3>
+<p>Create a multipanel plot.</p>
+<pre class="r"><code>dyadic_sim &lt;- plot_df %&gt;%
+  ggplot(aes(
+    x = period,
+    y = survival,
+    colour = sim,
+    fill = sim
+  )) +
+  geom_ribbon(aes(ymin = conf.low, ymax = conf.high),
+              alpha = 0.4,
+              linetype = &quot;blank&quot;) +
+  geom_line() +
+  facet_wrap(vars(var)) +
+  labs(x = &quot;Period&quot;, y = &quot;Survival function&quot;) +
+  scale_x_continuous(breaks = 1:10) +
+  scale_y_continuous(limits = c(0, 0.35),
+                     breaks = c(0, 0.10, 0.20, 0.30)) +
+  scale_fill_manual(values = c(&quot;#1b9e77&quot;,
+                               &quot;#d95f02&quot;)) +
+  scale_colour_manual(values = c(&quot;#1b9e77&quot;,
+                                 &quot;#d95f02&quot;)) +
+  theme(
+    panel.background = element_rect(fill = &quot;#FFFFFF&quot;,
+                                    colour = &quot;black&quot;),
+    plot.background = element_rect(fill = &quot;#FFFFFF&quot;),
+    panel.grid = element_line(colour = &quot;grey&quot;),
+    panel.grid.major.x = element_blank(),
+    text = element_text(family = &quot;sans&quot;, size = 12),
+    axis.title.x = element_text(hjust = 0.9, face = &quot;bold&quot;),
+    axis.text.x = element_text(),
+    axis.line = element_blank(),
+    axis.title.y = element_text(hjust = 0.9, face = &quot;bold&quot;),
+    axis.ticks = element_blank(),
+    strip.background = element_rect(fill = &quot;#A9A9A9&quot;,
+                                    colour = &quot;black&quot;),
+    panel.grid.minor = element_blank(),
+    legend.position = &quot;bottom&quot;,
+    legend.title = element_blank(),
+    legend.background = element_rect(fill = &quot;#FFFFFF&quot;),
+    legend.key = element_rect(fill = &quot;#FFFFFF&quot;)
+  )
+
+# save dyadic sim plot
+ggsave(dyadic_sim, file = &quot;plots/results/survival/dyad_sim_surv.jpg&quot;, 
+       dpi = 320,
+       width = 6, 
+       height = 6)
+
+#show plot
+dyadic_sim</code></pre>
+<p><img src="egonet_deselection_desstats_files/figure-html/dyadic sim plot-1.png" width="576" style="display: block; margin: auto;" /></p>
+</div>
+</div>
+<div id="confidant-heterogeneity-plots" class="section level2">
+<h2>Confidant heterogeneity plots</h2>
+<p>For homogeneous and heterogeneous dyads we estimate the hazard
+function. Subsequently we plot these different graphs.</p>
+<div id="data-preperation-1" class="section level3">
+<h3>Data preperation</h3>
+<p>Create a plot datafile.</p>
+<pre class="r"><code>#educ
+km_fit_educ_conf_sim_high &lt;- survfit(Surv(time, 1-censor) ~ 1, subset = (avsim_alter_educ == 1), data=survival_data, se.fit = T)
+km_fit_educ_conf_sim_low &lt;- survfit(Surv(time, 1-censor) ~ 1, subset = (avsim_alter_educ &lt; 1), data=survival_data, se.fit = T)
+
+educ_low &lt;- km_fit_educ_conf_sim_low %&gt;%
+  tidy() %&gt;%
+  select(1:5,7,8) %&gt;% 
+  mutate(hazard = n.event / n.risk,
+         sim = &quot;Unique&quot;) %&gt;%
+  rename(period = time,
+         survival = estimate)
+
+educ_high &lt;- km_fit_educ_conf_sim_high %&gt;%
+  tidy() %&gt;%
+  select(1:5,7,8) %&gt;% 
+  mutate(hazard = n.event / n.risk,
+         sim = &quot;Common&quot;) %&gt;%
+  rename(period = time,
+         survival = estimate)
+
+educ_conf_df &lt;- rbind(educ_high, educ_low) %&gt;% 
+  mutate(var = &quot;Education&quot;)
+
+#gender 
+km_fit_gender_conf_sim_high &lt;- survfit(Surv(time, 1-censor) ~ 1, subset = (ei_alter_gender_rev == 1), data=survival_data, se.fit = T)
+km_fit_gender_conf_sim_low &lt;- survfit(Surv(time, 1-censor) ~ 1, subset = (ei_alter_gender_rev &lt; 0), data=survival_data, se.fit = T)
+
+
+gender_low &lt;- km_fit_gender_conf_sim_low %&gt;%
+  tidy() %&gt;%
+  select(1:5,7,8) %&gt;% 
+  mutate(hazard = n.event / n.risk,
+         sim = &quot;Unique&quot;) %&gt;%
+  rename(period = time,
+         survival = estimate)
+
+gender_high &lt;- km_fit_gender_conf_sim_high %&gt;%
+  tidy() %&gt;%
+  select(1:5,7,8) %&gt;% 
+  mutate(hazard = n.event / n.risk,
+         sim = &quot;Common&quot;) %&gt;%
+  rename(period = time,
+         survival = estimate)
+
+gender_conf_df &lt;- rbind(gender_low, gender_high) %&gt;% 
+  mutate(var = &quot;Gender&quot;)
+
+#ethnicity 
+km_fit_ethnicity_conf_sim_high &lt;- survfit(Surv(time, 1-censor) ~ 1, subset = (ei_alter_ethnicity_rev == 1), data=survival_data, se.fit = T)
+km_fit_ethnicity_conf_sim_low &lt;- survfit(Surv(time, 1-censor) ~ 1, subset = (ei_alter_ethnicity_rev  &lt; 0), data=survival_data, se.fit = T)
+
+
+ethnicity_low &lt;- km_fit_ethnicity_conf_sim_low %&gt;%
+  tidy() %&gt;%
+  select(1:5,7,8) %&gt;% 
+  mutate(hazard = n.event / n.risk,
+         sim = &quot;Unique&quot;) %&gt;%
+  rename(period = time,
+         survival = estimate)
+
+ethnicity_high &lt;- km_fit_ethnicity_conf_sim_high %&gt;%
+  tidy() %&gt;%
+  select(1:5,7,8) %&gt;% 
+  mutate(hazard = n.event / n.risk,
+         sim = &quot;Common&quot;) %&gt;%
+  rename(period = time,
+         survival = estimate)
+
+ethnicity_conf_df &lt;- rbind(ethnicity_low, ethnicity_high) %&gt;% 
+  mutate(var = &quot;Migration background&quot;)
+
+#age
+km_fit_age_conf_sim_high &lt;- survfit(Surv(time, 1-censor) ~ 1, subset = (avsim_alter_age == 1), data=survival_data, se.fit = T)
+km_fit_age_conf_sim_low &lt;- survfit(Surv(time, 1-censor) ~ 1, subset = (avsim_alter_age &lt; 1), data=survival_data, se.fit = T)
+
+age_low &lt;- km_fit_age_conf_sim_low %&gt;%
+  tidy() %&gt;%
+  select(1:5,7,8) %&gt;% 
+  mutate(hazard = n.event / n.risk,
+         sim = &quot;Unique&quot;) %&gt;%
+  rename(period = time,
+         survival = estimate)
+
+age_high &lt;- km_fit_age_conf_sim_high %&gt;%
+  tidy() %&gt;%
+  select(1:5,7,8) %&gt;% 
+  mutate(hazard = n.event / n.risk,
+         sim = &quot;Common&quot;) %&gt;%
+  rename(period = time,
+         survival = estimate)
+
+age_conf_df &lt;- rbind(age_high, age_low) %&gt;% 
+  mutate(var = &quot;Age&quot;)
+
+#plot
+plot_conf_df &lt;- rbind(gender_conf_df, age_conf_df, educ_conf_df, ethnicity_conf_df)</code></pre>
+</div>
+<div id="plot-1" class="section level3">
+<h3>Plot</h3>
+<p>Create a multipanel plot.</p>
+<pre class="r"><code>conf_sim &lt;- plot_conf_df %&gt;%
+   ggplot(aes(
+    x = period,
+    y = survival,
+    colour = fct_rev(as.factor(sim)),
+    fill = fct_rev(as.factor(sim))
+  )) +
+  geom_ribbon(aes(ymin = conf.low, ymax = conf.high),
+                alpha = 0.4, 
+                color = &quot;black&quot;,
+              linetype = &quot;blank&quot;) +
+  geom_line() +
+  facet_wrap(vars(var)) +
+  labs(x = &quot;Period&quot;, y = &quot;Survival function&quot;) +
+  scale_x_continuous(breaks = 1:10) +
+  scale_y_continuous(limits = c(0, 0.35),
+                     breaks = c(0,0.10,0.20,0.30)) +
+  scale_fill_manual(values = c(&quot;#1b9e77&quot;,
+                               &quot;#d95f02&quot;)) +
+  scale_colour_manual(values = c(&quot;#1b9e77&quot;,
+                               &quot;#d95f02&quot;)) +
+  theme(
+    panel.background = element_rect(fill = &quot;#FFFFFF&quot;,
+                                        colour = &quot;black&quot;),
+    plot.background = element_rect(fill = &quot;#FFFFFF&quot;),
+    panel.grid = element_line(colour = &quot;grey&quot;),
+    panel.grid.major.x = element_blank(),
+    text = element_text(family = &quot;sans&quot;, size = 12),
+    axis.title.x = element_text(hjust = 0.9, face = &quot;bold&quot;),
+    axis.text.x = element_text(),
+    axis.line = element_blank(),
+    axis.title.y = element_text(hjust = 0.9, face = &quot;bold&quot;),
+    axis.ticks = element_blank(),
+            strip.background = element_rect(fill = &quot;#A9A9A9&quot;,
+                                        colour = &quot;black&quot;),
+    panel.grid.minor = element_blank(),
+    legend.position = &quot;bottom&quot;,
+    legend.title = element_blank(),
+    legend.background = element_rect(fill = &quot;#FFFFFF&quot;),
+    legend.key = element_rect(fill = &quot;#FFFFFF&quot;)
+  )
+
+#save plot
+ggsave(conf_sim, 
+       file = &quot;plots/results/survival/conf_sim_surv.jpg&quot;,
+       dpi = 320, 
+       width = 6,
+       height = 6)
+
+#show plot
+conf_sim</code></pre>
+<p><img src="egonet_deselection_desstats_files/figure-html/conf het plot-1.png" width="576" style="display: block; margin: auto;" /></p>
+</div>
+</div>
+</div>
+
+<div id="rmd-source-code">LS0tDQp0aXRsZTogIkRlc2NyaXB0aXZlIHN0YXRpc3RpY3MiDQphdXRob3I6ICJUaGlqbWVuIEplcm9lbnNlIg0KZGF0ZTogIkxhc3QgY29tcGlsZWQgb24gYHIgZm9ybWF0KFN5cy50aW1lKCksICclZCAlQiwgJVknKWAiDQpvdXRwdXQ6DQogIGh0bWxfZG9jdW1lbnQ6DQogICAgdG9jOiBUUlVFDQogICAgdG9jX2RlcHRoOiAzDQogICAgdG9jX2Zsb2F0OiBUUlVFDQogICAgY29kZV9mb2xkaW5nOiBzaG93DQogICAgY29kZV9kb3dubG9hZDogVFJVRQ0KLS0tDQoNCmBgYHtyIHNldHVwLCBpbmNsdWRlPUZBTFNFfQ0Ka25pdHI6Om9wdHNfY2h1bmskc2V0KGNhY2hlID0gVFJVRSwgbWVzc2FnZSA9IEZBTFNFLCB3YXJuaW5nID0gRkFMU0UsIHJlc3VsdHMgPSAiYXNpcyIsDQogICAgICAgICAgICAgICAgICAgICAgZmlnLmFsaWduID0gImNlbnRlciIpDQpgYGANCg0KDQojIERlc2NyaXB0aXZlIHN0YXRpc3RpY3MNCg0KR29hbCBvZiB0aGlzIHNjcmlwdCBpcyB0byBzaG93IGhvdyB0byByZWNyZWF0ZSB0aGUgZGlmZmVyZW50IHRhYmxlcyBhbmQgZ3JhcGhzIGluIG91ciBwYXBlci4gDQoNCiMgU2V0IHVwDQoNCiMjIFBhY2thZ2VzDQoNCmBgYHtyIGxpYnJhcnkgYW5kIGRhdGF9DQojbGlicmFyeQ0KbGlicmFyeSh0aWR5dmVyc2UpDQpsaWJyYXJ5KGRhdGEudGFibGUpDQpsaWJyYXJ5KGthYmxlRXh0cmEpDQpsaWJyYXJ5KHBhdGNod29yaykNCmxpYnJhcnkoZ2dwdWJyKQ0KbGlicmFyeShsbWU0KQ0KbGlicmFyeSh2aXJpZGlzKQ0KbGlicmFyeShzdXJ2aXZhbCkNCmxpYnJhcnkoYnJvb20pDQpsaWJyYXJ5KGdndGhlbWVzKQ0KYGBgDQoNCiMjIEltcG9ydA0KDQpgYGB7ciBkYXRhIGltcG9ydH0NCiNsb2FkIHByZXBhcmVkIGRhdGEuDQpsb2FkKCJkYXRhZmlsZXMvZGF0YS1wcm9jZXNzZWQvZGlzYWdncmVnYXRlZF9kYXRhLzIwMjItMDYtMTNfZHlhZC1zdXJ2aXZhbC1kYXRhLWltcHV0ZWQucmRhIikNCg0KTXlEYXRhIDwtIG5vbmtpbl9zdXJ2aXZhbF9kYXRhX2xlYWRfZGVwZW5kZW50X2ltcHV0ZWQNCg0KI2NoYW5nZSBzY2llbnRpZmljIG5vdGF0aW9uDQpvcHRpb25zKHNjaXBlbiA9IDk5OSkNCg0KI3JlbmFtZSBkcm9wcGVkX2xlYWQgaW50byBkcm9wcGVkLCBzbyB3ZSBjYW4gZWFzaWx5IHJlcHJlb2R1Y2UgdGhpcyBjb2RlLg0KTXlEYXRhIDwtIE15RGF0YSAlPiUgDQogIHJlbmFtZShkcm9wcGVkID0gZHJvcHBlZF9sZWFkKQ0KYGBgDQoNCmBgYHtyIHNldCB2YXJpYWJsZXMgbWluIHRvIHplcm99DQojbGFzdCBkYXRhcHJlcA0KTXlEYXRhIDwtIE15RGF0YSAlPiUNCiAgbXV0YXRlKA0KICAgIGVkdWNfZWdvID0gZWR1Y19lZ28gLSA0LA0KICAgIGFnZSA9IGxlZWZ0aWpkIC0gMTUsDQogICAgYWdlX3NxID0gYWdlICogYWdlLA0KICAgIGFnZV9hbHRlciA9IGFnZV9hbHRlciAtIDEsDQogICAgZWR1Y19hbHRlciA9IGVkdWNfYWx0ZXIgLSA0LA0KICAgIGxlbmd0aF9yZWxfbWVtYmVyID0gbGVuZ3RoX3JlbF9tZW1iZXIgLSAxLA0KICAgIGxlbmd0aF9yZWxfdG90YWwgPSBsZW5ndGhfcmVsX3RvdGFsIC0gMSwNCiAgICBzaXplID0gc2l6ZSAtIDEsDQogICAgZWlfYWx0ZXJfZ2VuZGVyX3JldiA9ICgyIC0gKE15RGF0YSRlaV9hbHRlcl9nZW5kZXIgKyAxKSkgLSAxLA0KICAgIGVpX2FsdGVyX2V0aG5pY2l0eV9yZXYgPSAoMiAtIChNeURhdGEkZWlfYWx0ZXJfZXRobmljaXR5ICsgMSkpIC0gMSwNCiAgICBvcmlnaW5fcmVjX25hciA9IGlmZWxzZShpcy5uYShvcmlnaW5fcmVjX25hciksIDMsIG9yaWdpbl9yZWNfbmFyKSwNCiAgICBvcmlnaW5fcmVjX25hcl9mYWMgPSBmYWN0b3IoDQogICAgICBvcmlnaW5fcmVjX25hciwNCiAgICAgIGxldmVscyA9IDA6MywNCiAgICAgIGxhYmVscyA9IGMoIk5vbmUiLCAiTm9uLXdlc3Rlcm4iLCAiV2VzdGVybiIsICJNaXNzaW5nIikNCiAgICApLA0KICAgIG9yaWdpbl9hbHRlcl9yZWMgPSBpZmVsc2UoaXMubmEob3JpZ2luX2FsdGVyX3JlYyksIDMsIG9yaWdpbl9hbHRlcl9yZWMpLA0KICAgIG9yaWdpbl9hbHRlcl9yZWNfZmFjID0gZmFjdG9yKA0KICAgICAgb3JpZ2luX2FsdGVyX3JlYywNCiAgICAgIGxldmVscyA9IDA6MywNCiAgICAgIGxhYmVscyA9IGMoIk5vbmUiLCAiTm9uLXdlc3Rlcm4iLCAiV2VzdGVybiIsICJNaXNzaW5nIikNCiAgICApLA0KICAgIGxlbmd0aCA9IGlmZWxzZShpcy5uYShsZW5ndGgpLCA0LCBsZW5ndGgpLA0KICAgIGxlbmd0aF9mYWMgPSBmYWN0b3IoDQogICAgICBsZW5ndGgsDQogICAgICBsZXZlbHMgPSAxOjQsDQogICAgICBsYWJlbHMgPSBjKCI8IDMgeWVhcnMiLA0KICAgICAgICAgICAgICAgICAiMyAtIDYgeWVhcnMiLA0KICAgICAgICAgICAgICAgICAiPiA2IHllYXJzIiwgDQogICAgICAgICAgICAgICAgICJMZW5ndGggbWlzc2luZyIpDQogICAgICApDQogICAgKQ0KDQojc2NhbGUgdmFyaWFibGVzIGZvciBtZSBtb2RlbHMNCk15RGF0YSA8LSBNeURhdGEgJT4lIA0KICBtdXRhdGUoYXZzaW1fYWx0ZXJfZWR1Y19jZW4gPSBzY2FsZShhdnNpbV9hbHRlcl9lZHVjKSwNCiAgICAgICAgIGF2c2ltX2FsdGVyX2FnZV9jZW4gPSBzY2FsZShhdnNpbV9hbHRlcl9hZ2UpLA0KICAgICAgICAgZWlfYWx0ZXJfZ2VuZGVyX3Jldl9jZW4gPSBzY2FsZShlaV9hbHRlcl9nZW5kZXJfcmV2KSwNCiAgICAgICAgIGVpX2FsdGVyX2V0aG5pY2l0eV9yZXZfY2VuID0gc2NhbGUoZWlfYWx0ZXJfZXRobmljaXR5X3JldiksDQogICAgICAgICBsZW5ndGhfcmVsX21lbWJlcl9jZW4gPSBzY2FsZShsZW5ndGhfcmVsX21lbWJlciksDQogICAgICAgICBsZW5ndGhfcmVsX3RvdGFsX2NlbiA9IHNjYWxlKGxlbmd0aF9yZWxfdG90YWwpLA0KICAgICAgICAgc2l6ZV9jZW4gPSBzY2FsZShzaXplKSwNCiAgICAgICAgIGRlZ3JlZV9jZW4gPSBzY2FsZShkZWdyZWUpKQ0KDQpgYGANCg0KDQojIERlc2NyaXB0aXZlIHN0YXRpc3RpY3MNCg0KIyMgRGVzY3JpcHRpdmUgc3RhdGlzdGljcyB0YWJsZQ0KDQpGdWxsIGRlc2NyaXB0aXZlIHN0YXRpc3RpY3MgdGFibGUgb2YgdGhlIHZhcmlhYmxlcyBpbiB0aGUgZmluYWwgc2FtcGxlIGFzIHVzZWQgaW4gdGhlIHBhcGVyLiANCg0KYGBge3IgZGVzc3RhdHMgMX0NCiNjcmVhdGUgZGVzY3JpcHRpdmUgc3RhdGlzdGljcyB0YWJsZQ0KZGVzc3RhdHNfdGFibGUgPC0gTXlEYXRhICU+JQ0KICBtdXRhdGUoDQogICAgbm9fbWlnID0gaWZlbHNlKG9yaWdpbl9yZWNfbmFyID09IDAsIDEsIDApLA0KICAgIG5vbndlc3Rlcm5fbWlnID0gaWZlbHNlKG9yaWdpbl9yZWNfbmFyID09IDEsIDEsIDApLA0KICAgIHdlc3Rlcm5fbWlnID0gIGlmZWxzZShvcmlnaW5fcmVjX25hciA9PSAyLCAxLCAwKSwNCiAgICBub19taWdfYSA9ICBpZmVsc2Uob3JpZ2luX2FsdGVyX3JlYyA9PSAwLCAxLCAwKSwNCiAgICBub253ZXN0ZXJuX21pZ19hID0gIGlmZWxzZShvcmlnaW5fYWx0ZXJfcmVjID09IDEsIDEsIDApLA0KICAgIHdlc3Rlcm5fbWlnX2EgPSAgaWZlbHNlKG9yaWdpbl9hbHRlcl9yZWMgPT0gMiwgMSwgMCksDQogICAgcmVsX2FfYjMgPSBpZmVsc2UobGVuZ3RoID09IDEsIDEsIDApLA0KICAgIHJlbF9hXzM2ID0gaWZlbHNlKGxlbmd0aCA9PSAyLCAxLCAwKSwNCiAgICByZWxfYV9vNiA9IGlmZWxzZShsZW5ndGggPT0gMywgMSwgMCksDQogICAgcmVsX21pc3NpbmcgPSBpZmVsc2UoaXMubmEobGVuZ3RoKSwgMSwgMCksDQogICAgcGFydG5lcl9mYW0gPSBpZmVsc2UoYXMubnVtZXJpYyhyZWxfYWx0ZXJfcmVjKSA9PSAxLCAxLCAwKSwNCiAgICBjbG9zZWZhbSA9IGlmZWxzZShhcy5udW1lcmljKHJlbF9hbHRlcl9yZWMpID09IDIsIDEsIDApLA0KICAgIG90aGVyZmFtID0gaWZlbHNlKGFzLm51bWVyaWMocmVsX2FsdGVyX3JlYykgPT0gMywgMSwgMCksDQogICAgY29sbCA9IGlmZWxzZShhcy5udW1lcmljKHJlbF9hbHRlcl9yZWMpID09IDQsIDEsIDApLA0KICAgIHNhbWVncm91cCA9IGlmZWxzZShhcy5udW1lcmljKHJlbF9hbHRlcl9yZWMpID09IDUsIDEsIDApLA0KICAgIG5laWdoYm91ciA9IGlmZWxzZShhcy5udW1lcmljKHJlbF9hbHRlcl9yZWMpID09IDYsIDEsIDApLA0KICAgIGZyaWVuZCA9IGlmZWxzZShhcy5udW1lcmljKHJlbF9hbHRlcl9yZWMpID09IDcsIDEsIDApLA0KICAgIGFkdmlzb3IgPSBpZmVsc2UoYXMubnVtZXJpYyhyZWxfYWx0ZXJfcmVjKSA9PSA4LCAxLCAwKSwNCiAgICBvdGhlcnJlbCA9IGlmZWxzZShhcy5udW1lcmljKHJlbF9hbHRlcl9yZWMpID09IDksIDEsIDApLA0KICAgIG5vdF9kZWFyID0gaWZlbHNlKGFzLm51bWVyaWMoZGVhcl9hbHRlcl9yZWMpID09IDAsIDEsIDApLA0KICAgIGRlYXIgPSBpZmVsc2UoYXMubnVtZXJpYyhkZWFyX2FsdGVyX3JlYykgPT0gMSwgMSwgMCksDQogICAgbm90X2Fza2VkID0gaWZlbHNlKGFzLm51bWVyaWMoZGVhcl9hbHRlcl9yZWMpID09IDIsIDEsIDApLA0KICAgIG5vdF9kaXZvcmNlZCA9IGlmZWxzZShhcy5udW1lcmljKGRpdm9yY2VkX2ZhYykgPT0gMSwgMSwgMCksDQogICAgZGl2b3JjZWQgPSBpZmVsc2UoYXMubnVtZXJpYyhkaXZvcmNlZF9mYWMpID09IDIsIDEsIDApLA0KICAgIGRpdm9yY2VkX21pc3NpbmcgPSBpZmVsc2UoYXMubnVtZXJpYyhkaXZvcmNlZF9mYWMpID09IDMsIDEsIDApLA0KICAgIG5vX21vdmUgPSBpZmVsc2UoYXMubnVtZXJpYyhtb3ZpbmdfZmFjKSA9PSAxLCAxLCAwKSwNCiAgICBuZXdfcmVzID0gaWZlbHNlKGFzLm51bWVyaWMobW92aW5nX2ZhYykgPT0gMiwgMSwgMCksDQogICAgbmV3X211biA9IGlmZWxzZShhcy5udW1lcmljKG1vdmluZ19mYWMpID09IDMsIDEsIDApLA0KICAgIG1vdmVfbWlzID0gaWZlbHNlKGFzLm51bWVyaWMobW92aW5nX2ZhYykgPT0gNCwgMSwgMCksDQogICAgZmVtYWxlID0gaWZlbHNlKGFzLm51bWVyaWMoZ2VuZGVyX2ZhYykgPT0gMiwgMSwgMCksDQogICAgZmlyc3RfY2hpbGRfcmVjID0gaWZlbHNlKGZpcnN0X2NoaWxkID09IDEsIDEsIDApLA0KICAgIGZpcnN0X2NoaWxkX21pc3NpbmcgPSBpZmVsc2UoZmlyc3RfY2hpbGQgPT0gMiwgMSwgMCksDQogICAgZmVtYWxlX2FsdGVyID0gaWZlbHNlKGdlbmRlcl9hbHRlcl9mYWMgPT0gIkZlbWFsZSIsIDEsIDApLA0KICAgIG1hbGVfYWx0ZXIgPSBpZmVsc2UoZ2VuZGVyX2FsdGVyX2ZhYyA9PSAiTWFsZSIsIDEsIDApLA0KICAgIG1pc3NpbmdfZ2VuZGVyX2FsdGVyID0gaWZlbHNlKGdlbmRlcl9hbHRlcl9mYWMgPT0gIk1pc3NpbmciLCAxLCAwKQ0KICApICU+JQ0KICBzZWxlY3QoDQogICAgZHJvcHBlZCwNCiAgICBkeWFkX2VkdWNfc2ltX2NlbiwNCiAgICBkeWFkX2dlbmRlcl9zaW1fY2VuLA0KICAgIGR5YWRfYWdlX3NpbV9jZW4sDQogICAgZHlhZF9ldGhuaWNpdHlfc2ltX2NlbiwNCiAgICBhdnNpbV9hbHRlcl9lZHVjX2NlbiwNCiAgICBhdnNpbV9hbHRlcl9hZ2VfY2VuLA0KICAgIGVpX2FsdGVyX2dlbmRlcl9yZXZfY2VuLA0KICAgIGVpX2FsdGVyX2V0aG5pY2l0eV9yZXZfY2VuLA0KICAgIG5vdF9kZWFyLA0KICAgIGRlYXIsDQogICAgbm90X2Fza2VkLA0KICAgIGRlZ3JlZV9jZW4sDQogICAgZWR1Y19lZ29fY2VuLA0KICAgIGFnZV9jZW4sDQogICAgZmVtYWxlLA0KICAgIG5vX21pZywNCiAgICBub253ZXN0ZXJuX21pZywNCiAgICB3ZXN0ZXJuX21pZywNCiAgICBkaXZvcmNlZCwNCiAgICBuZXdfcmVzLA0KICAgIG5ld19tdW4sDQogICAgZmlyc3RfY2hpbGRfcmVjLA0KICAgIGVkdWNfYWx0ZXJfY2VuLA0KICAgIGFnZV9hbHRlcl9jZW4sDQogICAgZmVtYWxlX2FsdGVyLA0KICAgIG5vX21pZ19hLA0KICAgIG5vbndlc3Rlcm5fbWlnX2EsDQogICAgd2VzdGVybl9taWdfYSwNCiAgICBjb2xsLA0KICAgIHNhbWVncm91cCwNCiAgICBuZWlnaGJvdXIsDQogICAgZnJpZW5kLA0KICAgIGFkdmlzb3IsDQogICAgb3RoZXJyZWwsDQogICAgdGltZXNfZHJvcHBlZF9lYXJsaWVyX2NlbiwNCiAgICByZWxfYV9iMywNCiAgICByZWxfYV8zNiwNCiAgICByZWxfYV9vNiwNCiAgICBuZXRfZGVuc2l0eV9jZW4sDQogICAgc2l6ZV9jZW4sDQogICAgY2Vuc29yDQogICkgJT4lDQogIHBzeWNoOjpkZXNjcmliZSgpICU+JQ0KICBtdXRhdGUoDQogICAgbmFtZSA9IGMoDQogICAgICAiRHJvcHBlZCIsDQogICAgICAiRHlhZGljIHNpbWlsYXJpdHk6IGVkdWNhdGlvbiIsDQogICAgICAiRHlhZGljIHNpbWlsYXJpdHk6IGdlbmRlciIsDQogICAgICAiRHlhZGljIHNpbWlsYXJpdHk6IGFnZSIsDQogICAgICAiRHlhZGljIHNpbWlsYXJpdHk6IGV0aG5pY2l0eSIsDQogICAgICAiQ29uZmlkYW50IHVuaXF1ZW5lc3MgZWR1Y2F0aW9uIiwNCiAgICAgICJDb25maWRhbnQgdW5pcXVlbmVzc3kgYWdlIiwNCiAgICAgICJDb25maWRhbnQgdW5pcXVlbmVzcyBnZW5kZXIiLA0KICAgICAgIkNvbmZpZGFudCB1bmlxdWVuZXNzIGV0aG5pY2l0eSIsDQogICAgICAiQ29uZmlkYW50IGlzIG5vdCBkZWFyIiwNCiAgICAgICJDb25maWRhbnQgaXMgZGVhciIsDQogICAgICAiQ2xvc2VuZXNzIG5vdCBhc2tlZCIsDQogICAgICAiRW1iZWRkZWRuZXNzIiwNCiAgICAgICJFZHVjYXRpb24gZWdvIiwNCiAgICAgICJBZ2UiLA0KICAgICAgIkZlbWFsZSIsDQogICAgICAiTm8gbWlncmF0aW9uIGJhY2tncm91bmQiLA0KICAgICAgIk5vbi13ZXN0ZXJuIG1pZ3JhdGlvbiBiYWNrZ3JvdW5kIiwNCiAgICAgICJXZXN0ZXJuIG1pZ3JhdGlvbiBiYWNrZ3JvdW5kIiwNCiAgICAgICJEaXZvcmNlZCAocmVmLiBub3QpIiwNCiAgICAgICJOZXcgcmVzaWRlbmNlIChyZWYuIG5vIG1vdmUpIiwNCiAgICAgICJOZXcgbXVuaWNpcGFsaXR5IiwNCiAgICAgICJGaXJzdCBjaGlsZCBib3JuIiwNCiAgICAgICJFZHVjYXRpb24gYWx0ZXIiLA0KICAgICAgIkFnZSBhbHRlciIsDQogICAgICAiQWx0ZXIgaXMgZmVtYWxlIiwNCiAgICAgICJObyBtaWdyYXRpb24gYmFja2dyb3VuZCBjb25maWRhbnQgIiwNCiAgICAgICJOb24td2VzdGVybiBtaWdyYXRpb24gYmFja2dyb3VuZCBjb25maWRhbnQiLA0KICAgICAgIldlc3Rlcm4gbWlncmF0aW9uIGJhY2tncm91bmQgY29uZmlkYW50IiwNCiAgICAgICJDb2xsZWFndWUiLA0KICAgICAgIlNhbWUgZ3JvdXAgb3IgY2x1YiIsDQogICAgICAiTmVpZ2hib3VyIiwNCiAgICAgICJGcmllbmQiLA0KICAgICAgIkFkdmlzb3IiLA0KICAgICAgIk90aGVyIHJlbGF0aW9uIiwNCiAgICAgICJUaW1lcyBkcm9wcGVkIGVhcmxpZXIiLA0KICAgICAgIktub3dzIGNvbmZpZGFudCBmb3IgPCAzIHllYXJzIiwNCiAgICAgICJLbm93cyBjb25maWRhbnQgZm9yIDMtNiB5ZWFycyIsDQogICAgICAiS25vd3MgY29uZmlkYW50ICA+IDYgeWVhcnMiLA0KICAgICAgIk5ldCBkZW5zaXR5IiwNCiAgICAgICJOZXQgc2l6ZSIsDQogICAgICAiQ2Vuc29yZWQiDQogICAgKQ0KICApICU+JQ0KICBzZWxlY3QobmFtZSwgbiwgbWVhbiwgc2QsIG1lZGlhbiwgbWluLCBtYXgpDQoNCmRlc3N0YXRzX3RhYmxlICU+JQ0KICBrYmwoY2FwdGlvbiA9ICJUYWJsZSAxLiBEZXNjcmlwdGl2ZSBzdGF0aXN0aWNzIG9mIGRpc2NyZXRlIHRpbWUgaGF6YXJkIG1vZGVscyAxLTYiLA0KICAgICAgZGlnaXRzID0gMywNCiAgICAgIHJvdy5uYW1lcyA9IEYpICU+JQ0KICBrYWJsZV9jbGFzc2ljKA0KICAgIGZ1bGxfd2lkdGggPSBGLA0KICAgIGJvb3RzdHJhcF9vcHRpb25zID0gYygiaG92ZXIiLCAiY29uZGVuc2VkIiksDQogICAgZml4ZWRfdGhlYWQgPSBUDQogICkNCg0KDQpgYGANCg0KDQojIyBEZXNjcmliaW5nIGNvbmZpZGFudCBsb3NzDQoNCiMjIyBMaWZlIHRhYmxlDQoNClJlY3JlYXRlIGEgbGlmZS10YWJsZSB3aXRoIHRoZSBzdXJ2aXZhbCBwYWNrYWdlLiBUaGlzIGlzIGEgS00gZml0LCBmcm9tIHdoaWNoIHdlIGNhbiBjcmVhdGUgYSBncmFwaGljYWwgcmVwcmVzZW50YXRpb24gb2YgdGhlIHN1cnZpdmFsIGFuZCBoYXphcmQgZnVuY3Rpb24uDQoNCmBgYHtyIGRlc3N0YXRzIDJ9DQojZXh0cmFjdCBudW1iZXIgb2YgZHlhZHMsIGVnbywgYW5kIGR5YWQgc3BlbGxzDQpkeWFkX2lkcyA8LSB1bmlxdWUoTXlEYXRhJGR5YWRfaWQpDQplZ29faWRzIDwtIHVuaXF1ZShNeURhdGEkbm9tZW1fZW5jcikNCnByb2Nlc3NfaWRzIDwtIHVuaXF1ZShNeURhdGEkcHJvY2Vzc19pZCkNCg0KI2NyZWF0ZSBzdXJ2aXZhbCBkYXRhIHRvIHVzZSB3aXRoIHN1cmNmaXQuIA0Kc3Vydml2YWxfZGF0YSA8LSBNeURhdGEgJT4lDQogIGdyb3VwX2J5KHByb2Nlc3NfaWQpICU+JQ0KICBmaWx0ZXIodGltZSA9PSBtYXgodGltZSkpICU+JQ0KICB1bmdyb3VwKCkNCg0KI2VzdGltYXRlIEtNIA0Ka21fZml0IDwtIHN1cnZmaXQoU3Vydih0aW1lLCAxLWNlbnNvcikgfiAxLCBkYXRhPXN1cnZpdmFsX2RhdGEsIHNlLmZpdCA9IFQpDQoNCiNsaWZlIHRhYmxlDQprbV9maXQgJT4lDQogIHRpZHkoKSAlPiUNCiAgc2VsZWN0KDE6NSkgJT4lDQogIG11dGF0ZShoYXphcmQgPSBuLmV2ZW50IC8gbi5yaXNrLA0KICAgICAgICAgdGltZSA9IHRpbWUpICU+JQ0KICByZW5hbWUocGVyaW9kID0gdGltZSwNCiAgICAgICAgIHN1cnZpdmFsID0gZXN0aW1hdGUpICU+JQ0KICBrYmwoY2FwdGlvbiA9ICJUYWJsZSAxLiBMaWZlIHRhYmxlIiwNCiAgICAgIGRpZ2l0cyA9IDMsDQogICAgICByb3cubmFtZXMgPSBGKSAlPiUNCiAga2FibGVfY2xhc3NpYygNCiAgICBmdWxsX3dpZHRoID0gRiwNCiAgICBib290c3RyYXBfb3B0aW9ucyA9IGMoImhvdmVyIiwgImNvbmRlbnNlZCIpLA0KICAgIGZpeGVkX3RoZWFkID0gVA0KICApDQoNCg0KI2V4cG9ydCBsaWZlIHRhYmxlIGZvciBvZmZpY2UNCmxpZmVfdGFibGUgPC0ga21fZml0ICU+JQ0KICB0aWR5KCkgJT4lDQogIHNlbGVjdCgxOjUpICU+JQ0KICBtdXRhdGUoaGF6YXJkID0gbi5ldmVudCAvIG4ucmlzaywNCiAgICAgICAgIHRpbWUgPSB0aW1lKSAlPiUNCiAgcmVuYW1lKHBlcmlvZCA9IHRpbWUsDQogICAgICAgICBzdXJ2aXZhbCA9IGVzdGltYXRlKSANCmBgYA0KDQojIyMgSGlzdG9ncmFtIG9mIGNvbmZpZGFudCBsb3NzDQoNClJlY3JlYXRlIHRoZSBoaXN0b2dyYW0gb2YgY29uZmlkYW50IGxvc3MuIFRoZXNlIHNob3cgdGhlIG51bWJlciBvZiBvYnNlcnZhdGlvbnMgcGVyIHdhdmUgYW5kIGFsc28gYSBwcmVzZW50YXRpb24gb2YgYSByYW5kb20gc2V0IG9mIGR5YWQgc3BlbGxzLiANCg0KYGBge3Igc3Vydml2YWwgcGxvdHMsIGZpZy53aWR0aD0gNCwgZmlnLmhlaWdodD01fQ0Kc3Vydml2YWxfaGlzdCA8LSBzdXJ2aXZhbF9kYXRhICU+JQ0KICBtdXRhdGUoY2Vuc29yICA9IGZhY3RvcigNCiAgICBjZW5zb3IsDQogICAgbGV2ZWxzID0gMDoxLA0KICAgIGxhYmVscyA9IGMoIkxvc3NlZCIsICJDZW5zb3JlZCIpDQogICkpICU+JQ0KICBnZ3Bsb3QoYWVzKHggPSB0aW1lLCBmaWxsID0gYXMuZmFjdG9yKGNlbnNvcikpKSArDQogIGdlb21faGlzdG9ncmFtKGJpbndpZHRoID0gMSwNCiAgICAgICAgICAgICAgICAgICAgIGFscGhhID0gMC44KSArIA0KICBzY2FsZV94X2NvbnRpbnVvdXMoYnJlYWtzID0gMToxMCkgKw0KICBzY2FsZV9maWxsX21hbnVhbCh2YWx1ZXMgPSBjKCIjMWI5ZTc3IiwNCiAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAiI2Q5NWYwMiIpKSArDQogIHRoZW1lKA0KICAgIHBhbmVsLmJhY2tncm91bmQgPSBlbGVtZW50X3JlY3QoZmlsbCA9ICIjRkZGRkZGIiwNCiAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICBjb2xvdXIgPSAiYmxhY2siKSwNCiAgICBwbG90LmJhY2tncm91bmQgPSBlbGVtZW50X3JlY3QoZmlsbCA9ICIjRkZGRkZGIiksDQogICAgcGFuZWwuZ3JpZCA9IGVsZW1lbnRfbGluZShjb2xvdXIgPSAiZ3JleSIpLA0KICAgIHBhbmVsLmdyaWQubWFqb3IueCA9IGVsZW1lbnRfYmxhbmsoKSwNCiAgICB0ZXh0ID0gZWxlbWVudF90ZXh0KGZhbWlseSA9ICJzYW5zIiwgc2l6ZSA9IDEyKSwNCiAgICBheGlzLnRpdGxlLnggPSBlbGVtZW50X3RleHQoaGp1c3QgPSAwLjksIGZhY2UgPSAiYm9sZCIpLA0KICAgIGF4aXMudGV4dC54ID0gZWxlbWVudF90ZXh0KCksDQogICAgYXhpcy5saW5lID0gZWxlbWVudF9ibGFuaygpLA0KICAgIGF4aXMudGl0bGUueSA9IGVsZW1lbnRfdGV4dChoanVzdCA9IDAuOSwgZmFjZSA9ICJib2xkIiksDQogICAgYXhpcy50aWNrcyA9IGVsZW1lbnRfYmxhbmsoKSwNCiAgICBzdHJpcC5iYWNrZ3JvdW5kID0gZWxlbWVudF9yZWN0KGZpbGwgPSAiI0E5QTlBOSIpLA0KICAgIHBhbmVsLmdyaWQubWlub3IgPSBlbGVtZW50X2JsYW5rKCksDQogICAgbGVnZW5kLnBvc2l0aW9uID0gInJpZ2h0IiwNCiAgICBsZWdlbmQudGl0bGUgPSBlbGVtZW50X2JsYW5rKCksDQogICAgbGVnZW5kLmJhY2tncm91bmQgPSBlbGVtZW50X3JlY3QoZmlsbCA9ICIjRkZGRkZGIiksDQogICAgbGVnZW5kLmtleSA9IGVsZW1lbnRfcmVjdChmaWxsID0gIiNGRkZGRkYiKQ0KICApICsNCiAgbGFicyh4ID0gIlBlcmlvZCIsIHkgPSAiQ291bnQiKQ0KDQojDQpzZXQuc2VlZCgyMDIzKQ0KDQojRGlkIG5vdCBpbmNsdWRlIHRoaXMgZmlndXJlIGluIHRoZSB0ZXh0DQpzdXJ2aXZhbF9jZW5zb3JfYmFyIDwtIHN1cnZpdmFsX2RhdGEgJT4lDQogIHNhbXBsZV9uKDI1KSAlPiUNCiAgbXV0YXRlKGNlbnNvciAgPSBmYWN0b3IoDQogICAgY2Vuc29yLA0KICAgIGxldmVscyA9IDA6MSwNCiAgICBsYWJlbHMgPSBjKCJkaXNzb2x2ZWQiLCAiY2Vuc29yZWQiKQ0KICApKSAlPiUNCiAgZ2dwbG90KGFlcyhwcm9jZXNzX2lkLCB0aW1lKSkgKw0KICBnZW9tX2JhcihzdGF0ID0gImlkZW50aXR5Iiwgd2lkdGggPSAwLjUpICsNCiAgZ2VvbV9wb2ludChhZXMoDQogICAgcHJvY2Vzc19pZCwNCiAgICB0aW1lLA0KICAgIGNvbG9yID0gYXMuZmFjdG9yKGNlbnNvciksDQogICAgc2hhcGUgPSBhcy5mYWN0b3IoY2Vuc29yKQ0KICApLA0KICBzaXplID0gNCkgKw0KICBjb29yZF9mbGlwKCkgKw0KICBzY2FsZV95X2NvbnRpbnVvdXMobGltaXQgPSBjKDAsIDEwKSwgYnJlYWtzID0gMToxMCkgKw0KICBzY2FsZV9jb2xvcl92aXJpZGlzKGRpc2NyZXRlID0gVCwNCiAgICAgICAgICAgICAgICAgICAgICBhbHBoYSA9IDAuOSwNCiAgICAgICAgICAgICAgICAgICAgICBvcHRpb24gPSAiRCIpICsNCiAgdGhlbWUoDQogICAgcGFuZWwuYmFja2dyb3VuZCA9IGVsZW1lbnRfcmVjdChmaWxsID0gIiNGRkZGRkYiKSwNCiAgICBwbG90LmJhY2tncm91bmQgPSBlbGVtZW50X3JlY3QoZmlsbCA9ICIjRkZGRkZGIiksDQogICAgcGFuZWwuZ3JpZCA9IGVsZW1lbnRfbGluZShjb2xvdXIgPSAiZ3JleSIpLA0KICAgIHBhbmVsLmdyaWQubWFqb3IueSA9IGVsZW1lbnRfYmxhbmsoKSwNCiAgICBwYW5lbC5ncmlkLm1pbm9yLnkgPSBlbGVtZW50X2JsYW5rKCksDQogICAgcGFuZWwuZ3JpZC5tYWpvci54ID0gZWxlbWVudF9ibGFuaygpLA0KICAgIHRleHQgPSBlbGVtZW50X3RleHQoZmFtaWx5ID0gInNhbnMiLCBzaXplID0gMTIpLA0KICAgIGF4aXMudGl0bGUueCA9IGVsZW1lbnRfdGV4dChoanVzdCA9IDAuOSwgZmFjZSA9ICJib2xkIiksDQogICAgYXhpcy50ZXh0LnggPSBlbGVtZW50X3RleHQoKSwNCiAgICBheGlzLmxpbmUgPSBlbGVtZW50X2JsYW5rKCksDQogICAgYXhpcy50aXRsZS55ID0gZWxlbWVudF90ZXh0KGhqdXN0ID0gMC45LCBmYWNlID0gImJvbGQiKSwNCiAgICBheGlzLnRpY2tzID0gZWxlbWVudF9ibGFuaygpLA0KICAgIHN0cmlwLmJhY2tncm91bmQgPSBlbGVtZW50X3JlY3QoZmlsbCA9ICIjQTlBOUE5IiksDQogICAgcGFuZWwuZ3JpZC5taW5vciA9IGVsZW1lbnRfYmxhbmsoKSwNCiAgICBsZWdlbmQucG9zaXRpb24gPSAidG9wIiwNCiAgICBsZWdlbmQudGl0bGUgPSBlbGVtZW50X2JsYW5rKCksDQogICAgbGVnZW5kLmJhY2tncm91bmQgPSBlbGVtZW50X3JlY3QoZmlsbCA9ICIjRkZGRkZGIiksDQogICAgbGVnZW5kLmtleSA9IGVsZW1lbnRfcmVjdChmaWxsID0gIiNGRkZGRkYiKQ0KICApICsNCiAgbGFicyh5ID0gIlBlcmlvZCIsIHggPSAiRHlhZCBTcGVsbCBJRCIpDQoNCiMgc2F2ZSBpbiBvYmplY3QNCnN1cnZfZGVzc3RhdHNfMSA8LSBzdXJ2aXZhbF9oaXN0DQoNCmdnc2F2ZShzdXJ2X2Rlc3N0YXRzXzEsDQogICAgICAgZmlsZSA9ICJwbG90cy9yZXN1bHRzL3N1cnZpdmFsL3N1cnZfZGVzc3RhdHNfMS5qcGciLA0KICAgICAgIHdpZHRoID0gNCwNCiAgICAgICBoZWlnaHQgPSAzLA0KICAgICAgIGRwaSA9IDMyMCkNCg0KIyBzaG93IGdyYXBoDQpzdXJ2X2Rlc3N0YXRzXzENCg0KYGBgDQoNCg0KIyMjIENvdW50IHJlcGVhdGluZyBkeWFkcw0KDQpOdW1iZXIgb2YgcmVwZWF0aW5nIGR5YWRzLiBGaXJzdCBiaXQgb2YgY29kZSBpcyB1c2VkIHRvIGNhbGN1bGF0ZSB0aGUgJSBvZiBkeWFkcyB0aGF0IG9ubHkgbGFzdCBmb3Igb25lIHNwZWxsIChvZiBvbmUgcGVyaW9kKS4gU2Vjb25kIGJpdCBvZiBjb2RlIGNyZWF0ZXMgYSBiYXIgY2hhcnQgd2l0aCB0aGUgbnVtYmVyIG9mIGR5YWRzIHRoYXQgaGF2ZSBYIGR5YWQgc3BlbGxzLCB3aGljaCBzaG93cyB0aGF0IHRoZSBtYXhpbXVtIG51bWJlciBvZiBkeWFkIHNwZWxscyB0aGF0IGEgZHlhZCBjYW4gaGF2ZSBpcyBmb3VyLiAgIA0KDQpgYGB7ciBjb3VudCByZXBlYXRpbmcgcGVyaW9kc30NCk15RGF0YSAlPiUNCiAgc2VsZWN0KGR5YWRfaWQsDQogICAgICAgICBub21lbV9lbmNyLA0KICAgICAgICAgcHJvY2Vzc19pZCwNCiAgICAgICAgIHRpbWUsDQogICAgICAgICB0aW1lc19kcm9wcGVkX2VhcmxpZXIsDQogICAgICAgICBjZW5zb3IsDQogICAgICAgICBkcm9wcGVkKSAlPiUNCiAgZmlsdGVyKGNlbnNvciA9PSAwKSAlPiUNCiAgZ3JvdXBfYnkoZHlhZF9pZCwgcHJvY2Vzc19pZCkgJT4lDQogIHN1bW1hcmlzZShuX3Byb2Nlc3NfaWQgPSBuKCkpICU+JQ0KICB1bmdyb3VwKCkgJT4lDQogIGdyb3VwX2J5KGR5YWRfaWQpICU+JQ0KICBtdXRhdGUobl9keWFkX2lkID0gbigpKSAlPiUNCiAgdW5ncm91cCgpICU+JQ0KICBtdXRhdGUobG9zdF9wZXJpb2QxID0gbl9wcm9jZXNzX2lkID09IG5fZHlhZF9pZCkgJT4lDQogIGdyb3VwX2J5KGxvc3RfcGVyaW9kMSkgJT4lDQogIHN1bW1hcmlzZShuKCkpICU+JQ0KICB0cmFuc3Bvc2UoKSAlPiUNCiAgZmlsdGVyKHJvd19udW1iZXIoKSA9PSAyKSAlPiUNCiAgbXV0YXRlKHByb3BfZHJvcHBlZF9wZXJpb2QxID0gKFYyIC8gKFYyICsgVjEpKSAqIDEwMCkgJT4lDQogIHB1bGwocHJvcF9kcm9wcGVkX3BlcmlvZDEpDQoNCg0KDQpzcGVsbHNfcGxvdCA8LSBNeURhdGEgJT4lDQogIHNlbGVjdChkeWFkX2lkLA0KICAgICAgICAgbm9tZW1fZW5jciwNCiAgICAgICAgIHByb2Nlc3NfaWQsDQogICAgICAgICB0aW1lLA0KICAgICAgICAgdGltZXNfZHJvcHBlZF9lYXJsaWVyLA0KICAgICAgICAgY2Vuc29yLA0KICAgICAgICAgZHJvcHBlZCkgJT4lDQogIGZpbHRlcihjZW5zb3IgPT0gMCkgJT4lDQogIGdyb3VwX2J5KGR5YWRfaWQpICU+JQ0KICBzdW1tYXJpc2UobWF4X3RpbWVfZHJvcHBlZCA9IG1heCh0aW1lc19kcm9wcGVkX2VhcmxpZXIpICsgMSkgJT4lDQogIHVuZ3JvdXAoKSAlPiUNCiAgZ3JvdXBfYnkobWF4X3RpbWVfZHJvcHBlZCkgJT4lDQogIGdncGxvdChhZXMoeCA9IG1heF90aW1lX2Ryb3BwZWQsIGZpbGwgPSBtYXhfdGltZV9kcm9wcGVkKSkgKw0KICBnZW9tX2hpc3RvZ3JhbShiaW53aWR0aCA9IDEsDQogICAgICAgICAgICAgICAgIGFscGhhID0gMC42KSArDQogIHN0YXRfYmluKGJpbndpZHRoID0gMSwNCiAgICAgICAgICAgZ2VvbSA9ICJ0ZXh0IiwNCiAgICAgICAgICAgYWVzKGxhYmVsID0gLi5jb3VudC4uKSwNCiAgICAgICAgICAgdmp1c3QgPSAtMC42KSArDQogIHNjYWxlX3hfY29udGludW91cyhicmVha3MgPSAxOjQpICsNCiAgc2NhbGVfZmlsbF92aXJpZGlzKGRpc2NyZXRlID0gVCwNCiAgICAgICAgICAgICAgICAgICAgIGFscGhhID0gMC44LA0KICAgICAgICAgICAgICAgICAgICAgb3B0aW9uID0gIkUiKSArDQogIHRoZW1lKA0KICAgIHBhbmVsLmJhY2tncm91bmQgPSBlbGVtZW50X3JlY3QoZmlsbCA9ICIjRkZGRkZGIiksDQogICAgcGxvdC5iYWNrZ3JvdW5kID0gZWxlbWVudF9yZWN0KGZpbGwgPSAiI0ZGRkZGRiIpLA0KICAgIHBhbmVsLmdyaWQgPSBlbGVtZW50X2xpbmUoY29sb3VyID0gImdyZXkiKSwNCiAgICB0ZXh0ID0gZWxlbWVudF90ZXh0KGZhbWlseSA9ICJzYW5zIiwgc2l6ZSA9IDEyKSwNCiAgICBheGlzLnRpdGxlLnggPSBlbGVtZW50X3RleHQoaGp1c3QgPSAwLjksIGZhY2UgPSAiYm9sZCIpLA0KICAgIGF4aXMudGV4dC54ID0gZWxlbWVudF90ZXh0KCksDQogICAgYXhpcy5saW5lID0gZWxlbWVudF9ibGFuaygpLA0KICAgIGF4aXMudGl0bGUueSA9IGVsZW1lbnRfdGV4dChoanVzdCA9IDAuOSwgZmFjZSA9ICJib2xkIiksDQogICAgYXhpcy50aWNrcyA9IGVsZW1lbnRfYmxhbmsoKSwNCiAgICBzdHJpcC5iYWNrZ3JvdW5kID0gZWxlbWVudF9yZWN0KGZpbGwgPSAiI0E5QTlBOSIpLA0KICAgIHBhbmVsLmdyaWQubWlub3IgPSBlbGVtZW50X2JsYW5rKCksDQogICAgbGVnZW5kLnBvc2l0aW9uID0gIm5vbmUiLA0KICAgIGxlZ2VuZC50aXRsZSA9IGVsZW1lbnRfYmxhbmsoKSwNCiAgICBsZWdlbmQuYmFja2dyb3VuZCA9IGVsZW1lbnRfcmVjdChmaWxsID0gIiNGRkZGRkYiKSwNCiAgICBsZWdlbmQua2V5ID0gZWxlbWVudF9yZWN0KGZpbGwgPSAiI0ZGRkZGRiIpDQogICkgKw0KICBsYWJzKHggPSAiI3NwZWxscyIsIHkgPSAiQ291bnQiKQ0KDQpzcGVsbHNfcGxvdA0KYGBgDQoNCiMjIyBTdXJ2aXZhbCBhbmQgaGF6YXJkIGdyYXBoDQoNClJlY3JlYXRlIHRoZSBzdXJ2aXZhbCBhbmQgaGF6YXJkIGdyYXBoLiANCg0KYGBge3IgZGVzc3RhdCAzLCBmaWcud2lkdGg9IDUsIGZpZy5oZWlnaHQ9My41fQ0Kc3Vydl9maWcgPC0ga21fZml0ICU+JQ0KICB0aWR5KCkgJT4lDQogIG11dGF0ZShIYXphcmQgPSBuLmV2ZW50IC8gbi5yaXNrLA0KICAgICAgICAgU3Vydml2YWwgPSBlc3RpbWF0ZSwNCiAgICAgICAgIHRpbWUgPSB0aW1lKSAlPiUNCiAgcGl2b3RfbG9uZ2VyKGMoU3Vydml2YWwsIEhhemFyZCksDQogICAgICAgICAgICAgICB2YWx1ZXNfdG8gPSAidmFsdWUiLA0KICAgICAgICAgICAgICAgbmFtZXNfdG8gPSAic3Vydl9mdW5jdGlvbiIpICU+JQ0KICBnZ3Bsb3QoDQogICAgYWVzKA0KICAgICAgeCA9IHRpbWUsDQogICAgICB5ID0gdmFsdWUsDQogICAgICBjb2xvdXIgPSBzdXJ2X2Z1bmN0aW9uLA0KICAgICAgc2hhcGUgPSBzdXJ2X2Z1bmN0aW9uLA0KICAgICAgZmlsbCA9IHN1cnZfZnVuY3Rpb24NCiAgICApDQogICkgKw0KICAjZ2VvbV9wb2ludChzaXplID0gMi41KSArDQogIGdlb21fbGluZSgpICsNCiAgZ2VvbV9hcmVhKGFscGhhID0gMC42KSArDQogIGZhY2V0X3dyYXAodmFycyhzdXJ2X2Z1bmN0aW9uKSkgKw0KICBsYWJzKHggPSAiUGVyaW9kIiwgeSA9ICJQcm9iYWJpbGl0eSIpICsNCiAgc2NhbGVfeF9jb250aW51b3VzKGJyZWFrcyA9IDE6MTApICsNCiAgc2NhbGVfZmlsbF9tYW51YWwodmFsdWVzID0gYygiIzFiOWU3NyIsDQogICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgIiNkOTVmMDIiKSkgKw0KICBzY2FsZV9jb2xvdXJfbWFudWFsKHZhbHVlcyA9IGMoIiMxYjllNzciLA0KICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgIiNkOTVmMDIiKSkgKw0KICB0aGVtZSgNCiAgICBwYW5lbC5iYWNrZ3JvdW5kID0gZWxlbWVudF9yZWN0KGZpbGwgPSAiI0ZGRkZGRiIsDQogICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgY29sb3VyID0gImJsYWNrIiksDQogICAgcGxvdC5iYWNrZ3JvdW5kID0gZWxlbWVudF9yZWN0KGZpbGwgPSAiI0ZGRkZGRiIpLA0KICAgIHBhbmVsLmdyaWQgPSBlbGVtZW50X2xpbmUoY29sb3VyID0gImdyZXkiKSwNCiAgICBwYW5lbC5ncmlkLm1ham9yLnggPSBlbGVtZW50X2JsYW5rKCksDQogICAgdGV4dCA9IGVsZW1lbnRfdGV4dChmYW1pbHkgPSAic2FucyIsIHNpemUgPSAxMiksDQogICAgYXhpcy50aXRsZS54ID0gZWxlbWVudF90ZXh0KGhqdXN0ID0gMC45LCBmYWNlID0gImJvbGQiKSwNCiAgICBheGlzLnRleHQueCA9IGVsZW1lbnRfdGV4dCgpLA0KICAgIGF4aXMubGluZSA9IGVsZW1lbnRfYmxhbmsoKSwNCiAgICBheGlzLnRpdGxlLnkgPSBlbGVtZW50X3RleHQoaGp1c3QgPSAwLjksIGZhY2UgPSAiYm9sZCIpLA0KICAgIGF4aXMudGlja3MgPSBlbGVtZW50X2JsYW5rKCksDQogICAgICAgIHN0cmlwLmJhY2tncm91bmQgPSBlbGVtZW50X3JlY3QoZmlsbCA9ICIjQTlBOUE5IiwNCiAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICBjb2xvdXIgPSAiYmxhY2siKSwNCiAgICBwYW5lbC5ncmlkLm1pbm9yID0gZWxlbWVudF9ibGFuaygpLA0KICAgIGxlZ2VuZC5wb3NpdGlvbiA9ICJub25lIiwNCiAgICBsZWdlbmQudGl0bGUgPSBlbGVtZW50X2JsYW5rKCksDQogICAgbGVnZW5kLmJhY2tncm91bmQgPSBlbGVtZW50X3JlY3QoZmlsbCA9ICIjRkZGRkZGIiksDQogICAgbGVnZW5kLmtleSA9IGVsZW1lbnRfcmVjdChmaWxsID0gIiNGRkZGRkYiKQ0KICApDQoNCiNzYXZlIHJlc3VsdHMNCmdnc2F2ZShzdXJ2X2ZpZywgDQogICAgICAgZmlsZSA9ICJwbG90cy9yZXN1bHRzL3N1cnZpdmFsL3N1cnZfZmlnLmpwZyIsDQogICAgICAgZHBpID0gMzIwLCANCiAgICAgICB3aWR0aCA9IDUsIA0KICAgICAgIGhlaWdodCA9IDMuNSkNCg0KI3Nob3cgcGxvdA0Kc3Vydl9maWcNCmBgYA0KDQojIER5YWRpYyBzaW1pbGFyaXR5IGFuZCBjb25maWRhbnQgaGV0ZXJvZ2VuZWl0eSBwbG90cw0KDQojIyBEeWFkaWMgc2ltaWxhcml0eSBwbG90cw0KDQpGb3Igc2ltaWxhciBhbmQgZGlzc2ltaWxhciBkeWFkcyB3ZSBlc3RpbWF0ZSB0aGUgc3Vydml2YWwgZnVuY3Rpb24gU3Vic2VxdWVudGx5IHdlIHBsb3QgdGhlc2UgaW4gYSBmaWd1cmUuICANCg0KIyMjIERhdGEgcHJlcGVyYXRpb24NCg0KQ3JlYXRlIGEgcGxvdCBkYXRhZmlsZS4NCg0KYGBge3IgZHlhZCBzaW0gZWZmZWN0cyBkaWNob3RvbW91cyBwbG90IGRmfQ0KI2VkdWMNCmttX2ZpdF9lZHVjX3NpbV9oaWdoIDwtIHN1cnZmaXQoU3Vydih0aW1lLCAxLWNlbnNvcikgfiAxLCBzdWJzZXQgPSAoZHlhZF9lZHVjX3NpbSA9PSAxKSwgZGF0YT1zdXJ2aXZhbF9kYXRhLCBzZS5maXQgPSBUKQ0Ka21fZml0X2VkdWNfc2ltX2xvdyA8LSBzdXJ2Zml0KFN1cnYodGltZSwgMS1jZW5zb3IpIH4gMSwgc3Vic2V0ID0gKGR5YWRfZWR1Y19zaW0gPCAxKSwgZGF0YT1zdXJ2aXZhbF9kYXRhLCBzZS5maXQgPSBUKQ0KDQplZHVjX2xvdyA8LSBrbV9maXRfZWR1Y19zaW1fbG93ICU+JQ0KICB0aWR5KCkgJT4lDQogIHNlbGVjdCgxOjUsNyw4KSAgJT4lIA0KICBtdXRhdGUoaGF6YXJkID0gbi5ldmVudCAvIG4ucmlzaywNCiAgICAgICAgIHNpbSA9ICJEaXNzaW1pbGFyIikgJT4lDQogIHJlbmFtZShwZXJpb2QgPSB0aW1lLA0KICAgICAgICAgc3Vydml2YWwgPSBlc3RpbWF0ZSkNCg0KZWR1Y19oaWdoIDwtIGttX2ZpdF9lZHVjX3NpbV9oaWdoICU+JQ0KICB0aWR5KCkgJT4lDQogIHNlbGVjdCgxOjUsNyw4KSAgJT4lIA0KICBtdXRhdGUoaGF6YXJkID0gbi5ldmVudCAvIG4ucmlzaywNCiAgICAgICAgIHNpbSA9ICJTaW1pbGFyIikgJT4lDQogIHJlbmFtZShwZXJpb2QgPSB0aW1lLA0KICAgICAgICAgc3Vydml2YWwgPSBlc3RpbWF0ZSkNCg0KZWR1Y19kZiA8LSByYmluZChlZHVjX2hpZ2gsIGVkdWNfbG93KSAlPiUgDQogIG11dGF0ZSh2YXIgPSAiRWR1Y2F0aW9uIikNCg0KI2dlbmRlciANCmttX2ZpdF9nZW5kZXJfc2ltX2hpZ2ggPC0gc3VydmZpdChTdXJ2KHRpbWUsIDEtY2Vuc29yKSB+IDEsIHN1YnNldCA9IChkeWFkX2dlbmRlcl9zaW0gPT0gMSksIGRhdGE9c3Vydml2YWxfZGF0YSwgc2UuZml0ID0gVCkNCmttX2ZpdF9nZW5kZXJfc2ltX2xvdyA8LSBzdXJ2Zml0KFN1cnYodGltZSwgMS1jZW5zb3IpIH4gMSwgc3Vic2V0ID0gKGR5YWRfZ2VuZGVyX3NpbSA9PSAwKSwgZGF0YT1zdXJ2aXZhbF9kYXRhLCBzZS5maXQgPSBUKQ0KDQoNCmdlbmRlcl9sb3cgPC0ga21fZml0X2dlbmRlcl9zaW1fbG93ICU+JQ0KICB0aWR5KCkgJT4lDQogIHNlbGVjdCgxOjUsNyw4KSAgJT4lIA0KICBtdXRhdGUoaGF6YXJkID0gbi5ldmVudCAvIG4ucmlzaywNCiAgICAgICAgIHNpbSA9ICJEaXNzaW1pbGFyIikgJT4lDQogIHJlbmFtZShwZXJpb2QgPSB0aW1lLA0KICAgICAgICAgc3Vydml2YWwgPSBlc3RpbWF0ZSkNCg0KZ2VuZGVyX2hpZ2ggPC0ga21fZml0X2dlbmRlcl9zaW1faGlnaCAlPiUNCiAgdGlkeSgpICU+JQ0KICBzZWxlY3QoMTo1LDcsOCkgJT4lIA0KICBtdXRhdGUoaGF6YXJkID0gbi5ldmVudCAvIG4ucmlzaywNCiAgICAgICAgIHNpbSA9ICJTaW1pbGFyIikgJT4lDQogIHJlbmFtZShwZXJpb2QgPSB0aW1lLA0KICAgICAgICAgc3Vydml2YWwgPSBlc3RpbWF0ZSkNCg0KZ2VuZGVyX2RmIDwtIHJiaW5kKGdlbmRlcl9sb3csIGdlbmRlcl9oaWdoKSAlPiUgDQogIG11dGF0ZSh2YXIgPSAiR2VuZGVyIikNCg0KI2V0aG5jaXR5IA0Ka21fZml0X2V0aG5jaXR5X3NpbV9oaWdoIDwtIHN1cnZmaXQoU3Vydih0aW1lLCAxLWNlbnNvcikgfiAxLCBzdWJzZXQgPSAoZHlhZF9ldGhuaWNpdHlfc2ltID09IDEpLCBkYXRhPXN1cnZpdmFsX2RhdGEsIHNlLmZpdCA9IFQpDQprbV9maXRfZXRobmNpdHlfc2ltX2xvdyA8LSBzdXJ2Zml0KFN1cnYodGltZSwgMS1jZW5zb3IpIH4gMSwgc3Vic2V0ID0gKGR5YWRfZXRobmljaXR5X3NpbSA9PSAwKSwgZGF0YT1zdXJ2aXZhbF9kYXRhLCBzZS5maXQgPSBUKQ0KDQoNCmV0aG5pY2l0eV9sb3cgPC0ga21fZml0X2V0aG5jaXR5X3NpbV9sb3cgJT4lDQogIHRpZHkoKSAlPiUNCiAgc2VsZWN0KDE6NSw3LDgpICU+JSANCiAgbXV0YXRlKGhhemFyZCA9IG4uZXZlbnQgLyBuLnJpc2ssDQogICAgICAgICBzaW0gPSAiRGlzc2ltaWxhciIpICU+JQ0KICByZW5hbWUocGVyaW9kID0gdGltZSwNCiAgICAgICAgIHN1cnZpdmFsID0gZXN0aW1hdGUpDQoNCmV0aG5pY2l0eV9oaWdoIDwtIGttX2ZpdF9ldGhuY2l0eV9zaW1faGlnaCAlPiUNCiAgdGlkeSgpICU+JQ0KICBzZWxlY3QoMTo1LDcsOCkgJT4lIA0KICBtdXRhdGUoaGF6YXJkID0gbi5ldmVudCAvIG4ucmlzaywNCiAgICAgICAgIHNpbSA9ICJTaW1pbGFyIikgJT4lDQogIHJlbmFtZShwZXJpb2QgPSB0aW1lLA0KICAgICAgICAgc3Vydml2YWwgPSBlc3RpbWF0ZSkNCg0KZXRobmljaXR5X2RmIDwtIHJiaW5kKGV0aG5pY2l0eV9sb3csIGV0aG5pY2l0eV9oaWdoKSAlPiUgDQogIG11dGF0ZSh2YXIgPSAiTWlncmF0aW9uIGJhY2tncm91bmQiKQ0KDQojYWdlDQprbV9maXRfYWdlX3NpbV9oaWdoIDwtIHN1cnZmaXQoU3Vydih0aW1lLCAxLWNlbnNvcikgfiAxLCBzdWJzZXQgPSAoZHlhZF9hZ2Vfc2ltID09IDEpLCBkYXRhPXN1cnZpdmFsX2RhdGEsIHNlLmZpdCA9IFQpDQprbV9maXRfYWdlX3NpbV9sb3cgPC0gc3VydmZpdChTdXJ2KHRpbWUsIDEtY2Vuc29yKSB+IDEsIHN1YnNldCA9IChkeWFkX2FnZV9zaW0gPCAxKSwgZGF0YT1zdXJ2aXZhbF9kYXRhLCBzZS5maXQgPSBUKQ0KDQphZ2VfbG93IDwtIGttX2ZpdF9hZ2Vfc2ltX2xvdyAlPiUNCiAgdGlkeSgpICU+JQ0KICBzZWxlY3QoMTo1LDcsOCkgJT4lIA0KICBtdXRhdGUoaGF6YXJkID0gbi5ldmVudCAvIG4ucmlzaywNCiAgICAgICAgIHNpbSA9ICJEaXNzaW1pbGFyIikgJT4lDQogIHJlbmFtZShwZXJpb2QgPSB0aW1lLA0KICAgICAgICAgc3Vydml2YWwgPSBlc3RpbWF0ZSkNCg0KYWdlX2hpZ2ggPC0ga21fZml0X2FnZV9zaW1faGlnaCAlPiUNCiAgdGlkeSgpICU+JQ0KICBzZWxlY3QoMTo1LDcsOCkgJT4lIA0KICBtdXRhdGUoaGF6YXJkID0gbi5ldmVudCAvIG4ucmlzaywNCiAgICAgICAgIHNpbSA9ICJTaW1pbGFyIikgJT4lDQogIHJlbmFtZShwZXJpb2QgPSB0aW1lLA0KICAgICAgICAgc3Vydml2YWwgPSBlc3RpbWF0ZSkNCg0KYWdlX2RmIDwtIHJiaW5kKGFnZV9sb3csIGFnZV9oaWdoKSAlPiUgDQogIG11dGF0ZSh2YXIgPSAiQWdlIikNCg0KI3Bsb3QNCnBsb3RfZGYgPC0gcmJpbmQoZ2VuZGVyX2RmLCBhZ2VfZGYsIGVkdWNfZGYsIGV0aG5pY2l0eV9kZikNCg0KYGBgDQoNCiMjIyBQbG90DQoNCkNyZWF0ZSBhIG11bHRpcGFuZWwgcGxvdC4NCg0KYGBge3IgZHlhZGljIHNpbSBwbG90LCBmaWcud2lkdGg9IDYsIGZpZy5oZWlnaHQ9IDZ9DQpkeWFkaWNfc2ltIDwtIHBsb3RfZGYgJT4lDQogIGdncGxvdChhZXMoDQogICAgeCA9IHBlcmlvZCwNCiAgICB5ID0gc3Vydml2YWwsDQogICAgY29sb3VyID0gc2ltLA0KICAgIGZpbGwgPSBzaW0NCiAgKSkgKw0KICBnZW9tX3JpYmJvbihhZXMoeW1pbiA9IGNvbmYubG93LCB5bWF4ID0gY29uZi5oaWdoKSwNCiAgICAgICAgICAgICAgYWxwaGEgPSAwLjQsDQogICAgICAgICAgICAgIGxpbmV0eXBlID0gImJsYW5rIikgKw0KICBnZW9tX2xpbmUoKSArDQogIGZhY2V0X3dyYXAodmFycyh2YXIpKSArDQogIGxhYnMoeCA9ICJQZXJpb2QiLCB5ID0gIlN1cnZpdmFsIGZ1bmN0aW9uIikgKw0KICBzY2FsZV94X2NvbnRpbnVvdXMoYnJlYWtzID0gMToxMCkgKw0KICBzY2FsZV95X2NvbnRpbnVvdXMobGltaXRzID0gYygwLCAwLjM1KSwNCiAgICAgICAgICAgICAgICAgICAgIGJyZWFrcyA9IGMoMCwgMC4xMCwgMC4yMCwgMC4zMCkpICsNCiAgc2NhbGVfZmlsbF9tYW51YWwodmFsdWVzID0gYygiIzFiOWU3NyIsDQogICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgIiNkOTVmMDIiKSkgKw0KICBzY2FsZV9jb2xvdXJfbWFudWFsKHZhbHVlcyA9IGMoIiMxYjllNzciLA0KICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgIiNkOTVmMDIiKSkgKw0KICB0aGVtZSgNCiAgICBwYW5lbC5iYWNrZ3JvdW5kID0gZWxlbWVudF9yZWN0KGZpbGwgPSAiI0ZGRkZGRiIsDQogICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICBjb2xvdXIgPSAiYmxhY2siKSwNCiAgICBwbG90LmJhY2tncm91bmQgPSBlbGVtZW50X3JlY3QoZmlsbCA9ICIjRkZGRkZGIiksDQogICAgcGFuZWwuZ3JpZCA9IGVsZW1lbnRfbGluZShjb2xvdXIgPSAiZ3JleSIpLA0KICAgIHBhbmVsLmdyaWQubWFqb3IueCA9IGVsZW1lbnRfYmxhbmsoKSwNCiAgICB0ZXh0ID0gZWxlbWVudF90ZXh0KGZhbWlseSA9ICJzYW5zIiwgc2l6ZSA9IDEyKSwNCiAgICBheGlzLnRpdGxlLnggPSBlbGVtZW50X3RleHQoaGp1c3QgPSAwLjksIGZhY2UgPSAiYm9sZCIpLA0KICAgIGF4aXMudGV4dC54ID0gZWxlbWVudF90ZXh0KCksDQogICAgYXhpcy5saW5lID0gZWxlbWVudF9ibGFuaygpLA0KICAgIGF4aXMudGl0bGUueSA9IGVsZW1lbnRfdGV4dChoanVzdCA9IDAuOSwgZmFjZSA9ICJib2xkIiksDQogICAgYXhpcy50aWNrcyA9IGVsZW1lbnRfYmxhbmsoKSwNCiAgICBzdHJpcC5iYWNrZ3JvdW5kID0gZWxlbWVudF9yZWN0KGZpbGwgPSAiI0E5QTlBOSIsDQogICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICBjb2xvdXIgPSAiYmxhY2siKSwNCiAgICBwYW5lbC5ncmlkLm1pbm9yID0gZWxlbWVudF9ibGFuaygpLA0KICAgIGxlZ2VuZC5wb3NpdGlvbiA9ICJib3R0b20iLA0KICAgIGxlZ2VuZC50aXRsZSA9IGVsZW1lbnRfYmxhbmsoKSwNCiAgICBsZWdlbmQuYmFja2dyb3VuZCA9IGVsZW1lbnRfcmVjdChmaWxsID0gIiNGRkZGRkYiKSwNCiAgICBsZWdlbmQua2V5ID0gZWxlbWVudF9yZWN0KGZpbGwgPSAiI0ZGRkZGRiIpDQogICkNCg0KIyBzYXZlIGR5YWRpYyBzaW0gcGxvdA0KZ2dzYXZlKGR5YWRpY19zaW0sIGZpbGUgPSAicGxvdHMvcmVzdWx0cy9zdXJ2aXZhbC9keWFkX3NpbV9zdXJ2LmpwZyIsIA0KICAgICAgIGRwaSA9IDMyMCwNCiAgICAgICB3aWR0aCA9IDYsIA0KICAgICAgIGhlaWdodCA9IDYpDQoNCiNzaG93IHBsb3QNCmR5YWRpY19zaW0NCg0KYGBgDQoNCg0KIyMgQ29uZmlkYW50IGhldGVyb2dlbmVpdHkgcGxvdHMNCg0KRm9yIGhvbW9nZW5lb3VzIGFuZCBoZXRlcm9nZW5lb3VzIGR5YWRzIHdlIGVzdGltYXRlIHRoZSBoYXphcmQgZnVuY3Rpb24uIFN1YnNlcXVlbnRseSB3ZSBwbG90IHRoZXNlIGRpZmZlcmVudCBncmFwaHMuIA0KDQojIyMgRGF0YSBwcmVwZXJhdGlvbg0KDQpDcmVhdGUgYSBwbG90IGRhdGFmaWxlLg0KDQpgYGB7ciBjb25mIHNpbSBlZmZlY3RzIGRpY2hvdG9tb3VzIHBsb3QgZGZ9DQojZWR1Yw0Ka21fZml0X2VkdWNfY29uZl9zaW1faGlnaCA8LSBzdXJ2Zml0KFN1cnYodGltZSwgMS1jZW5zb3IpIH4gMSwgc3Vic2V0ID0gKGF2c2ltX2FsdGVyX2VkdWMgPT0gMSksIGRhdGE9c3Vydml2YWxfZGF0YSwgc2UuZml0ID0gVCkNCmttX2ZpdF9lZHVjX2NvbmZfc2ltX2xvdyA8LSBzdXJ2Zml0KFN1cnYodGltZSwgMS1jZW5zb3IpIH4gMSwgc3Vic2V0ID0gKGF2c2ltX2FsdGVyX2VkdWMgPCAxKSwgZGF0YT1zdXJ2aXZhbF9kYXRhLCBzZS5maXQgPSBUKQ0KDQplZHVjX2xvdyA8LSBrbV9maXRfZWR1Y19jb25mX3NpbV9sb3cgJT4lDQogIHRpZHkoKSAlPiUNCiAgc2VsZWN0KDE6NSw3LDgpICU+JSANCiAgbXV0YXRlKGhhemFyZCA9IG4uZXZlbnQgLyBuLnJpc2ssDQogICAgICAgICBzaW0gPSAiVW5pcXVlIikgJT4lDQogIHJlbmFtZShwZXJpb2QgPSB0aW1lLA0KICAgICAgICAgc3Vydml2YWwgPSBlc3RpbWF0ZSkNCg0KZWR1Y19oaWdoIDwtIGttX2ZpdF9lZHVjX2NvbmZfc2ltX2hpZ2ggJT4lDQogIHRpZHkoKSAlPiUNCiAgc2VsZWN0KDE6NSw3LDgpICU+JSANCiAgbXV0YXRlKGhhemFyZCA9IG4uZXZlbnQgLyBuLnJpc2ssDQogICAgICAgICBzaW0gPSAiQ29tbW9uIikgJT4lDQogIHJlbmFtZShwZXJpb2QgPSB0aW1lLA0KICAgICAgICAgc3Vydml2YWwgPSBlc3RpbWF0ZSkNCg0KZWR1Y19jb25mX2RmIDwtIHJiaW5kKGVkdWNfaGlnaCwgZWR1Y19sb3cpICU+JSANCiAgbXV0YXRlKHZhciA9ICJFZHVjYXRpb24iKQ0KDQojZ2VuZGVyIA0Ka21fZml0X2dlbmRlcl9jb25mX3NpbV9oaWdoIDwtIHN1cnZmaXQoU3Vydih0aW1lLCAxLWNlbnNvcikgfiAxLCBzdWJzZXQgPSAoZWlfYWx0ZXJfZ2VuZGVyX3JldiA9PSAxKSwgZGF0YT1zdXJ2aXZhbF9kYXRhLCBzZS5maXQgPSBUKQ0Ka21fZml0X2dlbmRlcl9jb25mX3NpbV9sb3cgPC0gc3VydmZpdChTdXJ2KHRpbWUsIDEtY2Vuc29yKSB+IDEsIHN1YnNldCA9IChlaV9hbHRlcl9nZW5kZXJfcmV2IDwgMCksIGRhdGE9c3Vydml2YWxfZGF0YSwgc2UuZml0ID0gVCkNCg0KDQpnZW5kZXJfbG93IDwtIGttX2ZpdF9nZW5kZXJfY29uZl9zaW1fbG93ICU+JQ0KICB0aWR5KCkgJT4lDQogIHNlbGVjdCgxOjUsNyw4KSAlPiUgDQogIG11dGF0ZShoYXphcmQgPSBuLmV2ZW50IC8gbi5yaXNrLA0KICAgICAgICAgc2ltID0gIlVuaXF1ZSIpICU+JQ0KICByZW5hbWUocGVyaW9kID0gdGltZSwNCiAgICAgICAgIHN1cnZpdmFsID0gZXN0aW1hdGUpDQoNCmdlbmRlcl9oaWdoIDwtIGttX2ZpdF9nZW5kZXJfY29uZl9zaW1faGlnaCAlPiUNCiAgdGlkeSgpICU+JQ0KICBzZWxlY3QoMTo1LDcsOCkgJT4lIA0KICBtdXRhdGUoaGF6YXJkID0gbi5ldmVudCAvIG4ucmlzaywNCiAgICAgICAgIHNpbSA9ICJDb21tb24iKSAlPiUNCiAgcmVuYW1lKHBlcmlvZCA9IHRpbWUsDQogICAgICAgICBzdXJ2aXZhbCA9IGVzdGltYXRlKQ0KDQpnZW5kZXJfY29uZl9kZiA8LSByYmluZChnZW5kZXJfbG93LCBnZW5kZXJfaGlnaCkgJT4lIA0KICBtdXRhdGUodmFyID0gIkdlbmRlciIpDQoNCiNldGhuaWNpdHkgDQprbV9maXRfZXRobmljaXR5X2NvbmZfc2ltX2hpZ2ggPC0gc3VydmZpdChTdXJ2KHRpbWUsIDEtY2Vuc29yKSB+IDEsIHN1YnNldCA9IChlaV9hbHRlcl9ldGhuaWNpdHlfcmV2ID09IDEpLCBkYXRhPXN1cnZpdmFsX2RhdGEsIHNlLmZpdCA9IFQpDQprbV9maXRfZXRobmljaXR5X2NvbmZfc2ltX2xvdyA8LSBzdXJ2Zml0KFN1cnYodGltZSwgMS1jZW5zb3IpIH4gMSwgc3Vic2V0ID0gKGVpX2FsdGVyX2V0aG5pY2l0eV9yZXYgIDwgMCksIGRhdGE9c3Vydml2YWxfZGF0YSwgc2UuZml0ID0gVCkNCg0KDQpldGhuaWNpdHlfbG93IDwtIGttX2ZpdF9ldGhuaWNpdHlfY29uZl9zaW1fbG93ICU+JQ0KICB0aWR5KCkgJT4lDQogIHNlbGVjdCgxOjUsNyw4KSAlPiUgDQogIG11dGF0ZShoYXphcmQgPSBuLmV2ZW50IC8gbi5yaXNrLA0KICAgICAgICAgc2ltID0gIlVuaXF1ZSIpICU+JQ0KICByZW5hbWUocGVyaW9kID0gdGltZSwNCiAgICAgICAgIHN1cnZpdmFsID0gZXN0aW1hdGUpDQoNCmV0aG5pY2l0eV9oaWdoIDwtIGttX2ZpdF9ldGhuaWNpdHlfY29uZl9zaW1faGlnaCAlPiUNCiAgdGlkeSgpICU+JQ0KICBzZWxlY3QoMTo1LDcsOCkgJT4lIA0KICBtdXRhdGUoaGF6YXJkID0gbi5ldmVudCAvIG4ucmlzaywNCiAgICAgICAgIHNpbSA9ICJDb21tb24iKSAlPiUNCiAgcmVuYW1lKHBlcmlvZCA9IHRpbWUsDQogICAgICAgICBzdXJ2aXZhbCA9IGVzdGltYXRlKQ0KDQpldGhuaWNpdHlfY29uZl9kZiA8LSByYmluZChldGhuaWNpdHlfbG93LCBldGhuaWNpdHlfaGlnaCkgJT4lIA0KICBtdXRhdGUodmFyID0gIk1pZ3JhdGlvbiBiYWNrZ3JvdW5kIikNCg0KI2FnZQ0Ka21fZml0X2FnZV9jb25mX3NpbV9oaWdoIDwtIHN1cnZmaXQoU3Vydih0aW1lLCAxLWNlbnNvcikgfiAxLCBzdWJzZXQgPSAoYXZzaW1fYWx0ZXJfYWdlID09IDEpLCBkYXRhPXN1cnZpdmFsX2RhdGEsIHNlLmZpdCA9IFQpDQprbV9maXRfYWdlX2NvbmZfc2ltX2xvdyA8LSBzdXJ2Zml0KFN1cnYodGltZSwgMS1jZW5zb3IpIH4gMSwgc3Vic2V0ID0gKGF2c2ltX2FsdGVyX2FnZSA8IDEpLCBkYXRhPXN1cnZpdmFsX2RhdGEsIHNlLmZpdCA9IFQpDQoNCmFnZV9sb3cgPC0ga21fZml0X2FnZV9jb25mX3NpbV9sb3cgJT4lDQogIHRpZHkoKSAlPiUNCiAgc2VsZWN0KDE6NSw3LDgpICU+JSANCiAgbXV0YXRlKGhhemFyZCA9IG4uZXZlbnQgLyBuLnJpc2ssDQogICAgICAgICBzaW0gPSAiVW5pcXVlIikgJT4lDQogIHJlbmFtZShwZXJpb2QgPSB0aW1lLA0KICAgICAgICAgc3Vydml2YWwgPSBlc3RpbWF0ZSkNCg0KYWdlX2hpZ2ggPC0ga21fZml0X2FnZV9jb25mX3NpbV9oaWdoICU+JQ0KICB0aWR5KCkgJT4lDQogIHNlbGVjdCgxOjUsNyw4KSAlPiUgDQogIG11dGF0ZShoYXphcmQgPSBuLmV2ZW50IC8gbi5yaXNrLA0KICAgICAgICAgc2ltID0gIkNvbW1vbiIpICU+JQ0KICByZW5hbWUocGVyaW9kID0gdGltZSwNCiAgICAgICAgIHN1cnZpdmFsID0gZXN0aW1hdGUpDQoNCmFnZV9jb25mX2RmIDwtIHJiaW5kKGFnZV9oaWdoLCBhZ2VfbG93KSAlPiUgDQogIG11dGF0ZSh2YXIgPSAiQWdlIikNCg0KI3Bsb3QNCnBsb3RfY29uZl9kZiA8LSByYmluZChnZW5kZXJfY29uZl9kZiwgYWdlX2NvbmZfZGYsIGVkdWNfY29uZl9kZiwgZXRobmljaXR5X2NvbmZfZGYpDQoNCmBgYA0KDQojIyMgUGxvdA0KDQpDcmVhdGUgYSBtdWx0aXBhbmVsIHBsb3QuDQoNCmBgYHtyIGNvbmYgaGV0IHBsb3QsIGZpZy53aWR0aD0gNiwgZmlnLmhlaWdodD0gNn0NCmNvbmZfc2ltIDwtIHBsb3RfY29uZl9kZiAlPiUNCiAgIGdncGxvdChhZXMoDQogICAgeCA9IHBlcmlvZCwNCiAgICB5ID0gc3Vydml2YWwsDQogICAgY29sb3VyID0gZmN0X3Jldihhcy5mYWN0b3Ioc2ltKSksDQogICAgZmlsbCA9IGZjdF9yZXYoYXMuZmFjdG9yKHNpbSkpDQogICkpICsNCiAgZ2VvbV9yaWJib24oYWVzKHltaW4gPSBjb25mLmxvdywgeW1heCA9IGNvbmYuaGlnaCksDQogICAgICAgICAgICAgICAgYWxwaGEgPSAwLjQsIA0KICAgICAgICAgICAgICAgIGNvbG9yID0gImJsYWNrIiwNCiAgICAgICAgICAgICAgbGluZXR5cGUgPSAiYmxhbmsiKSArDQogIGdlb21fbGluZSgpICsNCiAgZmFjZXRfd3JhcCh2YXJzKHZhcikpICsNCiAgbGFicyh4ID0gIlBlcmlvZCIsIHkgPSAiU3Vydml2YWwgZnVuY3Rpb24iKSArDQogIHNjYWxlX3hfY29udGludW91cyhicmVha3MgPSAxOjEwKSArDQogIHNjYWxlX3lfY29udGludW91cyhsaW1pdHMgPSBjKDAsIDAuMzUpLA0KICAgICAgICAgICAgICAgICAgICAgYnJlYWtzID0gYygwLDAuMTAsMC4yMCwwLjMwKSkgKw0KICBzY2FsZV9maWxsX21hbnVhbCh2YWx1ZXMgPSBjKCIjMWI5ZTc3IiwNCiAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAiI2Q5NWYwMiIpKSArDQogIHNjYWxlX2NvbG91cl9tYW51YWwodmFsdWVzID0gYygiIzFiOWU3NyIsDQogICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgIiNkOTVmMDIiKSkgKw0KICB0aGVtZSgNCiAgICBwYW5lbC5iYWNrZ3JvdW5kID0gZWxlbWVudF9yZWN0KGZpbGwgPSAiI0ZGRkZGRiIsDQogICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgY29sb3VyID0gImJsYWNrIiksDQogICAgcGxvdC5iYWNrZ3JvdW5kID0gZWxlbWVudF9yZWN0KGZpbGwgPSAiI0ZGRkZGRiIpLA0KICAgIHBhbmVsLmdyaWQgPSBlbGVtZW50X2xpbmUoY29sb3VyID0gImdyZXkiKSwNCiAgICBwYW5lbC5ncmlkLm1ham9yLnggPSBlbGVtZW50X2JsYW5rKCksDQogICAgdGV4dCA9IGVsZW1lbnRfdGV4dChmYW1pbHkgPSAic2FucyIsIHNpemUgPSAxMiksDQogICAgYXhpcy50aXRsZS54ID0gZWxlbWVudF90ZXh0KGhqdXN0ID0gMC45LCBmYWNlID0gImJvbGQiKSwNCiAgICBheGlzLnRleHQueCA9IGVsZW1lbnRfdGV4dCgpLA0KICAgIGF4aXMubGluZSA9IGVsZW1lbnRfYmxhbmsoKSwNCiAgICBheGlzLnRpdGxlLnkgPSBlbGVtZW50X3RleHQoaGp1c3QgPSAwLjksIGZhY2UgPSAiYm9sZCIpLA0KICAgIGF4aXMudGlja3MgPSBlbGVtZW50X2JsYW5rKCksDQogICAgICAgICAgICBzdHJpcC5iYWNrZ3JvdW5kID0gZWxlbWVudF9yZWN0KGZpbGwgPSAiI0E5QTlBOSIsDQogICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgY29sb3VyID0gImJsYWNrIiksDQogICAgcGFuZWwuZ3JpZC5taW5vciA9IGVsZW1lbnRfYmxhbmsoKSwNCiAgICBsZWdlbmQucG9zaXRpb24gPSAiYm90dG9tIiwNCiAgICBsZWdlbmQudGl0bGUgPSBlbGVtZW50X2JsYW5rKCksDQogICAgbGVnZW5kLmJhY2tncm91bmQgPSBlbGVtZW50X3JlY3QoZmlsbCA9ICIjRkZGRkZGIiksDQogICAgbGVnZW5kLmtleSA9IGVsZW1lbnRfcmVjdChmaWxsID0gIiNGRkZGRkYiKQ0KICApDQoNCiNzYXZlIHBsb3QNCmdnc2F2ZShjb25mX3NpbSwgDQogICAgICAgZmlsZSA9ICJwbG90cy9yZXN1bHRzL3N1cnZpdmFsL2NvbmZfc2ltX3N1cnYuanBnIiwNCiAgICAgICBkcGkgPSAzMjAsIA0KICAgICAgIHdpZHRoID0gNiwNCiAgICAgICBoZWlnaHQgPSA2KQ0KDQojc2hvdyBwbG90DQpjb25mX3NpbQ0KYGBgDQo=</div>
+<style>
+.center {
+  text-align: center;
+  color: black;
+}
+</style>
+
+<hr>
+<br>
+<p class="center">Copyright &copy; 2023 Jeroense Thijmen</p>
+
+
+</div>
+</div>
+
+</div>
+
+<script>
+
+// add bootstrap table styles to pandoc tables
+function bootstrapStylePandocTables() {
+  $('tr.odd').parent('tbody').parent('table').addClass('table table-condensed');
+}
+$(document).ready(function () {
+  bootstrapStylePandocTables();
+});
+
+
+</script>
+
+<!-- tabsets -->
+
+<script>
+$(document).ready(function () {
+  window.buildTabsets("TOC");
+});
+
+$(document).ready(function () {
+  $('.tabset-dropdown > .nav-tabs > li').click(function () {
+    $(this).parent().toggleClass('nav-tabs-open');
+  });
+});
+</script>
+
+<!-- code folding -->
+<script>
+$(document).ready(function () {
+  window.initializeSourceEmbed("egonet_deselection_desstats.Rmd");
+  window.initializeCodeFolding("show" === "show");
+});
+</script>
+
+<script>
+$(document).ready(function ()  {
+
+    // temporarily add toc-ignore selector to headers for the consistency with Pandoc
+    $('.unlisted.unnumbered').addClass('toc-ignore')
+
+    // move toc-ignore selectors from section div to header
+    $('div.section.toc-ignore')
+        .removeClass('toc-ignore')
+        .children('h1,h2,h3,h4,h5').addClass('toc-ignore');
+
+    // establish options
+    var options = {
+      selectors: "h1,h2,h3",
+      theme: "bootstrap3",
+      context: '.toc-content',
+      hashGenerator: function (text) {
+        return text.replace(/[.\\/?&!#<>]/g, '').replace(/\s/g, '_');
+      },
+      ignoreSelector: ".toc-ignore",
+      scrollTo: 0
+    };
+    options.showAndHide = true;
+    options.smoothScroll = true;
+
+    // tocify
+    var toc = $("#TOC").tocify(options).data("toc-tocify");
+});
+</script>
+
+<!-- dynamically load mathjax for compatibility with self-contained -->
+<script>
+  (function () {
+    var script = document.createElement("script");
+    script.type = "text/javascript";
+    script.src  = "https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML";
+    document.getElementsByTagName("head")[0].appendChild(script);
+  })();
+</script>
+
+</body>
+</html>

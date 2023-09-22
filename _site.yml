@@ -1,0 +1,45 @@
+name: "Replication website: similarity and confidant loss"
+output_dir: "docs"
+navbar:
+  title: "Replication Website"
+  left:
+  - text: "About"
+    icon: fa-info
+    href: index.html
+  - text: "Data preperation"
+    icon: far fa-file-code
+    menu:
+    - text: "1 Merging LISS core module"
+      href: merging-liss.html
+    - text: "2 Risk dataset"
+      href: 01_risk-data-prep.html
+    - text: "3 Repeated risk dataset"
+      href: 02_repeated-risk-data-prep.html
+    - text: "4 Add ego and alter data"
+      href: 03_add-ego-alter-data.html
+    - text: "5 Dyad and Network variables"
+      href: 04_network-dyad-variables.html
+    - text: "6 Missing imputation"
+      href: 05_imputation.html
+  - text: "Analysis"
+    icon: fa-bar-chart
+    menu:
+    - text: "1 Descriptive statistics"
+      href: egonet_deselection_desstats.html
+    - text: "2 Replication main results"
+      href: egonet-main-analysis.html
+  - text: "Robustness"
+    icon: fa-shield
+    menu:
+    - text: "Recreate appendix analyses"
+    - href: egonet_robustness_diff.html
+  right:
+  - text: "Github"
+    icon: fab fa-github
+    href: https://github.com/tmgjer/egonet_deselection
+output:
+  html_document:
+    theme: flatly
+    highlight: default
+    include:
+      after_body: footer.html
