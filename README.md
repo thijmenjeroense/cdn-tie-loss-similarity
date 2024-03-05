@@ -5,4 +5,4 @@ From this GitHub repository the [replication website](https://thijmenjeroense.gi
 Thijmen Jeroense, Niels Spierings, Jochem Tolsma (2024) Similarity and differences in age, gender, ethnicity, and education as explanatory factors of tie loss in the core discussion network, *Social Networks*,
 76, 135-149. DOI: [https://doi.org/10.1016/j.socnet.2023.09.003](https://doi.org/10.1016/j.socnet.2023.09.003)
 
-For any questions please contact @thijmenjeroense
+For any questions please contact @thijmenjeroense.
