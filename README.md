@@ -1,4 +1,4 @@
-# cdn-tie-loss-similarity
+# Repository for replication website: "Similarity and differences in age, gender, migration background, and education as explanatory factors of tie loss in the core discussion network"
 
 From this GitHub repository the replication website for the research article "Similarity and differences in age, gender, migration background, and education as explanatory factors of tie loss in the core discussion network" is deployed.
 
